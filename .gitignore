@@ -1,0 +1,24 @@
+.DS_Store
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# WP
+/www/.htaccess
+/www/wp-config.php
+
+# WP Themes
+/www/wp-content/themes/**/assets/
+/www/wp-content/themes/**/node_modules/
+/www/wp-content/themes/**/package-lock.json
+/www/wp-content/themes/**/public/
+/www/wp-content/themes/**/.env
+
+# Log files
+npm-debug.log*
