@@ -1,0 +1,42 @@
+//
+// utilitaires
+//
+
+.clearfix {
+    @include clearfix();
+}
+
+.hidden {
+    display: none !important;
+    visibility: hidden; // Les lecteurs d'écrans parfois ne prennent pas en compte le display none
+}
+
+// Pour cacher quelque-chose qui doit rester accessible aux lecteurs d'écrans
+.visually-hidden { // https://developer.yahoo.com/blogs/ydn/clip-hidden-content-better-accessibility-53456.html
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0 !important;
+    border: 0 !important;
+    height: 1px !important;
+    width: 1px !important;
+    overflow: hidden;
+}
+body:hover .visually-hidden {
+    a,
+    input,
+    button {
+        display: none !important;
+    }
+}
+
+.block {
+    display: block !important;
+}
+.inline-block {
+    display: inline-block !important;
+}
+
+//position
+.relative {
+	position: relative;
+}

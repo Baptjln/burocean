@@ -1,0 +1,73 @@
+@at-root {
+  @-ms-viewport {
+    width: device-width;
+  }
+}
+
+// For desktops
+@include responsive-invisibility('.visible-sm');
+@include responsive-invisibility('.visible-md');
+@include responsive-invisibility('.visible-lg');
+@include responsive-invisibility('.visible-x-lg');
+
+.visible-xs-inline-block,
+.visible-sm-inline-block,
+.visible-md-inline-block,
+.visible-lg-inline-block {
+    display: none !important;
+}
+
+
+@media (max-width: $max-breakpoint-mobile) {
+    @include responsive-visibility('.visible-sm');
+}
+
+.visible-sm-inline-block {
+    @media (max-width: $max-breakpoint-mobile) {
+        display: inline-block !important;
+    }
+}
+
+@media (min-width: $min-breakpoint-mobile) and (max-width: $max-breakpoint-tablet) {
+    @include responsive-visibility('.visible-md');
+}
+.visible-md-inline-block {
+    @media (min-width: $min-breakpoint-mobile) and (max-width: $max-breakpoint-tablet) {
+        display: inline-block !important;
+    }
+}
+
+@media (min-width: $min-breakpoint-tablet) and (max-width: $max-breakpoint-desktop) {
+    @include responsive-visibility('.visible-lg');
+}
+.visible-lg-inline-block {
+    @media (min-width: $min-breakpoint-tablet) and (max-width: $max-breakpoint-desktop) {
+        display: inline-block !important;
+    }
+}
+
+@media (min-width: $min-breakpoint-desktop) {
+    @include responsive-visibility('.visible-x-lg');
+}
+.visible-x-lg-inline-block {
+    @media (min-width: $min-breakpoint-desktop) {
+        display: inline-block !important;
+    }
+}
+
+
+@media (max-width: $max-breakpoint-mobile) {
+    @include responsive-invisibility('.hidden-sm');
+}
+
+@media (min-width: $min-breakpoint-mobile) and (max-width: $max-breakpoint-tablet) {
+    @include responsive-invisibility('.hidden-md');
+}
+
+@media (min-width: $min-breakpoint-tablet) and (max-width: $max-breakpoint-desktop) {
+    @include responsive-invisibility('.hidden-lg');
+}
+
+@media (min-width: $min-breakpoint-desktop) {
+    @include responsive-invisibility('.hidden-x-lg');
+}

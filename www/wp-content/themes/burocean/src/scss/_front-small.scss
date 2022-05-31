@@ -1,0 +1,282 @@
+// Vars
+@import '_variables';
+@import '_mixins';
+
+header {
+    padding-top: 2rem;
+    
+    svg {
+        width: 21rem;
+        height: 2.2rem;
+    }
+    
+    .row {
+        .txt-center {
+            text-align: left;
+        }
+    }
+    
+    .content-nav {
+        .nav-mobile {
+            margin-top: 2rem;
+            background: $gris;
+            height: 5rem;
+            line-height: 5rem;
+            color: $blanc;
+            text-align: center;
+            
+            [class^="icon-"] {
+                font-size: 2.5rem;
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 0.3rem;
+            }
+            
+            span {
+                font-family: $font-family-secondaire;
+                text-transform: uppercase;
+                font-size: 2rem;
+                display: inline-block;
+                vertical-align: middle;
+                letter-spacing: 0.1rem;
+            }
+        }
+        
+        nav {
+            background: $gris;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            height: 0;
+            overflow: hidden;
+            
+            li {
+                padding: 0.8rem 0;
+            }
+            
+            &.open {
+                border-top: 1px solid rgba(255,255,255,0.1);
+                padding: 2rem;
+                opacity: 1;
+                visibility: visible;
+                height: auto;
+            }
+        }
+    }
+}
+
+.slider {
+    .owl-prev, .owl-next {
+        position: absolute;
+        color: $blanc !important;
+        bottom: -7rem;
+        font-size: 2.5rem !important;
+        width: 4rem;
+        height: 4rem;
+        display: block;
+        z-index: 10;
+        
+        &.disabled {
+            opacity: 0.2;
+        }
+        
+        span {
+            display: none;
+        }
+        
+        &:before {
+            font-family: 'icomoon' !important;
+            display: block;
+            width: 100%;
+        }
+    }
+    
+    .owl-prev {
+        left: 1rem;
+        
+        &:before {
+            content: "\e907";
+        }
+    }
+    
+    .owl-next {
+        right: 1rem;
+        
+        &:before {
+            content: "\e908";
+        }
+    }
+    
+    .owl-thumbs {
+        .owl-wrap {
+            text-align: center;
+        }
+        
+        .owl-thumb-item {
+            display: none;
+            
+            &.active {
+                display: block;
+            }
+        }
+    }
+}
+
+.feature {
+    padding: 5rem 0;
+      
+    h2 {
+        font-size: 3.5rem;
+        line-height: 3rem;
+        margin-bottom: 3rem;
+        
+        .rouge {
+            font-size: 2.5rem;
+        }
+    }
+    
+    [class*="col"] {
+        .titre-rubrique {
+            margin: 3rem 0 1.5rem 0;
+        }
+        
+        &.col-2 {
+            overflow: hidden;
+            
+            &:after {
+                bottom: 10rem;
+                width: 50%;
+                right: -2rem;
+            }
+            
+            p {
+                text-align: left;
+                margin-bottom: 4rem;
+            }
+            
+            img {
+                width: 100%;
+            }
+        }
+        
+        &.col-3 {
+            margin-top: 2.5rem;
+            
+            svg {
+                bottom: 4rem;
+                left: 1rem;
+            }
+        }
+    }
+}
+
+// Liste
+.bloc-titre {
+    padding: 3rem 0;
+    
+    h1 {
+        font-size: 4.5rem;
+    }
+}
+
+.liste-cats {
+    .col {
+        margin-bottom: 5rem;
+    }
+}
+
+// Détail
+.top-single {
+    p, .finitions, .lien-catalogue {
+        margin-bottom: 4rem;
+    }
+    
+    .lien-catalogue {
+        padding: 2rem;
+        text-align: center;
+        
+        .link {
+            font-size: 2.5rem;
+        }
+    }
+}
+
+.row-line {
+    margin-bottom: 8rem;
+    
+    .col-images {
+        margin-top: 4rem;
+        
+        [class*="col"] {
+            margin-bottom: 2rem;
+            
+            &:nth-child(2n+1) {
+                clear: left;
+            }
+        }
+    }
+}
+
+.contact-bottom {
+    padding: 8rem 0; 
+}
+
+// Liste logo
+.logos {
+    padding: 4rem 0 0 0;
+    
+    .owl-carousel {
+        margin: 0 !important;
+    }
+    
+    .owl-item {
+        text-align: center;
+        
+        img {
+            width: auto;
+            display: inline-block;
+        }
+    }
+}
+
+// Form
+form {
+    input[type=submit] {
+        display: block;
+        width: 100%;
+    }
+}
+
+// Contact
+.cols-page {
+    .contact {
+        padding: 2rem 0;
+        
+        ul {       
+            li {
+                text-align: center;
+                font-size: 1.6rem;
+            }
+        }
+    }
+}
+
+//page
+.page {
+    .cols-page {
+       [class*="col-"] {
+           margin: 4rem 0;
+       } 
+    }
+}
+
+body:not(.customer-area) {
+    .page {
+        .contenu{
+            .bloc-rouge {
+                padding: 2rem;
+            }
+        } 
+    }
+}
+
