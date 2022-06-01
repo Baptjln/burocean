@@ -1,0 +1,7 @@
+PROCESSED on Thu, 05 Mar 2020 16:19:53 +0000
+/wp-content/plugins/customer-area/skins/frontend/master/assets/css/styles.min.css --- Debug: [cuar.frontend] File was opened from /home/buroceannm/www/wp-content/plugins/customer-area/skins/frontend/master/assets/css/styles.min.css ---
+/wp-content/plugins/contact-form-7/includes/css/styles.css --- Debug: [contact-form-7] File was opened from /home/buroceannm/www/wp-content/plugins/contact-form-7/includes/css/styles.css ---
+/wp-content/plugins/customer-area/skins/frontend/master/assets/css/eqcss/queries.eqcss --- Debug: [customer-area-master-eqcss] File was opened from /home/buroceannm/www/wp-content/plugins/customer-area/skins/frontend/master/assets/css/eqcss/queries.eqcss ---
+/wp-content/plugins/customer-area/skins/frontend/master/assets/css/fonts.min.css --- Debug: [customer-area-master-fontawesome] File was opened from /home/buroceannm/www/wp-content/plugins/customer-area/skins/frontend/master/assets/css/fonts.min.css ---
+/wp-content/plugins/easy-fancybox/fancybox/jquery.fancybox.min.css --- Debug: [fancybox] File was opened from /home/buroceannm/www/wp-content/plugins/easy-fancybox/fancybox/jquery.fancybox.min.css ---
+PROCESSED from https://www.burocean.com/espace-partenaires/accueil/

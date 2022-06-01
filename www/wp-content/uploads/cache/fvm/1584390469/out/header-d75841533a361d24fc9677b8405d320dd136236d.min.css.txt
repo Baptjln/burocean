@@ -1,0 +1,7 @@
+PROCESSED on Mon, 16 Mar 2020 20:27:53 +0000
+/wp-content/plugins/customer-area/skins/frontend/master/assets/css/styles.min.css
+/wp-includes/css/dist/block-library/style.min.css
+/wp-content/plugins/contact-form-7/includes/css/styles.css
+/wp-content/plugins/easy-fancybox/css/jquery.fancybox.min.css
+/wp-content/themes/burocean/css/front.css
+PROCESSED from https://www.burocean.com/

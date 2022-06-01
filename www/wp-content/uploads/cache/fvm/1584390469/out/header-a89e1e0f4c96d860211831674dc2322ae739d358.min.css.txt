@@ -1,0 +1,3 @@
+PROCESSED on Mon, 16 Mar 2020 20:27:53 +0000
+/wp-content/themes/burocean/css/front-medium.css
+PROCESSED from https://www.burocean.com/
