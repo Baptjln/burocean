@@ -3,8 +3,10 @@
 @import '_mixins';
 
 header {
-    padding-top: 2rem;
-    
+	.top-nav {
+		margin-bottom: 2rem;
+	}
+	
     svg {
         width: 21rem;
         height: 2.2rem;
@@ -69,7 +71,7 @@ header {
     .owl-prev, .owl-next {
         position: absolute;
         color: $blanc !important;
-        bottom: -7rem;
+        bottom: -5.5rem;
         font-size: 2.5rem !important;
         width: 4rem;
         height: 4rem;
