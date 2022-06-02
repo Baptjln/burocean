@@ -129,13 +129,34 @@ header {
     
     .item {
         background: $gris;
+		position: relative;
+		
+		a {
+			&::after {
+				content: 'Cliquez pour découvrir la gamme';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%,-50%);
+				padding: 1.5rem 4.5rem;
+				background: $jaune;
+				cursor: pointer;
+				color: $blanc;
+				opacity: 0;
+				transition: all ease 300ms;
+			}
+		}
         
         img {
             @include transition(all 300ms ease-in);
         }
         
         &:hover {
-            
+            a {
+				&::after {
+					opacity: 1;
+				}
+			}
         }
     }
     
@@ -441,6 +462,7 @@ footer {
             font-weight: 300;
             font-size: 2rem;
             margin-bottom: 1.5rem;
+			color: $blanc;
         }
         
         &:nth-child(1), &:nth-child(6) {
@@ -468,7 +490,7 @@ footer {
                 
                 a {
                     text-decoration: none;
-                    color: #6e6e6e;
+                    color: $gris;
                     
                     &:before {
                         content: "• ";

@@ -28,8 +28,9 @@
                 ?>
                           
                 <div class="item">
-                    <a href="<?php bloginfo('url'); ?>/gammes/<?php echo implode( " ", $tax ); ?>" title="Découvrir la gamme <?php echo $title; ?>">
-                        <img src="<?php echo get_the_post_thumbnail_url($post_object->ID, 'slider'); ?>" srcset="<?php echo get_the_post_thumbnail_url($post_object->ID, 'slider-mobile'); ?> 768w, <?php echo get_the_post_thumbnail_url($post_object->ID, 'slider'); ?> 1024w" alt="<?php echo $title; ?>">
+                    <a href="<?php bloginfo('url'); ?>/gammes/<?php echo implode( " ", $tax ); ?>">
+                        
+						<?php echo wp_get_attachment_image( get_post_thumbnail_id($post_object->ID), 'slider', true, ['loading' => 'lazy'] );  ?>
                     </a>
                 </div>
             <?php endforeach; ?>

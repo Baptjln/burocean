@@ -49,10 +49,13 @@
 		-webkit-backface-visibility: hidden;
 		-webkit-tap-highlight-color: transparent;
 		-webkit-touch-callout: none;
+		overflow: hidden;
 	}
 	.owl-item img {
-		display: block;
+		object-fit: cover;
+		height: 100%;
 		width: 100%;
+		display: block;
 	}
 
 	.owl-nav.disabled,

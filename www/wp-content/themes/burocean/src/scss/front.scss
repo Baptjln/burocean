@@ -743,9 +743,9 @@ body:not(.customer-area) {
 
 // FOOTER
 footer {
-    background: $gris url('../images/icon-logo.png') no-repeat 95% 95%;
+    background: $gris-clair url('../images/icon-logo.png') no-repeat 95% 95%;
     padding: 4rem 0;
-    color: $blanc;
+    color: $gris;
     
     .contact {
         .logo {
@@ -753,13 +753,13 @@ footer {
             margin-bottom: 3rem;
             
             svg {
-                fill: $blanc;
+                fill: $gris;
             }
             
             span {
                 display: block;
                 margin: 0 auto;
-                color: $gris-clair;
+                color: $blanc;
                 text-transform: uppercase;
                 font-size: 1.4rem;
                 letter-spacing: 0.2rem;
@@ -787,7 +787,7 @@ footer {
         
         .mentions {
             font-size: 1.4rem;
-            color: $gris-clair;
+            color: $gris;
             text-decoration: none;
         }
     }

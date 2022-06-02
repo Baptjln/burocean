@@ -26,9 +26,7 @@ register_nav_menu('top-menu','Navigation top menu');
 
 // Gérer les images
 add_theme_support('post-thumbnails');
-add_image_size('slider', 1920, 750, array( 'center', 'bottom' ));
-add_image_size('une-page', 1600, 580, true);
-add_image_size('slider-mobile', 800, 555, true);
+add_image_size('slider', 1920, 750, true);
 add_image_size('single', 800);
 add_image_size('liste-cats', 415);
 
