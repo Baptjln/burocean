@@ -60,6 +60,10 @@ class Installation_Success_Integration implements Integration_Interface {
 	 * @return void
 	 */
 	public function maybe_redirect() {
+		if ( \defined( 'DOING_AJAX' ) && \DOING_AJAX ) {
+			return;
+		}
+
 		if ( ! $this->options_helper->get( 'should_redirect_after_install_free', false ) ) {
 			return;
 		}
@@ -96,9 +100,9 @@ class Installation_Success_Integration implements Integration_Interface {
 	 */
 	public function add_submenu_page( $submenu_pages ) {
 		\add_submenu_page(
-			null,
+			'',
 			\__( 'Installation Successful', 'wordpress-seo' ),
-			null,
+			'',
 			'manage_options',
 			'wpseo_installation_successful_free',
 			[ $this, 'render_page' ]
@@ -109,6 +113,8 @@ class Installation_Success_Integration implements Integration_Interface {
 
 	/**
 	 * Enqueue assets on the Installation success page.
+	 *
+	 * @return void
 	 */
 	public function enqueue_assets() {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Date is not processed or saved.
@@ -126,15 +132,15 @@ class Installation_Success_Integration implements Integration_Interface {
 			'wpseoInstallationSuccess',
 			[
 				'pluginUrl'                 => \esc_url( \plugins_url( '', \WPSEO_FILE ) ),
-				'configurationWorkoutUrl'   => \esc_url( \admin_url( 'admin.php?page=wpseo_dashboard#top#first-time-configuration' ) ),
-				'canDoConfigurationWorkout' => \current_user_can( 'wpseo_manage_options' ),
-				'canEditWordPressOptions'   => \current_user_can( 'manage_options' ),
+				'firstTimeConfigurationUrl' => \esc_url( \admin_url( 'admin.php?page=wpseo_dashboard#top#first-time-configuration' ) ),
 			]
 		);
 	}
 
 	/**
 	 * Renders the installation success page.
+	 *
+	 * @return void
 	 */
 	public function render_page() {
 		echo '<div id="wpseo-installation-successful-free" class="yoast"></div>';
@@ -142,6 +148,8 @@ class Installation_Success_Integration implements Integration_Interface {
 
 	/**
 	 * Wrap the `exit` function to make unit testing easier.
+	 *
+	 * @return void
 	 */
 	public function terminate_execution() {
 		exit;
