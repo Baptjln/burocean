@@ -1,0 +1,1 @@
+positionForPages[9]={"page":9,"positions":[{"word":"2","left":0.964799,"top":0.957921,"width":0.005036,"height":0.009826},{"word":"19","left":0.975765,"top":0.957921,"width":0.005036,"height":0.009894},{"word":"Tiers","left":0.628262,"top":0.017063,"width":0.073792,"height":0.018470},{"word":"Lieux","left":0.716007,"top":0.017063,"width":0.081743,"height":0.018470}]};

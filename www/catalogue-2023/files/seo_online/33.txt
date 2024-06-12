@@ -1,0 +1,1 @@
+2 1 3 3\u000d\u000aBar & Snack\u000d\u000aR\u00e9f\u00e9rences\u000d\u000aMeuble et gu\u00e9ridon \u000d\u000aH180xL123xP70\u000d\u000aNA261BLU\u000d\u000aR\u00e9f\u00e9rences\u000d\u000aMeuble caf\u00e9t\u00e9ria \u00e0 plateau \u000d\u000apivotant L131 x H180 x P60\u000d\u000aSN275BLU\u000d\u000aSnack et pause caf\u00e9

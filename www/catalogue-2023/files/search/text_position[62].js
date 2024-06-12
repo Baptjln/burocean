@@ -1,0 +1,1 @@
+positionForPages[62]={"page":62,"positions":[{"word":"6","left":0.018063,"top":0.957921,"width":0.005036,"height":0.009894},{"word":"2","left":0.029029,"top":0.957921,"width":0.005036,"height":0.009826},{"word":"Nivo","left":0.204484,"top":0.017063,"width":0.066297,"height":0.018470}]};

@@ -1,0 +1,1 @@
+positionForPages[26]={"page":26,"positions":[{"word":"2","left":0.018063,"top":0.957921,"width":0.005036,"height":0.009826},{"word":"6","left":0.029029,"top":0.957921,"width":0.005036,"height":0.009894},{"word":"In","left":0.204484,"top":0.017908,"width":0.024282,"height":0.017378},{"word":"Team","left":0.240771,"top":0.017908,"width":0.082718,"height":0.017626}]};

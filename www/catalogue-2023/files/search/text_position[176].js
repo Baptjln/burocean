@@ -1,0 +1,1 @@
+positionForPages[176]={"page":176,"positions":[{"word":"176","left":0.019962,"top":0.957921,"width":0.026206,"height":0.009894},{"word":"Tables","left":0.202617,"top":0.017337,"width":0.100176,"height":0.018197},{"word":"Polyvalentes","left":0.316747,"top":0.017337,"width":0.200200,"height":0.023609}]};

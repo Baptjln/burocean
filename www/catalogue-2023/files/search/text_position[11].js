@@ -1,0 +1,1 @@
+positionForPages[11]={"page":11,"positions":[{"word":"1","left":0.965561,"top":0.958002,"width":0.002882,"height":0.009745},{"word":"1","left":0.976527,"top":0.958002,"width":0.002882,"height":0.009745},{"word":"Ilo","left":0.762072,"top":0.017337,"width":0.034854,"height":0.018197}]};

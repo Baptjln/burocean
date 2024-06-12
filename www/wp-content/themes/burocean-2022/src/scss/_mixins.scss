@@ -1,0 +1,240 @@
+@mixin hover-focus {
+    &:focus,
+    &:active,
+    &:hover {
+        @content
+    }
+}
+
+@mixin clearfix() {
+    &::after {
+        content: '';
+        display: table;
+        clear: both;
+    }
+}
+
+// transform
+@mixin transform($transforms) {
+    -ms-transform: $transforms;
+    transform: $transforms;
+}
+
+// transition
+@mixin transition($transition...) {
+    -webkit-transition: $transition;
+    transition: $transition;
+}
+
+// rotate
+@mixin rotate ($deg) {
+    @include transform(rotate(#{$deg}deg));
+}
+
+// keyframes
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content; 
+  }
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+  @keyframes #{$name} {
+    @content;
+  } 
+}
+//animation
+
+@mixin animation ($delay, $duration, $timing, $iteration, $animation) {
+    -webkit-animation-delay: $delay;
+    -webkit-animation-duration: $duration;
+    -webkit-animation-name: $animation;
+    -webkit-animation-timing-function:  $timing;
+    -webkit-animation-iteration-count: $iteration;
+    -webkit-animation-fill-mode: forwards; /* this prevents the animation from restarting! */
+
+    -moz-animation-delay: $delay;
+    -moz-animation-duration: $duration;
+    -moz-animation-name: $animation;
+    -moz-animation-timing-function : $timing;
+    -moz-animation-iteration-count: $iteration;
+    -moz-animation-fill-mode: forwards; /* this prevents the animation from restarting! */
+
+    -ms-animation-delay: $delay;
+    -ms-animation-duration: $duration;
+    -ms-animation-name: $animation;
+    -ms-animation-timing-function:  $timing;
+    -ms-animation-iteration-count: $iteration;
+    -ms-animation-fill-mode: forwards; /* this prevents the animation from restarting! */
+
+    animation-delay: $delay;
+    animation-duration: $duration;
+    animation-name: $animation;
+    animation-timing-function:  $timing;
+    animation-iteration-count: $iteration;
+    animation-fill-mode: forwards; /* this prevents the animation from restarting! */
+}
+
+
+// transform origin
+@mixin transform-origin ($origin) {
+    -webkit-transform-origin: $origin;
+    -ms-transform-origin: $origin;
+    transform-origin: $origin;
+}
+
+// box shadow
+@mixin box-shadow ($box-shadow) {
+    box-shadow: $box-shadow;
+}
+
+// appearence
+@mixin appearance ($appearance) {
+    -moz-appearance: $appearance;
+    -webkit-appearance: $appearance;
+    -ms-appearance: $appearance;
+    appearance: $appearance;
+}
+
+// dégradé horizontal
+@mixin gradient-horizontal($start-color, $end-color, $start-percent, $end-percent) {
+    background-image: -webkit-linear-gradient(left, $start-color $start-percent, $end-color $end-percent);
+    background-image: -o-linear-gradient(left, $start-color $start-percent, $end-color $end-percent);
+    background-image: linear-gradient(to right, $start-color $start-percent, $end-color $end-percent);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=1); // IE9 and down
+}
+// dégradé vartical
+@mixin gradient-vertical($start-color, $end-color, $start-percent, $end-percent) {
+    background-image: -webkit-linear-gradient(top, $start-color $start-percent, $end-color $end-percent);
+    background-image: -o-linear-gradient(top, $start-color $start-percent, $end-color $end-percent);
+    background-image: linear-gradient(to bottom, $start-color $start-percent, $end-color $end-percent);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#{ie-hex-str($start-color)}', endColorstr='#{ie-hex-str($end-color)}', GradientType=0); // IE9 and down
+}
+
+// arrow
+@mixin arrow($direction: top, $size: 10px, $color: #ccc, $center: 50%, $margin: -1px, $pseudo: before){
+    position: relative;
+    //border-color: $color;
+
+    &:#{$pseudo} {
+        position: absolute;
+        content: "";
+        width: 0;
+        height: 0;
+        border-color: $color;
+
+        @if $direction == "right" {
+            top: $center;
+            left: 100%;
+            margin-left: $margin;
+            margin-top: $size * -1;
+            border-top: $size solid transparent;
+            border-bottom: $size solid transparent;
+            border-left: $size solid $color;
+            border-left-color: inherit;
+        } @else if $direction == "bottom" {
+            top: 100%;
+            left: $center;
+            margin-top: $margin;
+            margin-left: $size * -1;
+            border-left: $size solid transparent;
+            border-right: $size solid transparent;
+            border-top: $size solid $color;
+        } @else if $direction == "left" {
+            top: $center;
+            right: 100%;
+            margin-right: $margin;
+            margin-top: $size * -1;
+            border-top: $size solid $color;
+            border-bottom: $size solid transparent;
+            border-right:$size solid transparent;
+        } @else if $direction == "top" {
+            bottom: 100%;
+            left: $center;
+            margin-bottom: $margin;
+            margin-left: $size * -1;
+            border-left: $size solid transparent;
+            border-right: $size solid transparent;
+            border-bottom: $size solid $color;
+        }
+    }
+}
+
+// rgba
+@mixin rgba-opacity($color, $opacity: 0.3) {
+    background: $color; /* The Fallback */
+    background: rgba($color, $opacity);
+}
+
+// pour les hide et show selon les breakpoints
+@mixin responsive-visibility($parent) {
+  #{$parent} {
+    display: block !important;
+  }
+  table#{$parent}  { display: table !important; }
+  tr#{$parent}     { display: table-row !important; }
+  th#{$parent},
+  td#{$parent}     { display: table-cell !important; }
+}
+
+// [converter] $parent hack
+@mixin responsive-invisibility($parent) {
+  #{$parent} {
+    display: none !important;
+  }
+}
+
+// troncature 1 ligne
+@mixin truncate ($width-truncate) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: $width-truncate;
+}
+// troncature multiligne //
+@mixin multiLineEllipsis($lineHeight: 1.6em, $lineCount: 1, $bgColor: white){
+    overflow: hidden;
+    position: relative;
+    line-height: $lineHeight;
+    min-height: $lineHeight * $lineCount;
+    max-height: $lineHeight * $lineCount;
+    hyphens: auto;
+    padding-right: 1.5rem;
+    
+    &:before {
+        content: ' ';
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 2rem;
+        height: 2rem;
+        margin-top: 0.2rem;
+        background: $bgColor;
+    }
+    &:after {
+        content: '...';
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 2rem;
+        line-height: 1.4em;
+        text-align: right;
+    }
+}
+//column
+@mixin column-count($column-count) {
+    -moz-column-count: $column-count;
+    -webkit-column-count: $column-count;
+    column-count: $column-count;
+}
+// column_gap
+@mixin column-gap($column-gap) {
+    -moz-column-gap: $column-gap;
+    -webkit-column-gap: $column-gap;
+    column-gap: $column-gap;
+}
