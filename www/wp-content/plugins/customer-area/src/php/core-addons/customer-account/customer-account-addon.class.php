@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if ( !class_exists('CUAR_CustomerAccountAddOn')) :
     /**
      * Add-on to show the customer dashboard page
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_CustomerAccountAddOn extends CUAR_AbstractPageAddOn
     {
@@ -92,6 +92,7 @@ if ( !class_exists('CUAR_CustomerAccountAddOn')) :
 
         public function print_account_fields()
         {
+            $this->plugin->enable_library('jquery.masonry');
             $current_user = $this->get_current_user();
 
             /** @var CUAR_UserProfileAddOn $up_addon */

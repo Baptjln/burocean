@@ -1,10 +1,14 @@
 <?php
-/** Template version: 3.0.0
+/** Template version: 3.1.0
+ *
+ * -= 3.1.0 =-
+ * - Fix some jQuery deprecated functions
  *
  * -= 3.0.0 =-
- * - Initial template
+ * - Initial version
  *
- */ ?>
+ */
+?>
 
 <script type="text/javascript">
     <!--
@@ -13,7 +17,7 @@
         $(document).ready(function ($) {
 
             // Init Select2
-            if ($.isFunction($.fn.fancytree)) {
+            if (typeof $.fn.fancytree === 'function') {
                 $('#cuar-terms-tree-<?php echo $this->id_base; ?>').fancytree({
                     extensions: ["glyph"],
                     activeVisible: true, // Make sure, active nodes are visible (expanded).

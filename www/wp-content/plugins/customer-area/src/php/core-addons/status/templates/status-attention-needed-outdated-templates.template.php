@@ -1,7 +1,16 @@
-<?php /** Template version: 1.0.0 */ ?>
+<?php /**
+ * Template version: 1.1.0
+ *
+ * -= 1.1.0 =-
+ * - Fix some WP Customer Area strings
+ *
+ * -= 1.0.0 =-
+ * Initial version
+ *
+ */ ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,7 +40,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 <?php if ( version_compare( $this->plugin->get_version(), '4.4.0', '<=' ) ) : ?>	
 
 	<p><em><?php _e('Since WP Customer Area 4.4.0, we are providing a way to make sure your template files are always up-to-date. For you, this is a great way to know when template '
-				. 'files get changed when Customer Area is updated.', 'cuar'); ?></em></p>
+				. 'files get changed when WP Customer Area is updated.', 'cuar'); ?></em></p>
 
 	<p><em><?php _e('If you still do not have any version number in your template files, please paste the following line of '
 				. 'code as the first line of your template and make sure it is compatible with the the current template version.', 'cuar'); ?></em></p>

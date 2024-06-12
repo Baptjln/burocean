@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if (!class_exists('CUAR_CustomerAccountEditAddOn')) :
     /**
      * Add-on to show the customer account edit page
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_CustomerAccountEditAddOn extends CUAR_AbstractPageAddOn
     {
@@ -80,8 +80,8 @@ if (!class_exists('CUAR_CustomerAccountEditAddOn')) :
 
             if (!isset($_POST['cuar_form_id']) || $_POST['cuar_form_id'] != $this->get_slug()) return false;
 
-            if (!wp_verify_nonce($_POST["cuar_" . $this->get_slug() . "_nonce"], 'cuar_' . $this->get_slug()))
-            {
+            if (!wp_verify_nonce(sanitize_key($_POST["cuar_" . $this->get_slug() . "_nonce"]), 'cuar_' .
+                                                                                               $this->get_slug() ) ) {
                 die('An attempt to bypass security checks was detected! Please go back and try again.');
             }
 
@@ -121,7 +121,8 @@ if (!class_exists('CUAR_CustomerAccountEditAddOn')) :
             $user_addresses = $ad_addon->get_registered_user_addresses();
             foreach ($user_addresses as $address_id => $address_label)
             {
-                $address = isset($_POST[$address_id]) ? $_POST[$address_id] : [];
+				// Unslashing $_POST since we later use update_option which does not unslash data
+                $address = isset($_POST[$address_id]) ? wp_unslash($_POST[$address_id]) : [];
                 $ad_addon->set_owner_address('usr', [$current_user_id], $address_id, $address);
             }
 
@@ -234,7 +235,8 @@ if (!class_exists('CUAR_CustomerAccountEditAddOn')) :
 
         public function print_address_fields()
         {
-            $user = get_userdata(get_current_user_id());
+			$user_id = get_current_user_id();
+            $user = get_userdata($user_id);
 
             /** @var CUAR_AddressesAddOn $ad_addon */
             $ad_addon = $this->plugin->get_addon('address-manager');
@@ -253,7 +255,8 @@ if (!class_exists('CUAR_CustomerAccountEditAddOn')) :
 
                 $ad_addon->print_address_editor($address,
                     $address_id, $address_label,
-                    $address_actions, $extra_scripts, 'account');
+                    $address_actions, $extra_scripts, 'account',
+	                'user-' . $user_id);
             }
         }
 

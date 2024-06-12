@@ -41,7 +41,7 @@ $thumb_header = apply_filters('cuar/private-content/view/header?addon=' . $curre
 $thumb_sub_header = apply_filters('cuar/private-content/view/header?addon=' . $current_addon_slug, _n('FILE', 'FILES', $file_count, 'cuar'), $post);
 ?>
 
-<div class="collection-item of-h mix<?php echo $extra_class; ?>">
+<div class="collection-item of-h mix col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2<?php echo $extra_class; ?>">
     <div class="collection-item-wrapper panel panel-tile br-a">
 
         <div class="collection-list-blocks cuar-clearfix">

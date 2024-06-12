@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 /**
  * Default file handling routines
  *
- * @author Vincent Prat @ MarvinLabs
+ * @author Vincent Prat @ Foobar Studio
  */
 class CUAR_PrivateFilesDefaultHandlers
 {
@@ -630,6 +630,8 @@ class CUAR_PrivateFilesDefaultHandlers
 
         $template_suffix = is_admin() ? '-admin' : '-frontend';
 
+		$ef_addon_exists = class_exists('CUAR_EnhancedFilesAddOn');
+
         $template = $this->plugin->get_template_file_path(
             CUAR_INCLUDES_DIR . '/core-addons/private-file',
             array(
@@ -938,7 +940,7 @@ class CUAR_PrivateFilesDefaultHandlers
 
         // Fix http://wordpress.org/support/topic/problems-with-image-files
 		// Turn off output buffering to decrease cpu usage
-        @ob_end_clean(); 
+        @ob_end_clean();
         @ob_clean();
 
         // required for IE, otherwise Content-Disposition may be ignored

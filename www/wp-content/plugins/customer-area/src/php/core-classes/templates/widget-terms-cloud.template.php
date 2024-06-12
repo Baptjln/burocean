@@ -1,5 +1,8 @@
 <?php
-/** Template version: 3.0.0
+/** Template version: 3.1.0
+ *
+ * -= 3.1.0 =-
+ * - Use new format for term data
  *
  * -= 3.0.0 =-
  * - Initial template
@@ -13,7 +16,10 @@
 <div class="cuar-cloud panel-body">
 
     <?php
-    foreach ($terms as $term) {
+    foreach ($terms as $termDesc) {
+        $term = $termDesc['term'];
+        $children = $termDesc['children'];
+
         // Get term link
         $link = $this->get_link($term);
 

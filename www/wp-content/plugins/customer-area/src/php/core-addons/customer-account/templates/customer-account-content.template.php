@@ -1,6 +1,9 @@
 <?php /**
- * Template version: 4.0.0
+ * Template version: 5.0.0
  * Template zone: frontend
+ *
+ * -= 5.0.0 =-
+ * - Updated markup for masonry compatibility
  *
  * -= 4.0.0 =-
  * - Added field groups
@@ -49,8 +52,11 @@ $current_user = $this->get_current_user();
     </div>
 </div>
 
-<?php $this->print_account_fields(); ?>
+<div class="cuar-account-fields cuar-js-msnry row clearfix">
+    <div class="cuar-js-msnry-sizer col-xs-1"></div>
 
-<div class="row">
+    <?php $this->print_account_fields(); ?>
+
     <?php $this->print_address_fields(); ?>
+
 </div>

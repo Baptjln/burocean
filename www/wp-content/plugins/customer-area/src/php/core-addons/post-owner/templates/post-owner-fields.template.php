@@ -1,6 +1,9 @@
 <?php /**
- * Template version: 3.1.0
+ * Template version: 3.2.0
  * Template zone: admin|frontend
+ *
+ * -= 3.2.0 =-
+ * - Prevent Select2 assignment boxes to fail while initializing if the theme or a plugin is already loading Select2
  *
  * -= 3.1.0 =-
  * - Fix post owner fields PHP warnings
@@ -99,7 +102,7 @@
                             var nonce = field.data('nonce');
                             var ownerType = field.data('owner-type');
 
-                            field.select2({
+                            field.cuarSelect2({
                                 <?php if (!is_admin()) {
                                     echo "dropdownParent: field.parent(),";
                                 } ?>

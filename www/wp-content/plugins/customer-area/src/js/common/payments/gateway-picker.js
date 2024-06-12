@@ -1,6 +1,6 @@
 /*
  * 	Scripts for the private files core add-on
- *  By Vincent Mimoun-Prat / MarvinLabs (www.marvinlabs.com)
+ *  By Vincent Mimoun-Prat / Foobar Studio (foobar.studio)
  *  Released under GPL License
  */
 (function ($) {

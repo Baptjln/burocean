@@ -1,23 +1,28 @@
 <?php /** Template version: 1.0.0 */ ?>
 
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 include_once(ABSPATH . WPINC . '/feed.php');
 
 $feeds = array(
-    array(
+    /*array(
         'title'     => __('Save money with our bundles', 'cuar'),
-        'url'       => 'http://wp-customerarea.com' . __('/downloads/category/wpca-bundles/feed/rss', 'cuar')
+        'url'       => 'https://wp-customerarea.com' . __('/downloads/category/wpca-bundles/feed/rss', 'cuar')
     ),
     array(
         'title'     => __('Add-ons to enhance your private area', 'cuar'),
-        'url'       => 'http://wp-customerarea.com' . __('/downloads/category/wpca-add-ons/feed/rss', 'cuar')
+        'url'       => 'https://wp-customerarea.com' . __('/downloads/category/wpca-add-ons/feed/rss', 'cuar')
     ),
     array(
         'title'     => __('Themes optimised for WP Customer Area', 'cuar'),
-        'url'       => 'http://wp-customerarea.com' . __('/downloads/category/wpca-themes/feed/rss', 'cuar')
-    ),
+        'url'       => 'https://wp-customerarea.com' . __('/downloads/category/wpca-themes/feed/rss', 'cuar')
+    ),*/
 );
 
+if (!empty($feeds)) :
 foreach ($feeds as $f) :
     $feed = fetch_feed($f['url']);
 ?>
@@ -26,7 +31,7 @@ foreach ($feeds as $f) :
 <?php if (is_wp_error($feed)) : ?>
     <p><?php echo $feed->get_error_message(); ?></p>
 <?php else: ?>
-    <p><a href="<?php echo 'http://wp-customerarea.com' . __('/add-ons-and-themes', 'cuar'); ?>" class="button"><?php _e('Show all', 'cuar'); ?></a></p>
+    <p><a href="<?php echo cuar_site_url('/products'); ?>" class="button"><?php _e('Show all', 'cuar'); ?></a></p>
     <div class="cuar-add-ons">
 <?php
         $odd = true;
@@ -53,4 +58,11 @@ foreach ($feeds as $f) :
 
 </div>
 
-<?php endforeach; ?>
+<?php endforeach;
+else: ?>
+
+<p style="text-align: center;"><a href="<?php echo cuar_site_url('/products'); ?>" class="button"
+								 target="_BLANK"><?php _e('Click here to show all add-ons',	'cuar');
+?></a></p>
+
+<?php endif; ?>

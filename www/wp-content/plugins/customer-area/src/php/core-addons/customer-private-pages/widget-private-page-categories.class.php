@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if (!class_exists('CUAR_PrivatePageCategoriesWidget')) :
 /**
  * Widget to show private page categories
 *
-* @author Vincent Prat @ MarvinLabs
+* @author Vincent Prat @ Foobar Studio
 */
 class CUAR_PrivatePageCategoriesWidget extends CUAR_TermsWidget {
 
@@ -36,10 +36,15 @@ class CUAR_PrivatePageCategoriesWidget extends CUAR_TermsWidget {
 				'cuar_private_page_categories', 
 				__('WPCA - Page Categories', 'cuar'),
 				array( 
-						'description' => __( 'Shows the private page categories of the Customer Area', 'cuar' ), 
+						'description' => __( 'Shows the private page categories', 'cuar' ),
 					)
 			);
 	}
+
+    protected function get_friendly_post_type()
+    {
+        return 'cuar_private_page';
+    }
 
 	protected function get_taxonomy() {
 		return 'cuar_private_page_category';

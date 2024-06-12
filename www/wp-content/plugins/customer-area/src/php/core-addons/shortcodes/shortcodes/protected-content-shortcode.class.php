@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -105,13 +105,13 @@ class CUAR_ProtectedContentShortcode extends CUAR_Shortcode
                 {
                     /** @var CUAR_PostOwnerAddOn $po_addon */
                     $po_addon = $plugin->get_addon('post-owner');
-                    $args['meta_query'] = $po_addon->get_meta_query_post_owned_by($current_user_id);
+                    $args['meta_query'] = $po_addon->get_meta_query_post_owned_by($current_user_id, $type);
                 }
                 else if (in_array($type, $container_types))
                 {
                     /** @var CUAR_ContainerOwnerAddOn $co_addon */
                     $co_addon = $plugin->get_addon('container-owner');
-                    $args['meta_query'] = $co_addon->get_meta_query_containers_owned_by($current_user_id);
+                    $args['meta_query'] = $co_addon->get_meta_query_containers_owned_by($current_user_id, $type);
                 }
 
                 break;
@@ -197,7 +197,7 @@ class CUAR_ProtectedContentShortcode extends CUAR_Shortcode
         $out = ob_get_contents();
         ob_end_clean();
 
-        wp_reset_query();
+        wp_reset_postdata();
 
         return $out;
     }

@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,20 +19,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 require_once(CUAR_INCLUDES_DIR . '/core-classes/addon-page.class.php');
 
-if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
+if (!class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
     /**
      * The base class for addons that should render a page to edit (create or update) private content
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     abstract class CUAR_AbstractEditContentPageAddOn extends CUAR_AbstractPageAddOn
     {
 
         protected $should_print_form = true;
-        protected $form_errors = array();
-        protected $form_success = array();
-        protected $form_messages = array();
+        protected $form_errors = [];
+        protected $form_success = [];
+        protected $form_messages = [];
         protected $current_post_id = null;
         protected $current_post = null;
 
@@ -45,11 +45,13 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
         {
             parent::set_page_parameters($priority, $description);
 
-            if ( !isset($this->page_description['friendly_post_type'])) {
+            if (!isset($this->page_description['friendly_post_type']))
+            {
                 $this->page_description['friendly_post_type'] = null;
             }
 
-            if ( !isset($this->page_description['friendly_taxonomy'])) {
+            if (!isset($this->page_description['friendly_taxonomy']))
+            {
                 $this->page_description['friendly_taxonomy'] = null;
             }
         }
@@ -68,19 +70,23 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
         {
             parent::run_addon($plugin);
 
-            if ( !is_admin()) {
-                add_action('template_redirect', array(&$this, 'handle_form_submission'));
-                add_action('wp_enqueue_scripts', array(&$this, 'enqueue_scripts'));
-            } else {
-                add_action('admin_enqueue_scripts', array(&$this, 'enqueue_scripts'));
-                add_filter('cuar/core/permission-groups', array(&$this, 'get_configurable_capability_groups'), 1000);
+            if (!is_admin())
+            {
+                add_action('template_redirect', [&$this, 'handle_form_submission']);
+                add_action('wp_enqueue_scripts', [&$this, 'enqueue_scripts']);
+            }
+            else
+            {
+                add_action('admin_enqueue_scripts', [&$this, 'enqueue_scripts']);
+                add_filter('cuar/core/permission-groups', [&$this, 'get_configurable_capability_groups'], 1000);
             }
 
-	        // Ajax Summernote Insert/Delete image
-	        add_action('wp_ajax_cuar_insert_image', array(&$this, 'ajax_insert_image'));
-	        add_action('wp_ajax_cuar_delete_image', array(&$this, 'ajax_delete_image'));
+            // Ajax Summernote Insert/Delete image
+            add_action('wp_ajax_cuar_insert_image', [&$this, 'ajax_insert_image']);
+            add_action('wp_ajax_cuar_delete_image', [&$this, 'ajax_delete_image']);
 
-            if ($this->get_wizard_step_count() > 1) {
+            if ($this->get_wizard_step_count() > 1)
+            {
                 // Enable rewrite rules for the wizard steps
                 $this->enable_wizard_permalinks();
             }
@@ -100,35 +106,50 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         public function handle_form_submission()
         {
-            if (!$this->is_currently_displayed()) return false;
+            if (!$this->is_currently_displayed())
+            {
+                return false;
+            }
 
             $action = $this->get_action();
-            if (get_query_var('cuar_action', null) != null) {
+            if (get_query_var('cuar_action', null) != null)
+            {
                 $action = get_query_var('cuar_action', null);
             }
 
-            if ( !$this->is_action_authorized($action)) {
+            if (!$this->is_action_authorized($action))
+            {
                 return false;
             }
 
             // If not submitting the form, just stop here
-            if ( !isset($_POST['cuar_do_register']) && !isset($_GET["nonce"])) {
+            if (!isset($_POST['cuar_do_register']) && !isset($_GET["nonce"]))
+            {
                 return true;
             }
 
             // Form ID should match
-            if (isset($_POST['cuar_form_id']) && $_POST['cuar_form_id'] != $this->get_slug()) {
+            if (isset($_POST['cuar_form_id']) && $_POST['cuar_form_id'] != $this->get_slug())
+            {
                 return false;
             }
 
             // Nonce check
             $nonce = isset($_POST["cuar_" . $this->get_slug() . "_nonce"])
-                ? $_POST["cuar_" . $this->get_slug() . "_nonce"]
-                : (isset($_GET["nonce"]) ? $_GET["nonce"] : '');
+                ? sanitize_key($_POST["cuar_" . $this->get_slug() . "_nonce"])
+                : (isset($_GET["nonce"]) ? sanitize_key($_GET["nonce"]) : '');
 
-            if ( !wp_verify_nonce($nonce, 'cuar_' . $this->get_slug())) {
+            if (!wp_verify_nonce($nonce, 'cuar_' . $this->get_slug()))
+            {
                 die('An attempt to bypass security checks was detected! Please go back and try again.');
             }
+
+	        if ($action !== 'create' && $this->get_current_post_id() > 0 && class_exists('Elementor\Plugin')
+	            && Elementor\Plugin::$instance->documents->get($this->get_current_post_id())->is_built_with_elementor())
+	        {
+	            $post_content = get_post($this->get_current_post_id());
+				$_POST['cuar_content'] = $post_content->post_content;
+	        }
 
             do_action('cuar/private-content/edit/before_' . $action, $this, $this->form_errors, $_POST);
             do_action('cuar/private-content/edit/before_' . $action . '/page-slug=' . $this->get_slug(), $this, $this->form_errors, $_POST);
@@ -138,12 +159,15 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
             do_action('cuar/private-content/edit/after_' . $action, $this, $this->form_errors, $_POST);
             do_action('cuar/private-content/edit/after_' . $action . '/page-slug=' . $this->get_slug(), $this, $this->form_errors, $_POST);
 
-            if (true === $result && empty($this->form_errors)) {
+            if (true === $result && empty($this->form_errors))
+            {
                 // If we still have some wizard steps to go, redirect to the next step
                 $step_count = $this->get_wizard_step_count();
-                if ($action != 'delete' && $action != 'update' && $step_count > 1) {
+                if ($action != 'delete' && $action != 'update' && $step_count > 1)
+                {
                     $current_step = $this->get_current_wizard_step();
-                    if ($current_step < $step_count - 1) {
+                    if ($current_step < $step_count - 1)
+                    {
                         wp_redirect($this->get_wizard_step_url($this->get_current_post_id(), $current_step + 1));
                         exit;
                     }
@@ -153,7 +177,8 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
                 $redirect_url = apply_filters('cuar/private-content/edit/after_' . $action . '/redirect_url',
                     $this->get_redirect_url_after_action(),
                     $this->get_slug());
-                if ($redirect_url != null) {
+                if ($redirect_url != null)
+                {
                     wp_redirect($redirect_url);
                     exit;
                 }
@@ -162,14 +187,16 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
             return true;
         }
 
-        public function print_page_content($args = array(), $shortcode_content = '')
+        public function print_page_content($args = [], $shortcode_content = '')
         {
             $action = $this->get_action();
-            if (get_query_var('cuar_action', null) != null) {
+            if (get_query_var('cuar_action', null) != null)
+            {
                 $action = get_query_var('cuar_action', null);
             }
 
-            if ( !$this->is_action_authorized($action)) {
+            if (!$this->is_action_authorized($action))
+            {
                 return;
             }
 
@@ -178,12 +205,19 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         public function get_default_owners()
         {
+            $owners = apply_filters('cuar/private-content/edit/default-owners', [], $this->get_friendly_post_type());
+            if (!empty($owners))
+            {
+                return $owners;
+            }
+
             $legacy_owner_type = $this->plugin->get_option($this->get_edit_slug_for_options() . self::$OPTION_DEFAULT_OWNER_TYPE);
             $owners = $this->plugin->get_option($this->get_edit_slug_for_options() . self::$OPTION_DEFAULT_OWNER);
 
             // Handle old style option
-            if (!empty($legacy_owner_type)) {
-                $owners = array($legacy_owner_type => $owners);
+            if (!empty($legacy_owner_type))
+            {
+                $owners = [$legacy_owner_type => $owners];
             }
 
             return $owners;
@@ -194,8 +228,10 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
             return $this->plugin->get_option($this->get_edit_slug_for_options() . self::$OPTION_DEFAULT_CATEGORY);
         }
 
-        private function get_edit_slug_for_options() {
-            if (strstr($this->get_slug(), 'update')) {
+        private function get_edit_slug_for_options()
+        {
+            if (strstr($this->get_slug(), 'update'))
+            {
                 return str_replace('update', 'new', $this->get_slug());
             }
 
@@ -216,7 +252,8 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         protected function get_required_fields()
         {
-            if ($this->required_fields == null) {
+            if ($this->required_fields == null)
+            {
                 $this->required_fields = apply_filters(
                     'cuar/private-content/edit/required-fields?post_type=' . $this->get_friendly_post_type(),
                     $this->get_default_required_fields());
@@ -227,7 +264,7 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         protected function get_default_required_fields()
         {
-            return array();
+            return [];
         }
 
         protected function is_field_required($id)
@@ -241,11 +278,13 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         protected function check_submitted_title($form_data, $error_message)
         {
-            if (isset($form_data['cuar_title']) && !empty($form_data['cuar_title'])) {
+            if (isset($form_data['cuar_title']) && !empty($form_data['cuar_title']))
+            {
                 return $form_data['cuar_title'];
             }
 
-            if ( !$this->is_field_required('cuar_title')) {
+            if (!$this->is_field_required('cuar_title'))
+            {
                 return '';
             }
 
@@ -256,11 +295,13 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         protected function check_submitted_content($form_data, $error_message)
         {
-            if (isset($form_data['cuar_content']) && !empty($form_data['cuar_content'])) {
+            if (isset($form_data['cuar_content']) && !empty($form_data['cuar_content']))
+            {
                 return $form_data['cuar_content'];
             }
 
-            if ( !$this->is_field_required('cuar_content')) {
+            if (!$this->is_field_required('cuar_content'))
+            {
                 return '';
             }
 
@@ -271,11 +312,13 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         protected function check_submitted_category($form_data, $error_message)
         {
-            if (isset($form_data['cuar_category']) && !empty($form_data['cuar_category'])) {
+            if (isset($form_data['cuar_category']) && !empty($form_data['cuar_category']))
+            {
                 return $form_data['cuar_category'];
             }
 
-            if ( !$this->is_field_required('cuar_category')) {
+            if (!$this->is_field_required('cuar_category'))
+            {
                 return 0;
             }
 
@@ -286,11 +329,13 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         protected function check_submitted_file($form_data, $error_message)
         {
-            if (isset($_FILES) && isset($_FILES['cuar_file']) && !empty($_FILES['cuar_file']['name'])) {
+            if (isset($_FILES) && isset($_FILES['cuar_file']) && !empty($_FILES['cuar_file']['name']))
+            {
                 return $_FILES['cuar_file'];
             }
 
-            if ( !$this->is_field_required('cuar_file')) {
+            if (!$this->is_field_required('cuar_file'))
+            {
                 return null;
             }
 
@@ -299,18 +344,30 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
             return false;
         }
 
+        protected function get_submitted_owners()
+        {
+            if ($this->current_user_can_select_owner())
+            {
+                /** @var CUAR_PostOwnerAddOn $po_addon */
+                $po_addon = $this->plugin->get_addon('post-owner');
+                return $po_addon->get_owners_from_post_data();
+            }
+
+            return $this->get_default_owners();
+        }
+
         protected function check_submitted_owners($form_data, $error_message)
         {
-            /** @var CUAR_PostOwnerAddOn $po_addon */
-            $po_addon = $this->plugin->get_addon('post-owner');
-            $new_owner = $po_addon->get_owners_from_post_data();
+            $new_owner = $this->get_submitted_owners();
 
-            if ($new_owner != null && !empty($new_owner)) {
+            if ($new_owner !== null && !empty($new_owner))
+            {
                 return $new_owner;
             }
 
-            if ( !$this->is_field_required('cuar_owner')) {
-                return array();
+            if (!$this->is_field_required('cuar_owner'))
+            {
+                return [];
             }
 
             $this->form_errors[] = new WP_Error('missing_owner', $error_message);
@@ -333,8 +390,8 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
          */
         protected function enable_wizard_permalinks()
         {
-            add_filter('rewrite_rules_array', array(&$this, 'insert_wizard_rewrite_rules'));
-            add_filter('query_vars', array(&$this, 'insert_wizard_query_vars'));
+            add_filter('rewrite_rules_array', [&$this, 'insert_wizard_rewrite_rules']);
+            add_filter('query_vars', [&$this, 'insert_wizard_query_vars']);
         }
 
         /**
@@ -349,7 +406,7 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
             $page_id = $this->get_page_id();
             $page_slug = $this->get_full_page_path();
 
-            $new_rules = array();
+            $new_rules = [];
 
             // We need post ID + step number
             $rewrite_rule = 'index.php?page_id=' . $page_id . '&cuar_post_id=$matches[1]&cuar_wizard_step=$matches[2]';
@@ -387,7 +444,8 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
             if ($edited_post_id <= 0
                 || $step < 0
                 || $step >= $this->get_wizard_step_count()
-            ) {
+            )
+            {
                 return $this->get_page_url();
             }
 
@@ -410,8 +468,14 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
         protected function get_current_wizard_step()
         {
             $step = (int)get_query_var('cuar_wizard_step', 0);
-            if ( !is_int($step)) return 0;
-            if ($step > $this->get_wizard_step_count()) return $this->get_wizard_step_count();
+            if (!is_int($step))
+            {
+                return 0;
+            }
+            if ($step > $this->get_wizard_step_count())
+            {
+                return $this->get_wizard_step_count();
+            }
 
             return $step;
         }
@@ -425,35 +489,36 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
          */
         public function get_wizard_steps()
         {
-            return array();
+            return [];
         }
 
         /*------- EDIT FORM ---------------------------------------------------------------------------------------------*/
 
-        protected function set_form_success($title, $message, $actions = array())
+        protected function set_form_success($title, $message, $actions = [])
         {
-            $this->form_success = array(
-                'title'   => $title,
+            $this->form_success = [
+                'title' => $title,
                 'message' => $message,
-                'actions' => $actions
-            );
+                'actions' => $actions,
+            ];
 
             $this->should_print_form = false;
         }
 
         public function should_print_form()
         {
-            if ( !empty($this->form_success)) {
+            if (!empty($this->form_success))
+            {
                 $title = $this->form_success['title'];
                 $message = $this->form_success['message'];
                 $actions = $this->form_success['actions'];
 
                 include($this->plugin->get_template_file_path(
                     CUAR_INCLUDES_DIR . '/core-classes',
-                    array(
+                    [
                         'edit-content-form-success-' . $this->get_slug() . '.template.php',
-                        'edit-content-form-success.template.php'
-                    ),
+                        'edit-content-form-success.template.php',
+                    ],
                     'templates'));
             }
 
@@ -462,9 +527,12 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         public function print_form_header()
         {
-            if ($this->get_wizard_step_count() > 1) {
+            if ($this->get_wizard_step_count() > 1)
+            {
                 $form_url = $this->get_wizard_step_url($this->get_current_post_id(), $this->get_current_wizard_step());
-            } else {
+            }
+            else
+            {
                 $form_url = $this->get_page_url();
             }
 
@@ -476,11 +544,13 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
             printf('<input type="hidden" name="cuar_form_id" value="%1$s" />', $this->get_slug());
             printf('<input type="hidden" name="cuar_post_type" value="%1$s" />', $this->get_friendly_post_type());
 
-            if ($this->get_current_post_id() > 0) {
+            if ($this->get_current_post_id() > 0)
+            {
                 printf('<input type="hidden" name="cuar_post_id" value="%1$s" />', $this->get_current_post_id());
             }
 
-            if ( !isset($_POST['cuar_post_type'])) {
+            if (!isset($_POST['cuar_post_type']))
+            {
                 $_POST['cuar_post_type'] = $this->get_friendly_post_type();
             }
 
@@ -488,11 +558,16 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
             do_action('cuar/private-content/edit/before_submit_errors', $this);
 
-            if ( !empty($this->form_errors)) {
-                foreach ($this->form_errors as $error) {
-                    if (is_wp_error($error)) {
+            if (!empty($this->form_errors))
+            {
+                foreach ($this->form_errors as $error)
+                {
+                    if (is_wp_error($error))
+                    {
                         printf('<p class="alert alert-warning">%s</p>', $error->get_error_message());
-                    } else if ($error !== false && !empty($error) && !is_array($error)) {
+                    }
+                    else if ($error !== false && !empty($error) && !is_array($error))
+                    {
                         printf('<p class="alert alert-info">%s</p>', $error);
                     }
                 }
@@ -525,24 +600,27 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
             do_action('cuar/private-content/edit/after_submit_button', $this, $step_id);
         }
 
-	    public function print_submit_disabled_button($field_label, $step_id)
-	    {
-		    do_action('cuar/private-content/edit/before_submit_disabled_button', $this, $step_id);
+        public function print_submit_disabled_button($field_label, $step_id)
+        {
+            do_action('cuar/private-content/edit/before_submit_disabled_button', $this, $step_id);
 
-		    include($this->plugin->get_template_file_path(
-			    CUAR_INCLUDES_DIR . '/core-classes',
-			    'edit-content-form-field-submit-disabled.template.php',
-			    'templates'));
+            include($this->plugin->get_template_file_path(
+                CUAR_INCLUDES_DIR . '/core-classes',
+                'edit-content-form-field-submit-disabled.template.php',
+                'templates'));
 
-		    do_action('cuar/private-content/edit/after_submit_disabled_button', $this, $step_id);
-	    }
+            do_action('cuar/private-content/edit/after_submit_disabled_button', $this, $step_id);
+        }
 
         public function print_title_field($label, $help_text = '')
         {
             $title = '';
-            if (isset($_POST['cuar_title'])) {
+            if (isset($_POST['cuar_title']))
+            {
                 $title = $_POST['cuar_title'];
-            } else if ($this->get_current_post() != null) {
+            }
+            else if ($this->get_current_post() != null)
+            {
                 $title = $this->get_current_post()->post_title;
             }
 
@@ -585,39 +663,61 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
         {
             $content = '';
             $id = -1;
-            if (isset($_POST['cuar_content'])) {
+            if (isset($_POST['cuar_content']))
+            {
                 $content = $_POST['cuar_content'];
-            } else if ($this->get_current_post() != null) {
+            }
+            else if ($this->get_current_post() != null)
+            {
                 $content = $this->get_current_post()->post_content;
                 $id = $this->get_current_post_id();
             }
 
-	        if ( ! $this->is_rich_editor_enabled() ) {
-		        $field_code = sprintf( '<textarea rows="5" cols="40" name="cuar_content" id="cuar_content" class="form-control">%1$s</textarea>',
-			        esc_attr( $content ) );
-	        } else {
-		        $field_code = sprintf( '<input type="hidden" id="cuar_post_type" name="cuar_post_type" value="%1$s">'
-		                               . '<input type="hidden" id="cuar_post_id" name="cuar_post_id" value="%2$s">'
-		                               . '%3$s'
-		                               . '<textarea rows="5" cols="40" name="cuar_content" id="cuar_content" class="form-control cuar-js-richeditor">%4$s</textarea>',
-			        $this->get_friendly_post_type(),
-			        $id,
-			        wp_nonce_field( 'cuar_insert_image', 'cuar_insert_image_nonce' ),
-			        esc_attr( $content ));
+	        if ($this->get_current_post_id() > 0 && class_exists('Elementor\Plugin')
+	            && Elementor\Plugin::$instance->documents->get($this->get_current_post_id())->is_built_with_elementor())
+	        {
+				$field_code = '<div class="alert alert-default">' . __('This post content is not editable from the frontend', 'cuar') . '</div>';
 	        }
+            elseif (!$this->is_rich_editor_enabled())
+            {
+                $field_code = sprintf('<textarea rows="5" cols="40" name="cuar_content" id="cuar_content" class="form-control">%1$s</textarea>',
+                    esc_attr($content));
+            }
+            else
+            {
+                $field_code = sprintf('<div id="cuar-js-rich-editor-wrapper">'
+									  . '<input type="hidden" id="cuar_post_type" name="cuar_post_type" value="%1$s">'
+                                      . '<input type="hidden" id="cuar_post_id" name="cuar_post_id" value="%2$s">'
+                                      . '%3$s'
+                                      . '<textarea rows="5" cols="40" name="cuar_content" id="cuar_content" class="form-control cuar-js-richeditor">%4$s</textarea>'
+										. '</div>',
+                    $this->get_friendly_post_type(),
+                    $id,
+                    wp_nonce_field('cuar_insert_image', 'cuar_insert_image_nonce'),
+                    esc_attr($content));
+            }
 
             $this->print_form_field('cuar_content', $label, $field_code, $help_text);
         }
 
         public function print_owner_field($label, $help_text = '')
         {
-            if ($this->current_user_can_select_owner()) {
+            if ($this->current_user_can_select_owner())
+            {
                 /** @var CUAR_PostOwnerAddOn $po_addon */
                 $po_addon = $this->plugin->get_addon('post-owner');
                 $owners = $po_addon->get_owners_from_post_data();
 
-                if (empty($owners) && $this->get_current_post() != null) {
-                    $owners = $po_addon->get_post_owners($this->get_current_post_id());
+                if (empty($owners))
+                {
+                    if ($this->get_current_post() === null)
+                    {
+                        $owners = $po_addon->get_owners_from_get_data();
+                    }
+                    else
+                    {
+                        $owners = $po_addon->get_post_owners($this->get_current_post_id());
+                    }
                 }
 
                 ob_start();
@@ -626,7 +726,9 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
                 ob_end_clean();
 
                 $this->print_form_field('cuar_owner', $label, $field_code, $help_text);
-            } else {
+            }
+            else
+            {
                 $owners = $this->get_default_owners();
 
                 ob_start();
@@ -642,35 +744,43 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         public function print_category_field($label, $help_text = '')
         {
-            $categories = get_terms($this->get_friendly_taxonomy(), array(
+            $categories = get_terms($this->get_friendly_taxonomy(), [
                 'hide_empty' => false,
-                'fields'     => 'count'
-            ));
-            if (empty($categories)) {
+                'fields' => 'count',
+            ]);
+            if (empty($categories))
+            {
                 $field_code = '<input type="hidden" name="cuar_category" value="-1" />';
                 echo $field_code;
-            } else if ($this->current_user_can_select_category()) {
+            }
+            else if ($this->current_user_can_select_category())
+            {
                 $category = -1;
-                if (isset($_POST['cuar_category'])) {
+                if (isset($_POST['cuar_category']))
+                {
                     $category = $_POST['cuar_category'];
-                } else if ($this->get_current_post() != null) {
-                    $cats = wp_get_post_terms($this->get_current_post_id(), $this->get_friendly_taxonomy(), array('fields' => 'ids'));
+                }
+                else if ($this->get_current_post() != null)
+                {
+                    $cats = wp_get_post_terms($this->get_current_post_id(), $this->get_friendly_taxonomy(), ['fields' => 'ids']);
                     $category = implode(',', $cats);
                 }
 
-                $field_code = wp_dropdown_categories(array(
-                    'taxonomy'     => $this->get_friendly_taxonomy(),
-                    'name'         => 'cuar_category',
-                    'hide_empty'   => 0,
+                $field_code = wp_dropdown_categories([
+                    'taxonomy' => $this->get_friendly_taxonomy(),
+                    'name' => 'cuar_category',
+                    'hide_empty' => 0,
                     'hierarchical' => 1,
-                    'selected'     => $category,
-                    'orderby'      => 'NAME',
-                    'echo'         => false,
-                    'class'        => 'cuar-js-select-single form-control',
-                ));
+                    'selected' => $category,
+                    'orderby' => 'NAME',
+                    'echo' => false,
+                    'class' => 'cuar-js-select-single form-control',
+                ]);
 
                 $this->print_form_field('cuar_category', $label, $field_code, $help_text);
-            } else {
+            }
+            else
+            {
                 $category = $this->get_default_category();
                 $field_code = sprintf('<input type="hidden" name="cuar_category" value="%1$s" />', esc_attr($category));
                 echo $field_code;
@@ -691,10 +801,10 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
             include($this->plugin->get_template_file_path(
                 CUAR_INCLUDES_DIR . '/core-classes',
-                array(
+                [
                     'edit-content-form-field-wrapper-' . $field_name . '.template.php',
-                    'edit-content-form-field-wrapper.template.php'
-                ),
+                    'edit-content-form-field-wrapper.template.php',
+                ],
                 'templates'));
 
             do_action('cuar/private-content/edit/after_field?id=' . $field_name, $this);
@@ -707,36 +817,50 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         public function get_current_post_id()
         {
-            if ($this->current_post_id == null) {
-                if (isset($_POST['cuar_post_id'])) {
+            if ($this->current_post_id === 0 || $this->current_post_id === null)
+            {
+                if (isset($_POST['cuar_post_id']))
+                {
                     $this->current_post_id = $_POST['cuar_post_id'];
-                } else if (get_query_var('cuar_post_id', 0) > 0) {
+                }
+                else if (get_query_var('cuar_post_id', 0) > 0)
+                {
                     $this->current_post_id = get_query_var('cuar_post_id', 0);
-                } else if (get_query_var('cuar_post_name', null) != null) {
-                    $args = array(
-                        'name'      => get_query_var('cuar_post_name', null),
-                        'post_type' => array($this->get_friendly_post_type())
-                    );
+                }
+                else if (get_query_var('cuar_post_name', null) != null)
+                {
+                    $args = [
+                        'name' => get_query_var('cuar_post_name', null),
+                        'post_type' => [$this->get_friendly_post_type()],
+                    ];
 
-                    if (get_query_var('year', null) != null) {
+                    if (get_query_var('year', null) != null)
+                    {
                         $args['year'] = get_query_var('year', null);
                     }
-                    if (get_query_var('monthnum', null) != null) {
+                    if (get_query_var('monthnum', null) != null)
+                    {
                         $args['monthnum'] = get_query_var('monthnum', null);
                     }
-                    if (get_query_var('day', null) != null) {
+                    if (get_query_var('day', null) != null)
+                    {
                         $args['day'] = get_query_var('day', null);
                     }
 
                     $post = get_posts($args);
 
-                    if ( !empty($post)) {
+                    if (!empty($post))
+                    {
                         $this->current_post_id = $post[0]->ID;
                         $this->current_post = $post[0];
-                    } else {
+                    }
+                    else
+                    {
                         $this->current_post_id = 0;
                     }
-                } else {
+                }
+                else
+                {
                     $this->current_post_id = 0;
                 }
             }
@@ -746,211 +870,231 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
 
         public function get_current_post()
         {
-            if ($this->current_post == null && $this->get_current_post_id() > 0) {
+            if ($this->current_post == null && $this->get_current_post_id() > 0)
+            {
                 $this->current_post = get_post($this->get_current_post_id());
             }
 
             return $this->current_post;
         }
 
-	    /*------- AJAX HANDLING -----------------------------------------------------------------------------------------*/
+        /*------- AJAX HANDLING -----------------------------------------------------------------------------------------*/
 
-	    /**
-	     * Ajax function used to delete an image into the rich editor
-	     */
-	    public function ajax_delete_image()
-	    {
-		    // Check nonce
-		    check_ajax_referer( 'cuar_insert_image', 'nonce' );
+        /**
+         * Ajax function used to delete an image into the rich editor
+         */
+        public function ajax_delete_image()
+        {
+            // Check nonce
+            check_ajax_referer('cuar_insert_image', 'nonce');
 
-		    // Prepare datas
-		    $posted_data     = isset( $_POST ) ? $_POST : null;
-		    $file_data       = isset( $_FILES ) ? $_FILES : null;
-		    $data            = array_merge( $posted_data, $file_data );
-		    $post_type       = isset( $data['post_type'] ) ? $data['post_type'] : null;
-		    $post_id         = isset( $data['post_id'] ) ? $data['post_id'] : null;
-		    $current_user_id = get_current_user_id();
+            // Prepare datas
+            $posted_data = isset($_POST) ? $_POST : null;
+            $file_data = isset($_FILES) ? $_FILES : null;
+            $data = array_merge($posted_data, $file_data);
+            $post_type = isset($data['post_type']) ? $data['post_type'] : null;
+            $post_id = isset($data['post_id']) ? $data['post_id'] : null;
+            $current_user_id = get_current_user_id();
 
-		    // Check permissions
-		    $this->ajax_is_user_allowed_to_create_or_update_content( $post_type, $post_id, $current_user_id );
+            // Check permissions
+            $this->ajax_is_user_allowed_to_create_or_update_content($post_type, $post_id, $current_user_id);
 
-		    // Check file selected for deletion
-		    if ( empty( $data['name'] ) ) {
-			    wp_send_json_error( __( 'No file has been selected for deletion', 'cuar' ) );
-		    }
+            // Check file selected for deletion
+            if (empty($data['name']))
+            {
+                wp_send_json_error(__('No file has been selected for deletion', 'cuar'));
+            }
 
-		    // Check user
-		    $user_check = get_userdata( (int) $data['author'] );
-		    if ( $user_check === false ) {
-			    wp_send_json_error( __( 'Oops! Security check failed!', 'cuar' ) );
-		    }
+            // Check user
+            $user_check = get_userdata((int)$data['author']);
+            if ($user_check === false)
+            {
+                wp_send_json_error(__('Oops! Security check failed!', 'cuar'));
+            }
 
-		    // Check hash
-		    $hash_check = md5( $data['subdir'] . $user_check->data->user_login );
-		    if ( $hash_check !== $data['hash'] ) {
-			    wp_send_json_error( __( 'Oops! Security check failed!', 'cuar' ) );
-		    }
+            // Check hash
+            $hash_check = md5($data['subdir'] . $user_check->data->user_login);
+            if ($hash_check !== $data['hash'])
+            {
+                wp_send_json_error(__('Oops! Security check failed!', 'cuar'));
+            }
 
-		    // Suppress parent dots
-		    $data['subdir'] = ltrim( $data['subdir'], '/.' );
-		    $data['name']   = ltrim( $data['name'], '/.' );
+            // Suppress parent dots
+            $data['subdir'] = ltrim($data['subdir'], '/.');
+            $data['name'] = ltrim($data['name'], '/.');
 
-		    // Reconstruct image path
-		    $upload_locations = $this->ajax_custom_editor_images_upload_dir();
-		    $file_to_delete   = $upload_locations['basedir']
-		                        . apply_filters( 'cuar/private-content/editor-images/subdir-upload-location', '/customer-area/' )
-		                        . $data['subdir'] . '/' . $data['name'];
+            // Reconstruct image path
+            $upload_locations = $this->ajax_custom_editor_images_upload_dir();
+            $file_to_delete = $upload_locations['basedir']
+                              . apply_filters('cuar/private-content/editor-images/subdir-upload-location', '/customer-area/')
+                              . $data['subdir'] . '/' . $data['name'];
 
-		    // Check if file exists
-		    if ( ! file_exists( $file_to_delete ) ) {
-			    wp_send_json_error( __( 'It looks like the file you tried to delete does not exists.', 'cuar' ) );
-		    }
+            // Check if file exists
+            if (!file_exists($file_to_delete))
+            {
+                wp_send_json_error(__('It looks like the file you tried to delete does not exists.', 'cuar'));
+            }
 
-		    // Check file type
-		    $supported_types = apply_filters( 'cuar/private-content/editor-images/supported-types',
-			    array(
-				    'image/jpeg',
-				    'image/gif',
-				    'image/png'
-			    ) );
-		    $arr_file_type   = wp_check_filetype( basename( $file_to_delete ) );
-		    $uploaded_type   = $arr_file_type['type'];
-		    if ( ! in_array( $uploaded_type, $supported_types, true ) ) {
-			    wp_send_json_error( sprintf( __( 'This file type is not allowed. You can only delete: %s', 'cuar' ), implode( ', ', $supported_types ) ) );
-		    }
+            // Check file type
+            $supported_types = apply_filters('cuar/private-content/editor-images/supported-types',
+                [
+                    'image/jpeg',
+                    'image/gif',
+                    'image/png',
+                ]);
+            $arr_file_type = wp_check_filetype(basename($file_to_delete));
+            $uploaded_type = $arr_file_type['type'];
+            if (!in_array($uploaded_type, $supported_types, true))
+            {
+                wp_send_json_error(sprintf(__('This file type is not allowed. You can only delete: %s', 'cuar'), implode(', ', $supported_types)));
+            }
 
-		    // Delete file
-		    if ( ! unlink( $file_to_delete ) ) {
-			    wp_send_json_error( __( 'This file cannot be deleted, please contact site administrator.', 'cuar' ) );
-		    } else {
-			    wp_send_json_success();
-		    }
-	    }
+            // Delete file
+            if (!unlink($file_to_delete))
+            {
+                wp_send_json_error(__('This file cannot be deleted, please contact site administrator.', 'cuar'));
+            }
+            else
+            {
+                wp_send_json_success();
+            }
+        }
 
-	    /**
-	     * Ajax function used to insert an image into the rich editor
-	     */
-	    public function ajax_insert_image()
-	    {
-		    // Check nonce
-		    check_ajax_referer( 'cuar_insert_image', 'nonce' );
+        /**
+         * Ajax function used to insert an image into the rich editor
+         */
+        public function ajax_insert_image()
+        {
+            // Check nonce
+            check_ajax_referer('cuar_insert_image', 'nonce');
 
-		    // Prepare datas
-		    $posted_data     = isset( $_POST ) ? $_POST : null;
-		    $file_data       = isset( $_FILES ) ? $_FILES : null;
-		    $data            = array_merge( $posted_data, $file_data );
-		    $post_type       = isset( $data['post_type'] ) ? $data['post_type'] : null;
-		    $post_id         = isset( $data['post_id'] ) ? $data['post_id'] : null;
-		    $current_user    = wp_get_current_user();
-		    $current_user_id = get_current_user_id();
+            // Prepare datas
+            $posted_data = isset($_POST) ? $_POST : null;
+            $file_data = isset($_FILES) ? $_FILES : null;
+            $data = array_merge($posted_data, $file_data);
+            $post_type = isset($data['post_type']) ? $data['post_type'] : null;
+            $post_id = isset($data['post_id']) ? $data['post_id'] : null;
+            $current_user = wp_get_current_user();
+            $current_user_id = get_current_user_id();
 
-		    // Check permissions
-		    $this->ajax_is_user_allowed_to_create_or_update_content( $post_type, $post_id, $current_user_id );
+            // Check permissions
+            $this->ajax_is_user_allowed_to_create_or_update_content($post_type, $post_id, $current_user_id);
 
-		    // Check uploaded file
-		    if ( empty( $file_data ) ) {
-			    wp_send_json_error( __( 'No file has been uploaded', 'cuar' ) );
-		    }
+            // Check uploaded file
+            if (empty($file_data))
+            {
+                wp_send_json_error(__('No file has been uploaded', 'cuar'));
+            }
 
-		    // Check file type
-		    $supported_types = apply_filters( 'cuar/private-content/editor-images/supported-types',
-			    array(
-				    'image/jpeg',
-				    'image/gif',
-				    'image/png'
-			    ) );
-		    $arr_file_type   = wp_check_filetype( basename( $data['file']['name'] ) );
-		    $uploaded_type   = $arr_file_type['type'];
-		    if ( ! in_array( $uploaded_type, $supported_types, true ) ) {
-			    wp_send_json_error( sprintf( __( 'This file type is not allowed. You can only upload: %s', 'cuar' ), implode( ', ', $supported_types ) ) );
-		    }
+            // Check file type
+            $supported_types = apply_filters('cuar/private-content/editor-images/supported-types',
+                [
+                    'image/jpeg',
+                    'image/gif',
+                    'image/png',
+                ]);
+            $arr_file_type = wp_check_filetype(basename($data['file']['name']));
+            $uploaded_type = $arr_file_type['type'];
+            if (!in_array($uploaded_type, $supported_types, true))
+            {
+                wp_send_json_error(sprintf(__('This file type is not allowed. You can only upload: %s', 'cuar'), implode(', ', $supported_types)));
+            }
 
-		    // Set custom upload dir
-		    add_filter( 'upload_dir', array( &$this, 'ajax_custom_editor_images_upload_dir' ) );
-		    $upload_result = wp_handle_upload( $data['file'], array( 'test_form' => false ) );
-		    remove_filter( 'upload_dir', array( &$this, 'ajax_custom_editor_images_upload_dir' ) );
+            // Set custom upload dir
+            add_filter('upload_dir', [&$this, 'ajax_custom_editor_images_upload_dir']);
+            $upload_result = wp_handle_upload($data['file'], ['test_form' => false]);
+            remove_filter('upload_dir', [&$this, 'ajax_custom_editor_images_upload_dir']);
 
-		    // Send results
-		    if ( $upload_result && ! isset( $upload_result['error'] ) ) {
-			    $subdir = apply_filters( 'cuar/private-content/editor-images/userdir-upload-location?user-login=' . $current_user->user_login, md5( $current_user->user_login ) );
-			    wp_send_json_success( array(
-				    'name'   => basename( $upload_result['url'] ),
-				    'url'    => $upload_result['url'],
-				    'subdir' => $subdir,
-				    'hash'   => md5( $subdir . $current_user->user_login ),
-				    'author' => $current_user_id
-			    ) );
-		    } else {
-			    wp_send_json_error( sprintf( __( 'An error happened while uploading your file: %s', 'cuar' ), $upload_result['error'] ) );
-		    }
-	    }
+            // Send results
+            if ($upload_result && !isset($upload_result['error']))
+            {
+                $subdir = apply_filters('cuar/private-content/editor-images/userdir-upload-location?user-login=' . $current_user->user_login, md5($current_user->user_login));
+                wp_send_json_success([
+                    'name' => basename($upload_result['url']),
+                    'url' => $upload_result['url'],
+                    'subdir' => $subdir,
+                    'hash' => md5($subdir . $current_user->user_login),
+                    'author' => $current_user_id,
+                ]);
+            }
+            else
+            {
+                wp_send_json_error(sprintf(__('An error happened while uploading your file: %s', 'cuar'), $upload_result['error']));
+            }
+        }
 
-	    /**
-	     * Ajax function used to check if the current user is allowed to update or create content when inserting or deleting an image
-	     */
-	    public function ajax_is_user_allowed_to_create_or_update_content( $post_type, $post_id, $current_user_id )
-	    {
-		    // Check create content permissions
-		    if ( empty( $post_type ) || ( ! empty( $post_id ) && $post_id < 0 && ! current_user_can( $post_type . '_create_content' ) ) ) {
-			    wp_send_json_error( __( 'It looks like you are not allowed to create content for this kind of post type.', 'cuar' ) );
-		    }
+        /**
+         * Ajax function used to check if the current user is allowed to update or create content when inserting or deleting an image
+         */
+        public function ajax_is_user_allowed_to_create_or_update_content($post_type, $post_id, $current_user_id)
+        {
+            // Check create content permissions
+            if (empty($post_type) || (!empty($post_id) && $post_id < 0 && !current_user_can($post_type . '_create_content')))
+            {
+                wp_send_json_error(__('It looks like you are not allowed to create content for this kind of post type.', 'cuar'));
+            }
 
-		    // Check update any content permissions
-		    if ( empty( $post_type ) || ( ! empty( $post_id ) && $post_id > 0 && current_user_can( $post_type . '_update_any_content' ) !== true ) ) {
+            // Check update any content permissions
+            if (empty($post_type) || (!empty($post_id) && $post_id > 0 && current_user_can($post_type . '_update_any_content') !== true))
+            {
 
-			    // Make sure this is an updated content
-			    if ( ! empty( $post_id ) && $post_id > 0 ) {
+                // Make sure this is an updated content
+                if (!empty($post_id) && $post_id > 0)
+                {
 
-				    // Check update authored content permissions
-				    if ( $current_user_id === (int) get_post_field( 'post_author', $post_id ) && current_user_can( $post_type . '_update_authored_content' ) !== true ) {
-					    wp_send_json_error( __( 'It looks like you are not allowed to update authored content for this post.', 'cuar' ) );
-				    }
+                    // Check update authored content permissions
+                    if ($current_user_id === (int)get_post_field('post_author', $post_id) && current_user_can($post_type . '_update_authored_content') !== true)
+                    {
+                        wp_send_json_error(__('It looks like you are not allowed to update authored content for this post.', 'cuar'));
+                    }
 
-				    // Check update owned content permissions
-				    $po_addon = $this->plugin->get_addon( 'post-owner' );
-				    if ( $po_addon->is_user_owner_of_post( $post_id, $current_user_id ) && current_user_can( $post_type . '_update_owned_content' ) !== true ) {
-					    wp_send_json_error( __( 'It looks like you are not allowed to update owned content for this post.', 'cuar' ) );
-				    }
-			    }
-		    }
-	    }
+                    // Check update owned content permissions
+                    $po_addon = $this->plugin->get_addon('post-owner');
+                    if ($po_addon->is_user_owner_of_post($post_id, $current_user_id) && current_user_can($post_type . '_update_owned_content') !== true)
+                    {
+                        wp_send_json_error(__('It looks like you are not allowed to update owned content for this post.', 'cuar'));
+                    }
+                }
+            }
+        }
 
-	    /**
-	     * Change the upload directory on the fly when uploading our private file
-	     *
-	     * @return array
-	     */
-	    public function ajax_custom_editor_images_upload_dir()
-	    {
-		    remove_filter( 'upload_dir', array( &$this, 'ajax_custom_editor_images_upload_dir' ) );
+        /**
+         * Change the upload directory on the fly when uploading our private file
+         *
+         * @return array
+         */
+        public function ajax_custom_editor_images_upload_dir()
+        {
+            remove_filter('upload_dir', [&$this, 'ajax_custom_editor_images_upload_dir']);
 
-		    $current_user        = wp_get_current_user();
-		    $wp_upload_locations = apply_filters( 'cuar/private-content/editor-images/base-upload-location', wp_upload_dir() );
+            $current_user = wp_get_current_user();
+            $wp_upload_locations = apply_filters('cuar/private-content/editor-images/base-upload-location', wp_upload_dir());
 
-		    $dir = $wp_upload_locations['basedir'];
-		    $url = $wp_upload_locations['baseurl'];
+            $dir = $wp_upload_locations['basedir'];
+            $url = $wp_upload_locations['baseurl'];
 
-		    $subdir = apply_filters( 'cuar/private-content/editor-images/subdir-upload-location', '/customer-area/' );
-		    $subdir .= apply_filters( 'cuar/private-content/editor-images/userdir-upload-location?user-login=' . $current_user->user_login, md5( $current_user->user_login ) );
+            $subdir = apply_filters('cuar/private-content/editor-images/subdir-upload-location', '/customer-area/');
+            $subdir .= apply_filters('cuar/private-content/editor-images/userdir-upload-location?user-login=' . $current_user->user_login, md5($current_user->user_login));
 
-		    $dir .= $subdir;
-		    $url .= $subdir;
+            $dir .= $subdir;
+            $url .= $subdir;
 
-		    if ( ! file_exists( $dir ) && ! wp_mkdir_p( $dir ) ) {
-			    wp_send_json_error( sprintf( __( 'An error happened while creating the folder: %s', 'cuar' ), $subdir ) );
-		    }
+            if (!file_exists($dir) && !wp_mkdir_p($dir))
+            {
+                wp_send_json_error(sprintf(__('An error happened while creating the folder: %s', 'cuar'), $subdir));
+            }
 
-		    $custom_dir = array(
-			    'path'    => $dir,
-			    'url'     => $url,
-			    'subdir'  => $subdir,
-			    'basedir' => $wp_upload_locations['basedir'],
-			    'baseurl' => $wp_upload_locations['baseurl'],
-			    'error'   => false,
-		    );
+            $custom_dir = [
+                'path' => $dir,
+                'url' => $url,
+                'subdir' => $subdir,
+                'basedir' => $wp_upload_locations['basedir'],
+                'baseurl' => $wp_upload_locations['baseurl'],
+                'error' => false,
+            ];
 
-		    return $custom_dir;
-	    }
+            return $custom_dir;
+        }
 
         /*------- SETTINGS ACCESSORS ------------------------------------------------------------------------------------*/
 
@@ -983,14 +1127,15 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
         {
             $post_type = $this->get_friendly_post_type();
 
-            if (isset($capability_groups[$post_type])) {
-                $capability_groups[$post_type]['groups']['edit-content'] = array(
-                    'group_name'   => __('Content edition (from front-office)', 'cuar'),
-                    'capabilities' => array(
-                        $post_type . '_create_select_owner'    => __('Select an owner (uses default else)', 'cuar'),
+            if (isset($capability_groups[$post_type]))
+            {
+                $capability_groups[$post_type]['groups']['edit-content'] = [
+                    'group_name' => __('Content edition (from front-office)', 'cuar'),
+                    'capabilities' => [
+                        $post_type . '_create_select_owner' => __('Select an owner (uses default else)', 'cuar'),
                         $post_type . '_create_select_category' => __('Select a category (uses default else)', 'cuar'),
-                    )
-                );
+                    ],
+                ];
             }
 
             return $capability_groups;
@@ -1000,26 +1145,40 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
         {
             $post_type = $this->get_friendly_post_type();
 
-            return current_user_can($post_type . '_create_select_category');
+            return apply_filters(
+                'cuar/private-content/edit/user-can-select-category',
+                current_user_can($post_type . '_create_select_category'),
+                $post_type
+            );
         }
 
         public function current_user_can_select_owner()
         {
             $post_type = $this->get_friendly_post_type();
 
-            return current_user_can($post_type . '_create_select_owner');
+            return apply_filters(
+                'cuar/private-content/edit/user-can-select-owner',
+                current_user_can($post_type . '_create_select_owner'),
+                $post_type
+            );
         }
+
 
         /*------- SETTINGS PAGE -----------------------------------------------------------------------------------------*/
 
-        public function enable_settings($target_tab, $enabled_settings = array('rich-editor', 'default-ownership', 'default-category', 'moderation'))
+        public function enable_settings($target_tab, $enabled_settings = ['rich-editor',
+                                                                          'default-ownership',
+                                                                          'default-category',
+                                                                          'moderation'])
         {
             $this->enabled_settings = $enabled_settings;
 
-            if (is_admin() && !empty($this->enabled_settings)) {
+            if (is_admin() && !empty($this->enabled_settings))
+            {
                 // Settings
-                add_action('cuar/core/settings/print-settings?tab=' . $target_tab, array(&$this, 'print_settings'), 20, 2);
-                add_filter('cuar/core/settings/validate-settings?tab=' . $target_tab, array(&$this, 'validate_options'), 20, 3);
+                add_action('cuar/core/settings/print-settings?tab=' . $target_tab, [&$this, 'print_settings'], 20, 2);
+                add_filter('cuar/core/settings/validate-settings?tab=' . $target_tab, [&$this,
+                                                                                       'validate_options'], 20, 3);
             }
         }
 
@@ -1037,30 +1196,34 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
          */
         public function print_settings($cuar_settings, $options_group)
         {
-            if (empty($this->enabled_settings)) return;
+            if (empty($this->enabled_settings))
+            {
+                return;
+            }
 
             $slug = $this->get_slug();
 
             add_settings_section(
                 $this->get_settings_section(),
                 $this->get_settings_section_title(),
-                array(&$this, 'print_empty_section_info'),
+                [&$this, 'print_empty_section_info'],
                 CUAR_Settings::$OPTIONS_PAGE_SLUG
             );
 
-            if (in_array('rich-editor', $this->enabled_settings)) {
+            if (in_array('rich-editor', $this->enabled_settings))
+            {
                 add_settings_field(
                     $slug . self::$OPTION_ENABLE_RICH_EDITOR,
                     __('Rich Editor', 'cuar'),
-                    array(&$cuar_settings, 'print_input_field'),
+                    [&$cuar_settings, 'print_input_field'],
                     CUAR_Settings::$OPTIONS_PAGE_SLUG,
                     $this->get_settings_section(),
-                    array(
-                        'option_id'     => $slug . self::$OPTION_ENABLE_RICH_EDITOR,
-                        'type'          => 'checkbox',
+                    [
+                        'option_id' => $slug . self::$OPTION_ENABLE_RICH_EDITOR,
+                        'type' => 'checkbox',
                         'default_value' => 1,
-                        'after'         => __('Enable the rich editor when editing content.', 'cuar')
-                    )
+                        'after' => __('Enable the rich editor when editing content.', 'cuar'),
+                    ]
                 );
             }
 
@@ -1080,7 +1243,8 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
         {
             $slug = $this->get_slug();
 
-            if (in_array('rich-editor', $this->enabled_settings)) {
+            if (in_array('rich-editor', $this->enabled_settings))
+            {
                 $cuar_settings->validate_boolean($input, $validated, $slug . self::$OPTION_ENABLE_RICH_EDITOR);
             }
 
@@ -1107,7 +1271,7 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
         public static $OPTION_DEFAULT_OWNER = '-default_owner';
         public static $OPTION_DEFAULT_CATEGORY = '-default_category';
 
-        protected $enabled_settings = array();
+        protected $enabled_settings = [];
 
         /*------- OTHER FUNCTIONS ---------------------------------------------------------------------------------------*/
 
@@ -1116,12 +1280,16 @@ if ( !class_exists('CUAR_AbstractEditContentPageAddOn')) :
          */
         public function enqueue_scripts()
         {
-            if (is_admin()) {
+            if (is_admin())
+            {
                 $screen = get_current_screen();
-                if (isset($screen->id) && $screen->id == 'customer-area_page_wpca-settings') {
+                if (isset($screen->id) && $screen->id == 'customer-area_page_wpca-settings')
+                {
                     $this->plugin->enable_library('jquery.select2');
                 }
-            } else {
+            }
+            else
+            {
                 $this->plugin->enable_library('jquery.select2');
             }
         }

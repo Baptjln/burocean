@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 /**
  * Administration area for post ownership
  *
- * @author Vincent Prat @ MarvinLabs
+ * @author Vincent Prat @ Foobar Studio
  */
 class CUAR_PostOwnerAdminInterface
 {
@@ -105,7 +105,7 @@ class CUAR_PostOwnerAdminInterface
 
         do_action("cuar/core/ownership/before-owner-meta-box");
 
-        $owners = $this->po_addon->get_post_owners($post->ID);        
+        $owners = $this->po_addon->get_post_owners($post->ID);
         $this->po_addon->print_owner_fields($owners);
 
         do_action("cuar/core/ownership/after-owner-meta-box");
@@ -131,7 +131,7 @@ class CUAR_PostOwnerAdminInterface
         if ( !$post || !in_array(get_post_type($post->ID), $private_post_types)) return $post_id;
 
         // Save the owner details
-        if ( !wp_verify_nonce($_POST['wp_cuar_nonce_owner'], 'cuar_save_owners')) return $post_id;
+        if ( !wp_verify_nonce(sanitize_key($_POST['wp_cuar_nonce_owner']), 'cuar_save_owners')) return $post_id;
 
         // Save owner details
         $new_owners = $this->po_addon->get_owners_from_post_data();

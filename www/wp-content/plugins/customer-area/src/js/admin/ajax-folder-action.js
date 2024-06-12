@@ -1,6 +1,6 @@
 /*
  * 	Scripts for operations on folders
- *  By Vincent Mimoun-Prat / MarvinLabs (www.marvinlabs.com)
+ *  By Vincent Mimoun-Prat / Foobar Studio (foobar.studio)
  *  Released under GPL License
  */
 (function ($) {
@@ -35,6 +35,7 @@
 
             // Send some Ajax
             var ajaxParams = {
+                '_ajax_nonce': base._onGetNonce(),
                 'action': 'cuar_folder_action',
                 'folder_action': base._getAction(),
                 'path': base._getPath(),
@@ -70,6 +71,10 @@
                 }
             );
         }
+
+        base._onGetNonce = function () {
+            return base.$el.data('nonce');
+        };
 
         /** Getter */
         base._getButton = function () {

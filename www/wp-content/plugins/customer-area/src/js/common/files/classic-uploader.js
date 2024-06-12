@@ -1,6 +1,6 @@
 /*
  * 	Scripts for the private files core add-on
- *  By Vincent Mimoun-Prat / MarvinLabs (www.marvinlabs.com)
+ *  By Vincent Mimoun-Prat / Foobar Studio (foobar.studio)
  *  Released under GPL License
  */
 (function ($) {
@@ -48,6 +48,7 @@
                 dataType: 'json',
                 paramName: 'cuar_file',
                 formData: formData,
+                sequentialUploads: true,
                 dropZone: dropzone,
                 add: base._onFileUploadAdd,
                 done: base._onFileUploadDone,

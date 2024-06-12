@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2015 MarvinLabs (contact@marvinlabs.com) */
+/*  Copyright 2015 Foobar Studio (contact@foobar.studio) */
 
 interface CUAR_PaymentGateway
 {

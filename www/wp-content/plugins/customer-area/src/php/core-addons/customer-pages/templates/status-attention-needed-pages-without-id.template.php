@@ -1,5 +1,8 @@
-<?php
-/** Template version: 2.0.0
+<?php /**
+ * Template version: 2.1.0
+ *
+ * -= 2.1.0 =-
+ * - Fix some WP Customer Area strings
  *
  * -= 2.0.0 =-
  * - Add cuar- prefix to bootstrap classes
@@ -11,7 +14,7 @@
 ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 	<h3><?php _e( 'Missing front-office pages', 'cuar' ); ?></h3>
 	
 	<p>
-		<?php _e( 'Some pages of the customer area have not yet been created. Those pages are responsible for displaying the private content you have assigned to your users.', 'cuar' ); ?>
+		<?php _e( 'Some pages of the private area have not yet been created. Those pages are responsible for displaying the private content you have assigned to your users.', 'cuar' ); ?>
 		<?php printf( __( 'You can review which pages are currently created on the <a href="%1$s">pages settings page</a>.', 'cuar' ), 
 					admin_url( 'admin.php?page=wpca-settings&tab=cuar_customer_pages' ) ); ?>
 	</p>

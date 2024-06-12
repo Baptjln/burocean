@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if ( !class_exists( 'CUAR_CustomerAreaHomeAddOn' ) ) :
 /**
  * Add-on to show the customer dashboard page
  *
- * @author Vincent Prat @ MarvinLabs
+ * @author Vincent Prat @ Foobar Studio
  */
 class CUAR_CustomerAreaHomeAddOn extends CUAR_RootPageAddOn {
 	
@@ -44,11 +44,12 @@ class CUAR_CustomerAreaHomeAddOn extends CUAR_RootPageAddOn {
 	}
 	
 	public function get_title() {
-		return __( 'Customer Area', 'cuar' );
+		return __( 'Private area', 'cuar' );
 	}		
 		
 	public function get_hint() {
-		return __( 'This is the main page for your customers. It will redirect to the login page or to the customer area dashboard.', 'cuar' );
+		return __( 'This is the main page for your customers. It will redirect to the login page or to the dashboard the private area.',
+            'cuar' );
 	}	
 	
 	public function get_permalink() {

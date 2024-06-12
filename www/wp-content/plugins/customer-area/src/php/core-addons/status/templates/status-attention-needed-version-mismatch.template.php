@@ -1,7 +1,7 @@
 <?php /** Template version: 1.0.0 */ ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -47,8 +47,8 @@ $mismatches = $this->plugin->addon_manager()->get_version_mismatches();
 		<strong><?php _e('You should really update the add-ons.', 'cuar'); ?></strong>
 	</p>
 
-	<p class="cuar-suggested-action"><span class="text"><?php _e('Suggested action', 'cuar' ); ?></span> 
-		<a href="http://wp-customerarea.com/my-account" class="button button-primary"><?php _e( 'Download updated add-ons', 'cuar' ); ?> &raquo;</a>
+	<p class="cuar-suggested-action"><span class="text"><?php _e('Suggested action', 'cuar' ); ?></span>
+		<a href="<?php echo cuar_site_url('/my-account'); ?>" class="button button-primary"><?php _e( 'Download updated add-ons', 'cuar' ); ?> &raquo;</a>
 
 		<input type="submit" id="cuar-ignore-version-mismatch" name="cuar-ignore-version-mismatch" class="button" value="<?php esc_attr_e('Ignore this warning', 'cuar'); ?> &raquo;"/>
 		<?php wp_nonce_field('cuar-ignore-version-mismatch', 'cuar-ignore-version-mismatch_nonce'); ?>

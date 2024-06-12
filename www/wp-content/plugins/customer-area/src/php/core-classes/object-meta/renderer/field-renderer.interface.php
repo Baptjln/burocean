@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ if (!interface_exists('CUAR_FieldRenderer')) :
 /**
  * The base interface for field renderers
 *
-* @author Vincent Prat @ MarvinLabs
+* @author Vincent Prat @ Foobar Studio
 */
 interface CUAR_FieldRenderer {
 

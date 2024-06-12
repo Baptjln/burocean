@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -130,13 +130,17 @@ abstract class CUAR_ListTable extends WP_List_Table
             }
 
             $args = array_merge($query_args, array(
+                'query_filter'   => 'cuar_table_add_authored_by',
                 'fields'         => 'ids',
                 'paged'          => 1,
                 'posts_per_page' => -1,
                 'post_status'    => $status
             ));
 
+            add_filter( 'posts_where', [&$this, 'filter_query_to_add_authored_by'], 9, 2);
             $q = new WP_Query($args);
+            remove_filter('posts_where', [&$this, 'filter_query_to_add_authored_by']);
+
             $this->view_counts[$id] = $q->post_count;
         }
 
@@ -223,10 +227,13 @@ abstract class CUAR_ListTable extends WP_List_Table
      */
     public function get_sortable_columns()
     {
-        return array();
-    }
+		return apply_filters('cuar/core/list-table/sortable-columns', [
+			'date' => ['date', true],
+			'title' => ['title', false],
+		]);
+	}
 
-    public function column_cb($item)
+	public function column_cb($item)
     {
         return sprintf('<input type="checkbox" name="%1$s[]" value="%2$s" />', 'posts', $item->ID);
     }
@@ -421,7 +428,7 @@ abstract class CUAR_ListTable extends WP_List_Table
             $action = 'cuar-delete';
             $posts = $this->get_trashed_post_ids();
         }
-        
+
         if (empty($posts))
         {
             return;
@@ -523,11 +530,18 @@ abstract class CUAR_ListTable extends WP_List_Table
         // Fetch the items
         $args = $this->get_query_args();
         $args = array_merge($args, array(
+            'query_filter'   => 'cuar_table_add_authored_by',
             'paged'          => $current_page,
-            'posts_per_page' => $items_per_page
+			'posts_per_page' => $items_per_page,
+			'order' => isset($_GET['order']) ? sanitize_sql_orderby($_GET['order']) : 'DESC',
+			'orderby' => isset($_GET['orderby']) ? sanitize_text_field($_GET['orderby']) : 'date'
         ));
 
-        $this->items = get_posts($args);
+        add_filter( 'posts_where', [&$this, 'filter_query_to_add_authored_by'], 9, 2);
+        $q = new WP_Query($args);
+        remove_filter('posts_where', [&$this, 'filter_query_to_add_authored_by']);
+
+        $this->items = $q->get_posts();
 
         if ( !empty($this->item_wrapper_class))
         {
@@ -538,6 +552,38 @@ abstract class CUAR_ListTable extends WP_List_Table
             }
         }
     }
+
+	public function filter_query_to_add_authored_by( $where, $q ) {
+		if ( isset($q->query['query_filter']) && 'cuar_table_add_authored_by' === $q->query['query_filter'] ) {
+			global $wpdb;
+
+			$disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by', true);
+			$post_types = is_array($q->query['post_type']) ? $q->query['post_type'] : [$q->query['post_type']];
+			foreach($post_types as $post_type)
+			{
+				$disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by?post_type=' . $post_type, $disable_authored_by, $q);
+				if ($disable_authored_by)
+				{
+					return $where;
+				}
+			}
+
+			$needle_open = " ( " . $wpdb->prefix . "postmeta.meta_key = 'cuar_owner_queryable'";
+			$pos_open = strpos($where, $needle_open);
+			$new_needle_open = "( post_author = " . (int) apply_filters('cuar/core/page/query-disable-authored-by/override-user-id', get_current_user_id()) . " ) OR";
+
+			if ($pos_open !== false) {
+				$new_pos_open = strpos($where, $new_needle_open);
+				if($new_pos_open === false)
+				{
+					$new_cond_open = $new_needle_open . $needle_open;
+					$where = substr_replace($where, $new_cond_open, $pos_open, strlen($needle_open));
+				}
+			}
+		}
+
+		return $where;
+	}
 
     /**
      * @global int   $cat

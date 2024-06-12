@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -73,12 +73,14 @@ function cuar_get_the_attached_file_count($post_id = null)
  *
  * @return string
  */
-function cuar_get_the_attached_file_link($post_id = null, $file, $action = 'download', $force_download = false)
+function cuar_get_the_attached_file_link($post_id, $file, $action = 'download', $force_download = false)
 {
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         $post_id = get_the_ID();
     }
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         return '';
     }
 
@@ -103,7 +105,7 @@ function cuar_get_the_attached_file_link($post_id = null, $file, $action = 'down
  * @param array  $file    The file description
  * @param string $action  The action (download|view)
  */
-function cuar_the_attached_file_link($post_id = null, $file, $action = 'download', $force_download = false)
+function cuar_the_attached_file_link($post_id, $file, $action = 'download', $force_download = false)
 {
     echo cuar_get_the_attached_file_link($post_id, $file, $action, $force_download);
 }
@@ -116,12 +118,14 @@ function cuar_the_attached_file_link($post_id = null, $file, $action = 'download
  *
  * @return string|mixed
  */
-function cuar_get_the_attached_file_caption($post_id = null, $file)
+function cuar_get_the_attached_file_caption($post_id, $file)
 {
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         $post_id = get_the_ID();
     }
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         return '';
     }
 
@@ -143,7 +147,7 @@ function cuar_get_the_attached_file_caption($post_id = null, $file)
  *
  * @return string|mixed
  */
-function cuar_the_attached_file_caption($post_id = null, $file)
+function cuar_the_attached_file_caption($post_id, $file)
 {
     echo cuar_get_the_attached_file_caption($post_id, $file);
 }
@@ -156,12 +160,14 @@ function cuar_the_attached_file_caption($post_id = null, $file)
  *
  * @return string|mixed
  */
-function cuar_get_the_attached_file_name($post_id = null, $file)
+function cuar_get_the_attached_file_name($post_id, $file)
 {
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         $post_id = get_the_ID();
     }
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         return '';
     }
 
@@ -170,7 +176,9 @@ function cuar_get_the_attached_file_name($post_id = null, $file)
 
     $name = $pf_addon->get_file_name($post_id, $file);
 
-    return apply_filters('cuar/private-content/files/the-name', $name, $file, $post_id);
+    $name = apply_filters('cuar/private-content/files/the-name', $name, $file, $post_id);
+
+	return esc_html($name);
 }
 
 /**
@@ -183,7 +191,7 @@ function cuar_get_the_attached_file_name($post_id = null, $file)
  *
  * @return string|mixed
  */
-function cuar_the_attached_file_name($post_id = null, $file)
+function cuar_the_attached_file_name($post_id, $file)
 {
     echo cuar_get_the_attached_file_name($post_id, $file);
 }
@@ -196,12 +204,14 @@ function cuar_the_attached_file_name($post_id = null, $file)
  *
  * @return string|mixed
  */
-function cuar_get_the_attached_file_type($post_id = null, $file)
+function cuar_get_the_attached_file_type($post_id, $file)
 {
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         $post_id = get_the_ID();
     }
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         return '';
     }
 
@@ -223,7 +233,7 @@ function cuar_get_the_attached_file_type($post_id = null, $file)
  *
  * @return string|mixed
  */
-function cuar_the_attached_file_type($post_id = null, $file)
+function cuar_the_attached_file_type($post_id, $file)
 {
     echo cuar_get_the_attached_file_type($post_id, $file);
 }
@@ -236,12 +246,14 @@ function cuar_the_attached_file_type($post_id = null, $file)
  *
  * @return string|mixed
  */
-function cuar_get_the_attached_file_size($post_id = null, $file, $human = true)
+function cuar_get_the_attached_file_size($post_id, $file, $human = true)
 {
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         $post_id = get_the_ID();
     }
-    if ( !$post_id) {
+    if (!$post_id)
+    {
         return '';
     }
 
@@ -271,7 +283,7 @@ function cuar_get_the_attached_file_size($post_id = null, $file, $human = true)
  *
  * @return string|mixed
  */
-function cuar_the_attached_file_size($post_id = null, $file, $human = true)
+function cuar_the_attached_file_size($post_id, $file, $human = true)
 {
     echo cuar_get_the_attached_file_size($post_id, $file, $human);
 }
@@ -390,7 +402,7 @@ function cuar_create_private_file($post_data, $owners, $files)
     // Assign the owner
     /** @var CUAR_PostOwnerAddOn $po_addon */
     $po_addon = cuar_addon('post-owner');
-    $po_addon->save_post_owners($post_id, $owners);
+    $po_addon->save_post_owners($post_id, $owners, true, true);
 
     // Attach the file
     /** @var CUAR_PrivateFileAddOn $pf_addon */

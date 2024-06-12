@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if ( !class_exists('CUAR_ContentListWidget')) :
     /**
      * Widget to show the dates of content
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     abstract class CUAR_ContentListWidget extends WP_Widget
     {
@@ -126,7 +126,7 @@ if ( !class_exists('CUAR_ContentListWidget')) :
             $limit = isset($instance['posts_per_page']) ? $instance['posts_per_page'] : 5;
             $orderby = isset($instance['orderby']) ? $instance['orderby'] : 'date';
             $order = isset($instance['order']) ? $instance['order'] : 'DESC';
-            $category = isset($instance['category']) ? $instance['category'] : -1;
+            $category = isset($instance['category']) ? $instance['category'] : '';
 
             $args = array(
                 'query_filter'   => 'cuar_widget_add_authored_by',
@@ -134,10 +134,10 @@ if ( !class_exists('CUAR_ContentListWidget')) :
                 'posts_per_page' => $limit,
                 'orderby'        => $orderby,
                 'order'          => $order,
-                'meta_query'     => $po_addon->get_meta_query_post_owned_by(get_current_user_id())
+                'meta_query'     => $po_addon->get_meta_query_post_owned_by(get_current_user_id(), $this->get_post_type())
             );
 
-            if ($category > 0)
+            if (!empty($category) && $category !== 'any')
             {
                 $args['tax_query'] = array(
                     array(
@@ -159,16 +159,30 @@ if ( !class_exists('CUAR_ContentListWidget')) :
 
         public function filter_query_to_add_authored_by( $where, $q ) {
             if ( isset($q->query['query_filter']) && 'cuar_widget_add_authored_by' === $q->query['query_filter'] ) {
-                $disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by', true);
-                $disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by?post_type=' . $q->query['post_type'], $disable_authored_by, $q);
-                if($disable_authored_by) return $where;
+				global $wpdb;
 
-                $needle_open = "( wp_postmeta.meta_key = '" . CUAR_PostOwnerAddOn::$META_OWNER_QUERYABLE . "'";
-                $pos_open = strpos($where, $needle_open);
-                if ($pos_open !== false) {
-                    $new_cond_open = "( post_author = '" . get_current_user_id() . "' ) OR " . $needle_open;
-                    $where = substr_replace($where, $new_cond_open, $pos_open, strlen($needle_open));
-                }
+				$disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by', true);
+				$post_types = is_array($q->query['post_type']) ? $q->query['post_type'] : [$q->query['post_type']];
+				foreach($post_types as $post_type)
+				{
+					$disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by?post_type=' . $post_type, $disable_authored_by, $q);
+					if ($disable_authored_by)
+					{
+						return $where;
+					}
+				}
+
+				$needle_open = ") AND ((" . $wpdb->prefix . "posts.post_type";
+				$pos_open = strpos($where, $needle_open);
+				if ($pos_open !== false) {
+					$new_needle_open = " OR ( post_author = " . (int) apply_filters('cuar/core/page/query-disable-authored-by/override-user-id', get_current_user_id()) . " )";
+					$new_pos_open = strpos($where, $new_needle_open);
+					if($new_pos_open === false)
+					{
+						$new_cond_open = $new_needle_open . $needle_open;
+						$where = substr_replace($where, $new_cond_open, $pos_open, strlen($needle_open));
+					}
+				}
             }
             return $where;
         }
@@ -296,4 +310,4 @@ if ( !class_exists('CUAR_ContentListWidget')) :
         }
     }
 
-endif; // if (!class_exists('CUAR_ContentListWidget')) 
+endif; // if (!class_exists('CUAR_ContentListWidget'))

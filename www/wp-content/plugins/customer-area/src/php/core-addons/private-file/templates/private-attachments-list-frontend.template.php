@@ -1,6 +1,15 @@
 <?php /**
- * Template version: 3.0.0
+ * Template version: 3.2.0
  * Template zone: frontend
+ *
+ * -= 3.2.0 =-
+ * - Fix some jQuery deprecated functions
+ *
+ * -= 3.1.0 =-
+ * - Prevent Select2 assignment boxes to fail while initializing if the theme or a plugin is already loading Select2
+ *
+ * -= 3.0.0 =-
+ * - Initial version
  */ ?>
 
 
@@ -51,9 +60,9 @@
         $(document).ready(function ($) {
 
             // Init Select2
-            if ($.isFunction($.fn.select2)) {
+            if (typeof $.fn.cuarSelect2 === 'function') {
                 $('#cuar-js-content-container').on('cuar:wizard:initialized', function(){
-                    $('#cuar_file_selector_input').addClass('select2-single').select2({
+                    $('#cuar_file_selector_input').addClass('select2-single').cuarSelect2({
                         dropdownParent: $('#cuar_file_selector_input').parent(),
                         width: "100%",
                         minimumResultsForSearch: -1

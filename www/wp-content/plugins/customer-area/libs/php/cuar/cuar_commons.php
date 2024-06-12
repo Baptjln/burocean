@@ -1,5 +1,7 @@
 <?php
 
+defined('ABSPATH') or die('Nope, not accessing this');
+
 //======================================================================================================================
 // Some defines in case the main plugin is included later on
 

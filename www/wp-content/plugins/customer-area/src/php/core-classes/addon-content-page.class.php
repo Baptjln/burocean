@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
     /**
      * The base class for addons that should render a page containing content from custom private posts
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     abstract class CUAR_AbstractContentPageAddOn extends CUAR_AbstractPageAddOn
     {
@@ -92,11 +92,21 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
             $defaults[$slug . self::$OPTION_SHOW_IN_DASHBOARD] = true;
             $defaults[$slug . self::$OPTION_MAX_ITEM_NUMBER_ON_DASHBOARD] = 5;
             $defaults[$slug . self::$OPTION_MAX_ITEM_NUMBER_ON_LISTING] = 12;
+            $defaults[$slug . self::$OPTION_SHOW_TITLES] = false;
 
             return $defaults;
         }
 
         /*------- SETTINGS ACCESSOR -------------------------------------------------------------------------------------*/
+
+        public function is_show_post_titles_enabled()
+        {
+            $value = $this->plugin->get_option($this->get_slug() . self::$OPTION_SHOW_TITLES);
+
+            $value = $value==true ? true : $value;
+
+            return apply_filters('cuar/private-content/view/show-post-title', $value, $this->get_slug());
+        }
 
         public function is_hide_contents_created_by_user_enabled()
         {
@@ -478,7 +488,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
                     'paged'          => $current_page,
                     'orderby'        => 'title',
                     'order'          => 'ASC',
-                    'meta_query'     => $po_addon->get_meta_query_post_owned_by($current_user_id),
+                    'meta_query'     => $po_addon->get_meta_query_post_owned_by($current_user_id, $this->get_friendly_post_type()),
                     'tax_query'      => array(
                         array(
                             'taxonomy' => $this->get_friendly_taxonomy(),
@@ -500,7 +510,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
                     'paged'          => $current_page,
                     'orderby'        => 'title',
                     'order'          => 'ASC',
-                    'meta_query'     => $po_addon->get_meta_query_post_owned_by($current_user_id),
+                    'meta_query'     => $po_addon->get_meta_query_post_owned_by($current_user_id, $this->get_friendly_post_type()),
                     'year'           => $year
                 );
 
@@ -533,7 +543,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
                 // If the content authored by someone else is requested, don't show anyone else's content
                 if ($author_id != get_current_user_id())
                 {
-                    $args['meta_query'] = $po_addon->get_meta_query_post_owned_by($current_user_id);
+                    $args['meta_query'] = $po_addon->get_meta_query_post_owned_by($current_user_id, $this->get_friendly_post_type());
                 }
 
                 $pagination_base = $this->get_author_archive_url($author_id);
@@ -550,7 +560,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
                     'paged'          => $current_page,
                     'orderby'        => 'date',
                     'order'          => 'DESC',
-                    'meta_query'     => $po_addon->get_meta_query_post_owned_by($current_user_id)
+                    'meta_query'     => $po_addon->get_meta_query_post_owned_by($current_user_id, $this->get_friendly_post_type())
                 );
 
                 $page_subtitle = $this->get_default_page_subtitle();
@@ -600,7 +610,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
                 $cp_addon = $this->plugin->get_addon('customer-pages');
                 $cp_addon->print_pagination($this, $content_query, $pagination_base, $current_page);
 
-                wp_reset_query();
+                wp_reset_postdata();
             }
             else
             {
@@ -621,17 +631,32 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
 
         public function filter_query_to_add_authored_by( $where, $q ) {
             if ( isset($q->query['query_filter']) && 'cuar_add_authored_by' === $q->query['query_filter'] ) {
-                $disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by', true);
-                $disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by?post_type=' . $q->query['post_type'], $disable_authored_by, $q);
-                if($disable_authored_by) return $where;
+                global $wpdb;
 
-                $needle_open = "( wp_postmeta.meta_key = '" . CUAR_PostOwnerAddOn::$META_OWNER_QUERYABLE . "'";
+                $disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by', true);
+	            $post_types = is_array($q->query['post_type']) ? $q->query['post_type'] : [$q->query['post_type']];
+	            foreach($post_types as $post_type)
+	            {
+		            $disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by?post_type=' . $post_type, $disable_authored_by, $q);
+		            if ($disable_authored_by)
+		            {
+			            return $where;
+		            }
+	            }
+
+				$needle_open = ") AND ((" . $wpdb->prefix . "posts.post_type";
                 $pos_open = strpos($where, $needle_open);
                 if ($pos_open !== false) {
-                    $new_cond_open = "( post_author = '" . get_current_user_id() . "' ) OR " . $needle_open;
-                    $where = substr_replace($where, $new_cond_open, $pos_open, strlen($needle_open));
+					$new_needle_open = " OR ( post_author = " . (int) apply_filters('cuar/core/page/query-disable-authored-by/override-user-id', get_current_user_id()) . " )";
+					$new_pos_open = strpos($where, $new_needle_open);
+					if($new_pos_open === false)
+					{
+						$new_cond_open = $new_needle_open . $needle_open;
+						$where = substr_replace($where, $new_cond_open, $pos_open, strlen($needle_open));
+					}
                 }
             }
+
             return $where;
         }
 
@@ -763,17 +788,34 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
             if ( !is_singular($this->get_friendly_post_type())) return $content;
             if (get_post_type() != $this->get_friendly_post_type()) return $content;
 
-            ob_start();
-            $this->print_single_private_content_header();
-            $before = ob_get_contents();
-            ob_end_clean();
+            $before = '';
+            $after = '';
+
+            // Optionally output the file links in the post footer area
+            if ($this->is_show_in_single_post_footer_enabled()) {
+                ob_start();
+                $this->print_single_private_content_header();
+                $before = ob_get_contents();
+                ob_end_clean();
+
+                ob_start();
+                $this->print_single_private_content_footer();
+                $after = ob_get_contents();
+                ob_end_clean();
+            }
 
             ob_start();
-            $this->print_single_private_content_footer();
-            $after = ob_get_contents();
+            include($this->plugin->get_template_file_path(
+                CUAR_INCLUDES_DIR . '/core-classes',
+                [
+                    'customer-single-post-content_page.template.php',
+                    'customer-single-post.template.php',
+                ],
+                'templates'));
+            $out = ob_get_contents();
             ob_end_clean();
 
-            return $before . $content . $after;
+            return $out;
         }
 
         protected function print_additional_private_content_header() { }
@@ -797,7 +839,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
                 'posts_per_page' => $this->get_max_item_number_on_dashboard(),
                 'orderby'        => 'date',
                 'order'          => 'DESC',
-                'meta_query'     => $po_addon->get_meta_query_post_owned_by($current_user_id)
+                'meta_query'     => $po_addon->get_meta_query_post_owned_by($current_user_id, $this->get_friendly_post_type())
             );
 
             $page_subtitle = $this->get_default_dashboard_block_title();
@@ -837,7 +879,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
                     'templates',
                     "content-page-content.template.php"));
 
-                wp_reset_query();
+                wp_reset_postdata();
             }
             else
             {
@@ -893,23 +935,42 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
                 CUAR_Settings::$OPTIONS_PAGE_SLUG
             );
 
+            add_settings_field(self::$OPTION_SHOW_TITLES,
+                __('Post title', 'cuar'),
+                [&$cuar_settings, 'print_input_field'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                $this->get_settings_section(),
+                [
+                    'option_id' => $slug . self::$OPTION_SHOW_TITLES,
+                    'type' => 'checkbox',
+                    'after' => sprintf(__('Print single post title for %s', 'cuar'),
+                            strtolower($this->get_default_page_subtitle()))
+                        . '<p class="description">'
+                        . __('If checked, the plugin will print the post title before the content description on single private posts.', 'cuar')
+                        . '</p>',
+                ]
+            );
+
+            add_settings_field(
+                $slug . self::$OPTION_HIDE_CONTENTS_CREATED_BY_USER,
+                __('Content queries', 'cuar'),
+                array(&$cuar_settings, 'print_input_field'),
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                $this->get_settings_section(),
+                array(
+                    'option_id'     => $slug . self::$OPTION_HIDE_CONTENTS_CREATED_BY_USER,
+                    'type'          => 'checkbox',
+                    'default_value' => 1,
+                    'after'         => sprintf(__('Hide contents created by the current connected user for listings related to %s and its sub-pages (category archive, date archive, widgets...).', 'cuar'),
+                        '<strong>' . $this->get_default_page_subtitle() . '</strong>')
+                        . '<p class="description">'
+                        . __('This setting also affects listings located on the admin side.', 'cuar')
+                        . '</p>',
+                )
+            );
+
             if (in_array('single-post-footer', $this->enabled_settings))
             {
-                add_settings_field(
-                    $slug . self::$OPTION_HIDE_CONTENTS_CREATED_BY_USER,
-                    __('Content queries', 'cuar'),
-                    array(&$cuar_settings, 'print_input_field'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                    $this->get_settings_section(),
-                    array(
-                        'option_id'     => $slug . self::$OPTION_HIDE_CONTENTS_CREATED_BY_USER,
-                        'type'          => 'checkbox',
-                        'default_value' => 1,
-                        'after'         => sprintf(__('Hide contents created by the current connected user for listings related to %s and its sub-pages (category archive, date archive, widgets...).', 'cuar'),
-                            '<strong>' . $this->get_default_page_subtitle() . '</strong>')
-                    )
-                );
-
                 $theme_support = get_theme_support('customer-area.single-post-templates');
                 if ( !is_array($theme_support) || !in_array($this->get_friendly_post_type(), $theme_support[0]))
                 {
@@ -1003,6 +1064,7 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
             $cuar_settings->validate_boolean($input, $validated, $slug . self::$OPTION_HIDE_CONTENTS_CREATED_BY_USER);
             $cuar_settings->validate_boolean($input, $validated, $slug . self::$OPTION_SHOW_IN_SINGLE_POST_FOOTER);
             $cuar_settings->validate_boolean($input, $validated, $slug . self::$OPTION_SHOW_IN_DASHBOARD);
+            $cuar_settings->validate_boolean($input, $validated, $slug . self::$OPTION_SHOW_TITLES);
             $cuar_settings->validate_int($input, $validated, $slug . self::$OPTION_MAX_ITEM_NUMBER_ON_DASHBOARD);
             $cuar_settings->validate_int($input, $validated, $slug . self::$OPTION_MAX_ITEM_NUMBER_ON_LISTING);
 
@@ -1033,23 +1095,14 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
             if ($this->get_friendly_post_type() != null) {
                 add_filter("get_previous_post_where", array(&$this, 'disable_single_post_navigation'), 1, 3);
                 add_filter("get_next_post_where", array(&$this, 'disable_single_post_navigation'), 1, 3);
+                add_filter('cuar/core/page/query-disable-authored-by?post_type=' . $this->get_friendly_post_type(), array(&$this, 'is_hide_contents_created_by_user_enabled'), 5);
             }
 
             if ( !is_admin())
             {
                 add_filter('cuar/core/page/toolbar', array(&$this, 'add_single_private_content_contextual_toolbar_group'), 1400);
                 add_filter('cuar/core/page/toolbar', array(&$this, 'add_listing_contextual_toolbar_group'), 2000);
-
-                // Optionally display contents created by the current connected user
-                if ($this->get_friendly_post_type() != null) {
-                    add_filter('cuar/core/page/query-disable-authored-by?post_type=' . $this->get_friendly_post_type(), array(&$this, 'is_hide_contents_created_by_user_enabled'), 5);
-                }
-
-                // Optionally output the file links in the post footer area
-                if ($this->is_show_in_single_post_footer_enabled())
-                {
-                    add_filter('cuar/core/the_content', array(&$this, 'print_single_private_content_meta_filter'), 20);
-                }
+                add_filter('cuar/core/the_content', array(&$this, 'print_single_private_content_meta_filter'), 8);
 
                 // Optionally output the latest files on the dashboard
                 if ($this->is_show_in_dashboard_enabled())
@@ -1061,11 +1114,12 @@ if ( !class_exists('CUAR_AbstractContentPageAddOn')) :
         }
 
         // Settings
-        public static $OPTION_HIDE_CONTENTS_CREATED_BY_USER = true;
+        public static $OPTION_HIDE_CONTENTS_CREATED_BY_USER = '-hide_contents_created_by_current_user';
         public static $OPTION_SHOW_IN_SINGLE_POST_FOOTER = '-show_in_single_post_footer';
         public static $OPTION_SHOW_IN_DASHBOARD = '-show_in_dashboard';
         public static $OPTION_MAX_ITEM_NUMBER_ON_DASHBOARD = '-max_items_on_dashboard';
         public static $OPTION_MAX_ITEM_NUMBER_ON_LISTING = '-max_items_on_listing';
+        public static $OPTION_SHOW_TITLES = '-show_title_in_single_post';
 
         protected $enabled_settings = array();
     }

@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -85,14 +85,11 @@ function cuar_get_payment_failure_url($payment_id)
  */
 function cuar_get_gateway_message()
 {
-    if (isset($_SESSION['cuar_gateway_message'])) {
-        $message = $_SESSION['cuar_gateway_message'];
-        unset($_SESSION['cuar_gateway_message']);
+	$plugin = cuar();
+    $message = $plugin->get_session_var('cuar_gateway_message', '');
+    $plugin->unset_session_var('cuar_gateway_message');
 
-        return $message;
-    }
-
-    return '';
+    return $message;
 }
 
 /**

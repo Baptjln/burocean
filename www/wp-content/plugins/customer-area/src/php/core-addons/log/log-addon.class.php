@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if ( !class_exists('CUAR_LogAddOn')) :
      * Add-on to provide all the stuff required to set an owner on a post type and include that post type in the
      * customer area.
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_LogAddOn extends CUAR_AddOn
     {
@@ -114,6 +114,7 @@ if ( !class_exists('CUAR_LogAddOn')) :
             if (isset($_GET["post_type"]) && $_GET["post_type"] == "cuar_log_event")
             {
                 wp_redirect(admin_url("admin.php?page=" . self::$LOG_PAGE_SLUG));
+                exit;
             }
         }
 
@@ -417,8 +418,8 @@ if ( !class_exists('CUAR_LogAddOn')) :
 
                 case self::$META_FILE_ATTACHMENT:
                     $o = $item->$meta;
-                    $pill['title'] = __('Caption: ', 'cuar') . $o['caption'];
-                    $pill['value'] = __('Attachment: ', 'cuar') . $o['file'];
+                    $pill['title'] = __('Caption: ', 'cuar') . (isset($o['caption']) ? $o['caption'] : '');
+                    $pill['value'] = __('Attachment: ', 'cuar') . (isset($o['file']) ? $o['file'] : '');
                     break;
 
                 case self::$META_FILE_ID:
@@ -426,8 +427,8 @@ if ( !class_exists('CUAR_LogAddOn')) :
                     /** @var CUAR_PrivateFileAddOn $pf_addon */
                     $pf_addon = $this->plugin->get_addon('private-files');
                     $f = $pf_addon->get_attached_file($item->get_post()->post_parent, $o);
-                    $pill['title'] = __('Caption: ', 'cuar') . $f['caption'];
-                    $pill['value'] = __('Attachment: ', 'cuar') . $f['file'];
+                    $pill['title'] = __('Caption: ', 'cuar') . (isset($f['caption']) ? $f['caption'] : '');
+                    $pill['value'] = __('Attachment: ', 'cuar') . (isset($f['file']) ? $f['file'] : '');
                     break;
             }
 

@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,16 +18,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
 
-if ( !class_exists('CUAR_AddOn')) :
+if (!class_exists('CUAR_AddOn')) :
 
     /**
      * The base class for addons
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     abstract class CUAR_AddOn
     {
-        private static $MISSING_LICENSE_MESSAGES_SHOWN = array();
+        private static $MISSING_LICENSE_MESSAGES_SHOWN = [];
         private static $HAS_NOTIFIED_INVALID_LICENSES = false;
 
         private static $OPTION_LICENSE_KEY = 'cuar_license_key_';
@@ -37,7 +37,7 @@ if ( !class_exists('CUAR_AddOn')) :
         /** @var string Id of the add-on */
         public $addon_id;
 
-        /** @var string ID of the add-on on the new wpca store */
+        /** @var array ID of the add-on on the new wpca store */
         public $store_item_id;
 
         /** @var string Name of the add-on on the legacy marvinlabs store */
@@ -55,6 +55,9 @@ if ( !class_exists('CUAR_AddOn')) :
         /** @var CUAR_Plugin The plugin instance */
         protected $plugin;
 
+        /** @var CUAR_LicensingClient The licensing client */
+        protected $licensing_client = null;
+
         /** @var boolean Does this addon have licensing? */
         public $is_licensing_enabled = false;
 
@@ -62,13 +65,14 @@ if ( !class_exists('CUAR_AddOn')) :
         {
             $this->addon_id = $addon_id;
 
-            add_action('cuar/core/settings/default-options', array(&$this, 'set_default_options'));
-            add_action('cuar/core/addons/before-init', array(&$this, 'before_run'), 10);
-            add_action('cuar/core/addons/init', array(&$this, 'run'), 10);
+            add_action('cuar/core/settings/default-options', [&$this, 'set_default_options']);
+            add_action('cuar/core/addons/before-init', [&$this, 'before_run'], 10);
+            add_action('cuar/core/addons/init', [&$this, 'run'], 10);
 
-            if (is_admin()) {
-                add_action('admin_init', array(&$this, 'check_main_plugin_enabled'), 10);
-                add_action('cuar/core/addons/after-init', array(&$this, 'check_attention_needed'), 10);
+            if (is_admin())
+            {
+                add_action('admin_init', [&$this, 'check_main_plugin_enabled'], 10);
+                add_action('cuar/core/addons/after-init', [&$this, 'check_attention_needed'], 10);
             }
         }
 
@@ -120,9 +124,10 @@ if ( !class_exists('CUAR_AddOn')) :
         public function check_main_plugin_enabled()
         {
             global $cuar_main_plugin_checked;
-            if ($cuar_main_plugin_checked !== true && !is_plugin_active('customer-area/customer-area.php')) {
+            if ($cuar_main_plugin_checked !== true && !is_plugin_active('customer-area/customer-area.php'))
+            {
                 $cuar_main_plugin_checked = true;
-                add_action('admin_notices', array(&$this, 'add_main_plugin_disabled_notice'));
+                add_action('admin_notices', [&$this, 'add_main_plugin_disabled_notice']);
             }
         }
 
@@ -138,8 +143,6 @@ if ( !class_exists('CUAR_AddOn')) :
 
         public function set_default_options($defaults)
         {
-            $defaults[$this->get_license_key_option_name()] = '';
-
             return $defaults;
         }
 
@@ -147,72 +150,230 @@ if ( !class_exists('CUAR_AddOn')) :
 
         public function enable_licensing($store_item_id, $store_item_name, $plugin_file, $add_on_version)
         {
+            if (is_int($store_item_id) && is_admin())
+            {
+                $is_wpca_page = isset($_GET['page']) && substr($_GET['page'], 0, 4) === 'wpca';
+                $is_wpca_posttype = isset($_GET['post_type']) && substr($_GET['post_type'], 0, 5) === 'cuar_';
+                if ($is_wpca_page || $is_wpca_posttype)
+                {
+                    wp_die(
+                        "The WP Customer Area add-on « {$this->get_addon_name()} » is outdated and not compatible with WP Customer Area 8 or greater. "
+                        . 'You must either downgrade to <a href="' . cuar_site_url('/uploads/customer-area.7.10.6.zip', true) . '">WP Customer Area 7.10.6</a> or update your addons to the latest version.'
+                        . '<br>'
+                        . '<br>'
+                        . 'If you plan to update, in order to be able to download the latest addons, please contact the WP Customer Area '
+                        . 'support team via <a href="mailto:support@wp-customerarea.com">support@wp-customerarea.com</a> '
+                        . 'providing the following information:'
+                        . '<ul>'
+                        . '<li>The email linked to your customer account</li>'
+                        . '<li>The date of purchase</li>'
+                        . '<li>The payment method used (Paypal or Credit card via Stripe)</li>'
+                        . '</ul>'
+                    );
+                }
+            }
+
+            $this->plugin->tag_addon_as_commercial($this->addon_id);
+
             $this->is_licensing_enabled = true;
-            $this->store_item_id = $store_item_id;
+            $this->store_item_id = is_array($store_item_id) ? $store_item_id : [$store_item_id];
             $this->store_item_name = $store_item_name;
             $this->plugin_file = $plugin_file;
             $this->add_on_version = $add_on_version;
 
-            // Updater
-            add_action('admin_init', array($this, 'auto_updater'), 0);
-            add_action('admin_init', array($this, 'show_invalid_license_admin_notice'), 10);
-            add_action('in_plugin_update_message-' . plugin_basename($plugin_file), array($this, 'plugin_row_license_missing'), 10, 2);
+            $this->licensing_client = new CUAR_LicensingClient(
+                $this->plugin,
+                $this,
+                $this->plugin_file,
+                $this->add_on_version,
+                $this->store_item_name
+            );
+
+            add_action('admin_init', [$this, 'show_invalid_license_admin_notice'], 10);
+            add_action('admin_init', [$this, 'show_invalid_openssl_version_notice'], 10);
+            add_filter('plugin_row_meta', [$this, 'plugin_row_links'], 10, 4);
+
+            $plugin_name = plugin_basename($plugin_file);
+            add_filter("after_plugin_row_$plugin_name", [$this, 'plugin_row_addon_needs_activation'], 10, 3);
 
             // Check that license is valid once per week
-            add_action('cuar/cron/events?schedule=weekly', array($this, 'do_periodical_license_check'));
+            add_action('cuar/cron/events?schedule=weekly', [$this, 'do_periodical_license_check']);
 
             // For testing scheduled license checks, uncomment this line to force checks on every page load
             // add_action('admin_init', array($this, 'do_periodical_license_check'), 5);
-
-            $this->plugin->tag_addon_as_commercial($this->addon_id);
         }
 
-        /**
-         * Check for auto-update for this addon
-         */
-        public function auto_updater()
+        public function get_license_types()
         {
-            $license_key = $this->get_license_key();
+            $out = [0 => __('Select product ID', 'cuar')];
 
-            if ( !empty($license_key)) {
-                require_once(CUAR_PLUGIN_DIR . '/libs/php/edd-licensing/EDD_SL_Plugin_Updater.php');
+            foreach ($this->store_item_id as $key => $product_id)
+            {
+                $label = '';
+                switch ($key)
+                {
+                    case 'per-en' :
+                        $label = __('Personal', 'cuar');
+                        break;
+                    case 'per-fr' :
+                        $label = __('Personal (FR)', 'cuar');
+                        break;
+                    case 'pro-en' :
+                        $label = __('Professional', 'cuar');
+                        break;
+                    case 'pro-fr' :
+                        $label = __('Professional (FR)', 'cuar');
+                        break;
+                    case 'dev-en' :
+                        $label = __('Developer', 'cuar');
+                        break;
+                    case 'dev-fr' :
+                        $label = __('Developer (FR)', 'cuar');
+                        break;
+                    case 'uni-en' :
+                        $label = __('Universal', 'cuar');
+                        break;
+                    case 'uni-fr' :
+                        $label = __('Universal (FR)', 'cuar');
+                        break;
+                }
 
-                new CUAR_Plugin_Updater(
-                    $this->plugin->get_licensing()->get_store()->get_store_url(),
-                    $this->plugin_file,
-                    array(
-                        'item_id' => $this->store_item_id,
-                        'license' => $license_key,
-                        'version' => $this->add_on_version,
-                        'author'  => 'MarvinLabs',
-                        'beta'    => $this->is_beta_version_notification_enabled(),
-                    )
-                );
+                if (!empty($label))
+                {
+                    $out[$product_id] = "$product_id - $label";
+                }
             }
+
+            return $out;
+        }
+
+        public function get_licensing_client()
+        {
+            return $this->licensing_client;
         }
 
         /**
          * Displays message inline on plugin row that the license key is missing
          */
-        public function plugin_row_license_missing($plugin_data, $version_info)
+        public function plugin_row_links($links_array, $plugin_file_name, $plugin_data, $status)
         {
-            $license = $this->get_license_status();
+            if (strpos($this->plugin_file, $plugin_file_name))
+            {
+                if ($this->licensing_client === null)
+                {
+                    return;
+                }
 
-            if (( !is_object($license) || !$license->success)
-                && empty(self::$MISSING_LICENSE_MESSAGES_SHOWN[$this->addon_id])
-            ) {
-                $license_page_url = admin_url('options-general.php?page=wpca-settings&tab=cuar_licenses');
+                // You can still use `array_unshift()` to add links at the beginning.
+                $links_array[] = sprintf(
+                    __('<a href="%s">Documentation</a>', 'cuar'),
+					cuar_site_url('/documentation/introduction')
+                );
+                $links_array[] = sprintf(
+                    __('<a href="%s">Support</a>', 'cuar'),
+					cuar_site_url('/support')
+                );
 
-                echo '<br><br><strong style="display: block; margin-left: 26px;">';
-                echo __('Automatic updates are currently disabled for this plugin. You are probably missing some security fixes.', 'cuar');
-                echo ' <a href="' . esc_url($license_page_url) . '">'
-                    . __('Enter a valid license key to enable automatic updates.', 'cuar')
-                    . '</a>';
-                echo '</strong>';
-
-                self::$MISSING_LICENSE_MESSAGES_SHOWN[$this->addon_id] = true;
+                $status = $this->licensing_client->get_api_key_status();
+                if ($status !== true)
+                {
+                    $links_array[] = sprintf(
+                        __('<a href="%s">Activate license</a>', 'cuar'),
+                        admin_url('options-general.php?page=wpca-settings&tab=cuar_licenses')
+                    );
+                }
             }
 
+            return $links_array;
+        }
+
+        /**
+         * Displays message inline on plugin row that the license key is missing
+         */
+        public function plugin_row_addon_needs_activation($plugin_file_name, $plugin_data, $status)
+        {
+            if (strpos($this->plugin_file, $plugin_file_name))
+            {
+                if ($this->licensing_client === null)
+                {
+                    return;
+                }
+
+                $status = $this->licensing_client->get_api_key_status();
+                if ($status !== true)
+                {
+                    echo '<tr class="plugin-update-tr active" data-plugin="' . $plugin_file_name . '">';
+                    echo '<td colspan="4" class="plugin-update colspanchange">';
+                    echo '<div class="notice inline notice-warning notice-alt"><p>';
+                    echo sprintf(
+                        __('You have not activated your license or the one entered is not valid. Please <a href="%s">activate your license</a>.',
+                            'cuar'),
+                        admin_url('options-general.php?page=wpca-settings&tab=cuar_licenses')
+                    );
+                    echo '</p></div></td></tr>';
+                }
+            }
+        }
+
+        public function show_invalid_openssl_version_notice()
+        {
+            // Bail if doing ajax
+            if (defined('DOING_AJAX') && DOING_AJAX)
+            {
+                return;
+            }
+
+            // Do not show on anything but the licenses settings page
+            if (!(isset($_GET['page'])
+                  && strcmp($_GET['page'], 'wpca-settings') === 0
+                  && isset($_GET['tab'])
+                  && strcmp($_GET['tab'], 'cuar_licenses') === 0)
+            )
+            {
+                return;
+            }
+
+            $version = $this->get_openssl_version();
+            if (version_compare($version, '1.1.0') < 0)
+            {
+                add_action('admin_notices', [&$this, 'print_invalid_openssl_version_notice'], 10);
+            }
+        }
+
+        public function print_invalid_openssl_version_notice()
+        {
+            $version = $this->get_openssl_version();
+
+            echo '<div class="error"><p>';
+            if ($version === '0.0.0')
+            {
+                echo __(
+                    'The version of the cURL PHP extension could not be fetched, you may not be able to validate your licenses. Please contact your server administrator.',
+                    'cuar'
+                );
+            }
+            else
+            {
+                echo sprintf(
+                    __(
+                        'Your cURL PHP extension is using an outdated OpenSSL version (%1$s). That could prevent our licenses from being validated. Please contact your server administrator to update the cURL PHP extension.',
+                        'cuar'
+                    ),
+                    $version
+                );
+            }
+            echo '</p></div>';
+        }
+
+        private function get_openssl_version()
+        {
+            if (!function_exists('curl_version') || false === curl_version())
+            {
+                return '0.0.0';
+            }
+
+            $version = curl_version();
+            return preg_replace('/[^\d.]/', '', $version['ssl_version']);
         }
 
         /**
@@ -224,15 +385,24 @@ if ( !class_exists('CUAR_AddOn')) :
         public function show_invalid_license_admin_notice()
         {
             // Do not show notification twice
-            if (self::$HAS_NOTIFIED_INVALID_LICENSES) return;
+            if (self::$HAS_NOTIFIED_INVALID_LICENSES)
+            {
+                return;
+            }
 
             // Bail if doing ajax
-            if (defined('DOING_AJAX') && DOING_AJAX) return;
+            if (defined('DOING_AJAX') && DOING_AJAX)
+            {
+                return;
+            }
 
             // Do not show on licenses settings page
-            if (isset($_GET['page']) && strcmp($_GET['page'], 'wpca-settings') == 0
-                && isset($_GET['tab']) && strcmp($_GET['tab'], 'cuar_licenses') == 0
-            ) {
+            if (isset($_GET['page'])
+                && strcmp($_GET['page'], 'wpca-settings') == 0
+                && isset($_GET['tab'])
+                && strcmp($_GET['tab'], 'cuar_licenses') == 0
+            )
+            {
                 return;
             }
 
@@ -240,45 +410,47 @@ if ( !class_exists('CUAR_AddOn')) :
             if (isset($_GET['page'])
                 && (strcmp($_GET['page'], 'wpca-setup') == 0
                     || strcmp($_GET['page'], 'wpca') == 0)
-            ) {
+            )
+            {
                 return;
             }
 
             // Only show to the site administrator
-            if ( !current_user_can('manage_options')) return;
+            if (!current_user_can('manage_options'))
+            {
+                return;
+            }
 
             // Ignore non-commercial addons
-            if ( !$this->is_licensing_enabled) return;
+            if (!$this->is_licensing_enabled)
+            {
+                return;
+            }
 
-            $license = $this->get_license_status();
-
-            if ( !is_object($license) || !$license->success) {
-
-	            add_action('admin_notices', array(&$this, 'print_invalid_license_admin_notice'), 10);
-
+            $status = $this->licensing_client->get_api_key_status();
+            if ($status !== true)
+            {
+                add_action('admin_notices', [&$this, 'print_invalid_license_admin_notice'], 10);
                 self::$HAS_NOTIFIED_INVALID_LICENSES = true;
             }
         }
 
-	    /**
-	     * Print admin notices for errors
-	     *
-	     * @access  public
-	     *
-	     * @return void
-	     */
-	    public function print_invalid_license_admin_notice()
-	    {
-		    $license_page_url = admin_url('options-general.php?page=wpca-settings&tab=cuar_licenses');
-
-		    echo '<div class="error"><p>';
-		    echo sprintf(__('You have invalid or expired license keys for WP Customer Area. Please go to the <a href="%s">Licenses page</a> to correct this issue.', 'cuar'),
-			    $license_page_url);
-		    echo '</p><p>';
-		    echo sprintf(__('If you do not know these license keys, you can find them listed on <a href="%s" target="_blank">your WP Customer Area account</a>.', 'cuar'),
-			    'https://wp-customerarea.com/my-account');
-		    echo '</p></div>';
-	    }
+        /**
+         * Print admin notices for errors
+         *
+         * @access  public
+         *
+         * @return void
+         */
+        public function print_invalid_license_admin_notice()
+        {
+            echo '<div class="error"><p>';
+            echo sprintf(
+                __('You have invalid or expired license keys for WP Customer Area. Please go to the <a href="%s">Licenses page</a> to correct this issue.', 'cuar'),
+                admin_url('options-general.php?page=wpca-settings&tab=cuar_licenses')
+            );
+            echo '</p></div>';
+        }
 
         /**
          * Check if license key is valid
@@ -286,73 +458,25 @@ if ( !class_exists('CUAR_AddOn')) :
         public function do_periodical_license_check()
         {
             // Don't fire when saving settings
-            if ( !empty($_POST['cuar_do_save_settings'])) return;
+            if (!empty($_POST['cuar_do_save_settings']))
+            {
+                return;
+            }
 
             // Bail if doing ajax
-            if (defined('DOING_AJAX') && DOING_AJAX) return;
+            if (defined('DOING_AJAX') && DOING_AJAX)
+            {
+                return;
+            }
 
-            // Bail if no license key entered
-            $license = $this->get_license_key();
-            if (empty($license)) return;
+            // Bail if not commercial
+            if ($this->licensing_client === null)
+            {
+                return;
+            }
 
-            // Ok. Do it.
-            $license_key_option_id = $this->get_license_key_option_name();
-            $this->plugin->update_option($license_key_option_id, $license);
-
-            $licensing = $this->plugin->get_licensing();
-            $result = $licensing->validate_license($license, $this);
-
-            $today = new DateTime();
-            $license_check_option_id = $this->get_license_check_option_name();
-            $this->plugin->update_option($license_check_option_id, $today->format('Y-m-d'));
-
-            $license_status_option_id = $this->get_license_status_option_name();
-            $this->plugin->update_option($license_status_option_id, $result);
+            $this->licensing_client->check_license();
         }
-
-        public function get_license_key()
-        {
-            return trim($this->plugin->get_option($this->get_license_key_option_name()));
-        }
-
-        public function get_license_check()
-        {
-            return $this->plugin->get_option($this->get_license_check_option_name());
-        }
-
-        public function get_license_status()
-        {
-            return $this->plugin->get_option($this->get_license_status_option_name());
-        }
-
-        public function get_license_key_option_name($addon_id = '')
-        {
-            if (empty($addon_id)) $addon_id = $this->addon_id;
-
-            return self::$OPTION_LICENSE_KEY . $addon_id;
-        }
-
-        public function get_license_status_option_name($addon_id = '')
-        {
-            if (empty($addon_id)) $addon_id = $this->addon_id;
-
-            return self::$OPTION_LICENSE_STATUS . $addon_id;
-        }
-
-        public function get_license_check_option_name($addon_id = '')
-        {
-            if (empty($addon_id)) $addon_id = $this->addon_id;
-
-            return self::$OPTION_LICENSE_CHECK . $addon_id;
-        }
-
-        public function is_beta_version_notification_enabled()
-        {
-            $option = $this->plugin->get_option(CUAR_Settings::$OPTION_GET_BETA_VERSION_NOTIFICATIONS);
-
-            return empty($option) || $option != 1 ? false : true;
-        }
-
     }
 
     /**

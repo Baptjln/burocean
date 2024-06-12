@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,10 +26,10 @@ class CUAR_AddonManager
     private $message_center;
 
     /** @var array */
-    private $registered_addons = array();
+    private $registered_addons = [];
 
     /** @var array */
-    private $commercial_addons = array();
+    private $commercial_addons = [];
 
     /**
      * CUAR_AddonManager constructor.
@@ -46,8 +46,10 @@ class CUAR_AddonManager
      */
     public function register_hooks()
     {
-        if (is_admin()) {
-            add_action('cuar/core/activation/run-deferred-action?action_id=check-addon-versions', array(&$this, 'check_addons_recommended_versions'));
+        if (is_admin())
+        {
+            add_action('cuar/core/activation/run-deferred-action?action_id=check-addon-versions', [&$this,
+                                                                                                   'check_addons_recommended_versions']);
         }
     }
 
@@ -94,30 +96,43 @@ class CUAR_AddonManager
 
     public function get_version_mismatches()
     {
-        $mismatches = array();
+        $mismatches = [];
 
         $plugin_version = cuar()->get_version();
         $version_matrix = json_decode(file_get_contents(CUAR_PLUGIN_DIR . '/versions.json'), true);
 
-        if ( !isset($version_matrix[$plugin_version])) return array();
+        if (!isset($version_matrix[$plugin_version]))
+        {
+            return [];
+        }
 
         $recommended_versions = $version_matrix[$plugin_version];
 
         // List plugins
         $all_plugins = get_plugins();
-        foreach ($all_plugins as $id => $plugin_info) {
+        foreach ($all_plugins as $id => $plugin_info)
+        {
             $plugin_name = explode('/', $id);
             $plugin_name = $plugin_name[0];
 
-            if ( !isset($recommended_versions[$plugin_name])) continue;
-
-            if (version_compare($plugin_info['Version'], $recommended_versions[$plugin_name], '<')) {
-                $mismatches[] = array(
-                    'name'        => $plugin_info['Name'],
-                    'current'     => $plugin_info['Version'],
-                    'recommended' => $recommended_versions[$plugin_name],
-                );
+            if (!isset($recommended_versions[$plugin_name]))
+            {
+                continue;
             }
+
+            if (version_compare($plugin_info['Version'], $recommended_versions[$plugin_name], '<'))
+            {
+                $mismatches[] = [
+                    'name' => $plugin_info['Name'],
+                    'current' => $plugin_info['Version'],
+                    'recommended' => $recommended_versions[$plugin_name],
+                ];
+            }
+        }
+
+        if (empty($mismatches))
+        {
+            $this->message_center->remove_warning('version-mismatch');
         }
 
         return $mismatches;
@@ -133,7 +148,8 @@ class CUAR_AddonManager
 
         $mismatches = $this->get_version_mismatches();
 
-        if (!empty($mismatches)) {
+        if (!empty($mismatches))
+        {
             $this->message_center->add_warning('version-mismatch',
                 __('The plugin and the add-ons you have installed may be incompatible.', 'cuar'),
                 10);

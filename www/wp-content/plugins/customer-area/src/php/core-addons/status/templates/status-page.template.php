@@ -1,7 +1,16 @@
-<?php /** Template version: 1.0.0 */ ?>
+<?php /**
+ * Template version: 1.1.0
+ *
+ * -= 1.1.0 =-
+ * - Check current_section variable
+ *
+ * -= 1.0.0 =-
+ * Initial version
+ *
+ */ ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,18 +30,18 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 <div class="wrap cuar-plugin-status">
 	<h1>WP Customer Area <small><sup><?php echo $this->plugin->get_version(); ?></sup></small></h1>
-	
-<?php 
+
+<?php
 	$sections = $this->get_status_sections();
-	$current_section = isset( $_GET['tab'] ) ? $_GET['tab'] : 'needs-attention';
+	$current_section = isset( $_GET['tab'] ) ? sanitize_text_field($_GET['tab']) : 'needs-attention';
    	$current_section = $sections[$current_section];
 ?>
-	
+
 	<h2 class="nav-tab-wrapper">
-<?php 	
+<?php
 	foreach ( $sections as $section_id => $section ) {
 		if ( !isset( $section['label'] ) ) continue;
-		
+
 		$section_label = $section['label'];
 		$is_current = $section_id==$current_section['id'];
 
@@ -43,17 +52,17 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 	}
 ?>
 	</h2>
-	
-	<div class="cuar-status-section">	
+
+	<div class="cuar-status-section">
 		<h2><?php echo $current_section['title'] ?></h2>
-	
+
 		<form method="POST" action="" enctype="multipart/form-data">
-			<input type="hidden" name="cuar-do-status-action" value="1" />		
+			<input type="hidden" name="cuar-do-status-action" value="1" />
 <?php
-		do_action( 'cuar/templates/status/before-section?id=' . $current_section['id'] );		
-		$this->print_section_template( $current_section );		
+		do_action( 'cuar/templates/status/before-section?id=' . $current_section['id'] );
+		$this->print_section_template( $current_section );
 		do_action( 'cuar/templates/status/after-section?id=' . $current_section['id'] );
-?>	
+?>
 		</form>
 	</div>
 </div>

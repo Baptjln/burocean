@@ -23,6 +23,26 @@
         // -
             runHelpers = function () {
 
+                // Add a body class to determine if the area is large or not
+                var cuarResize = function() {
+                    var containerWidth = $('#cuar-js-content-cols-sizer').innerWidth();
+                    if(containerWidth < 480) {
+                        $('body').addClass('customer-area-grid-xs').removeClass('customer-area-grid-sm customer-area-grid-md customer-area-grid-lg customer-area-grid-xl');
+                    }  else if(containerWidth >= 480 && containerWidth < 768) {
+                        $('body').addClass('customer-area-grid-xs customer-area-grid-sm').removeClass('customer-area-grid-md customer-area-grid-lg customer-area-grid-xl');
+                    } else if(containerWidth >= 768 && containerWidth < 992) {
+                        $('body').addClass('customer-area-grid-xs customer-area-grid-sm customer-area-grid-md').removeClass('customer-area-grid-lg customer-area-grid-xl');
+                    } else if(containerWidth >= 992 && containerWidth < 1140) {
+                        $('body').addClass('customer-area-grid-xs customer-area-grid-sm customer-area-grid-md customer-area-grid-lg').removeClass('customer-area-grid-xl');
+                    } else if(containerWidth >= 1140) {
+                        $('body').addClass('customer-area-grid-xs customer-area-grid-sm customer-area-grid-md customer-area-grid-lg customer-area-grid-xl');
+                    }
+                }
+                cuarResize();
+                $(window).on('resize', function(){
+                    cuarResize();
+                });
+
                 // Disable element selection
                 $.fn.disableSelection = function () {
                     return this
@@ -191,12 +211,13 @@
 
                     // Match height of tray with the height of the tray center
                     var traySidebar = $('#cuar-js-tray');
+                    var heightEls = null;
+                    var trayHeight = null;
+
                     if (traySidebar.length && !$('body').hasClass('disable-tray-rescale')) {
 
                         // Store Elements
                         var trayCenter = $('#cuar-js-page-content');
-                        var heightEls = null;
-                        var trayHeight = null;
                         var trayScroll = $('#cuar-js-tray-scroller');
                         var trayCount = 0;
 
@@ -210,15 +231,17 @@
                             var trayCenter = $('#cuar-js-page-content');
 
                             // Reset some global values
-                            heightEls = null;
+                            heightEls = 0;
                             trayHeight = null;
 
                             // Define the tray height depending on html data attributes if they exist
-                            if (traySidebar.attr('data-tray-height-substract') && traySidebar.attr('data-tray-height-base')) {
-                                var heightBase = 'window' ? $(window).height() : $(traySidebar.data('tray-height-base')).innerHeight();
-                                var heightSubstract = traySidebar.data('tray-height-substract').split(',');
+                            if ($wrapperJS.attr('data-tray-height-substract') && $wrapperJS.attr('data-tray-height-base')) {
+                                var heightBase = 'window' ? $(window).height() : $($(wrapperJS).data('tray-height-base')).innerHeight();
+                                var heightSubstract = $wrapperJS.data('tray-height-substract').split(',');
                                 for (var i = 0; i < heightSubstract.length; i++) {
-                                    heightEls = heightEls + $(heightSubstract[i]).outerHeight(true);
+                                    if($(heightSubstract[i]).length > 0) {
+                                        heightEls = heightEls + $(heightSubstract[i]).outerHeight(true);
+                                    }
                                 }
                                 trayHeight = heightBase - heightEls;
 
@@ -231,8 +254,8 @@
                             }
 
                             // Helper to not let the tray be too small
-                            if (traySidebar.attr('data-tray-height-minimum')) {
-                                trayHeight = (trayHeight < traySidebar.attr('data-tray-height-minimum')) ? traySidebar.attr('data-tray-height-minimum') : trayHeight;
+                            if ($wrapperJS.attr('data-tray-height-minimum')) {
+                                trayHeight = (trayHeight < $wrapperJS.attr('data-tray-height-minimum')) ? $wrapperJS.attr('data-tray-height-minimum') : trayHeight;
                             } else {
                                 trayHeight = (trayHeight < trayMinimumHeight) ? trayMinimumHeight : trayHeight;
                             }
@@ -364,6 +387,33 @@
                         //console.log('cuar:tray:initialized');
                         $(wrapperJS).trigger('cuar:tray:initialized');
                     } else {
+
+                        var buildCenterLayout = function() {
+                            // Reset some global values
+                            heightEls = null;
+                            trayHeight = null;
+
+                          // Define the content height depending on html data attributes if they exist
+                          if ((($wrapperJS.attr('data-bypass-pages-without-sidebars').length && !$wrapperJS.attr('data-bypass-pages-without-sidebars')) || !$wrapperJS.attr('data-bypass-pages-without-sidebars').length)
+                            && $wrapperJS.attr('data-content-substract') && $wrapperJS.attr('data-tray-height-base')) {
+                            var heightBase = 'window' ? $(window).height() : $($(wrapperJS).data('tray-height-base')).innerHeight();
+                            var heightSubstract = $wrapperJS.data('content-substract').split(',');
+                            for (var i = 0; i < heightSubstract.length; i++) {
+                              if ($(heightSubstract[i]).length) {
+                                heightEls = heightEls + $(heightSubstract[i]).outerHeight(true);
+                              }
+                            }
+                            trayHeight = heightBase - heightEls;
+
+                            // Define the new center height depending on data-attributes
+                            $(wrapperJS).css('min-height', trayHeight + 'px');
+                          }
+                        }
+
+                        buildCenterLayout();
+                        $(window).on('resize',function(){
+                            buildCenterLayout();
+                        });
                         $(wrapperJS).trigger('cuar:tray:initialized');
                     }
 
@@ -399,14 +449,16 @@
                         var cntWidth = $('#cuar-js-content-container').innerWidth();
                         if (($('body').hasClass('disable-tray-rescale') && cntWidth < 700) || cntWidth < 550) {
                             if (fcRefreshCurrentPos === 'desktop' || fcRefreshCurrentPos === false) {
-                                $(dataTray.data('tray-mobile')).empty();
-                                dataAppend.appendTo($(dataTray.data('tray-mobile')));
+                                $($wrapperJS.data('tray-mobile')).empty();
+                                dataAppend.appendTo($($wrapperJS.data('tray-mobile')));
+                                trayCenter.addClass('tray-on-bottom');
                                 dataTray.hide();
                                 fcRefreshCurrentPos = 'mobile';
                             }
                         } else {
                             if (fcRefreshCurrentPos === 'mobile') {
                                 dataTray.empty().show();
+                                trayCenter.removeClass('tray-on-bottom');
                                 dataAppend.appendTo(dataTray);
                                 fcRefreshCurrentPos = 'desktop';
                             }
@@ -433,9 +485,9 @@
             runFormElements = function () {
 
                 // Init select2
-                if ($.isFunction($.fn.select2)) {
+                if (typeof $.fn.select2 === 'function') {
                     $('.cuar-js-select-single', $wrapperCSS).each(function () {
-                        $(this).addClass('select2-single').select2({
+                        $(this).addClass('select2-single').cuarSelect2({
                             dropdownParent: $(this).parent(),
                             width: '100%',
                             minimumResultsForSearch: -1
@@ -444,7 +496,7 @@
                 }
 
                 // Init Bootstrap tooltips, if present
-                if ($.isFunction($.fn.tooltip)) {
+                if (typeof $.fn.tooltip === 'function') {
                     var Tooltips = $("[data-toggle=tooltip]", $wrapperCSS);
                     if (Tooltips.length) {
                         if (Tooltips.parents('#sidebar_left')) {
@@ -459,7 +511,7 @@
                 }
 
                 // Init Bootstrap Popovers, if present
-                if ($.isFunction($.fn.popover)) {
+                if (typeof $.fn.popover === 'function') {
                     var Popovers = $("[data-toggle=popover]", $wrapperJS);
                     if (Popovers.length) {
                         Popovers.popover({container: wrapperJS});
@@ -490,6 +542,20 @@
                     $(this).siblings('a').removeClass('active').end().addClass('active').tab('show');
                 });
 
+                // Move dropdown menu to our main container
+                $(document).on('show.bs.dropdown', '.cuar-js-dropdown-in-overflow', function (e) {
+                    var dropdown = $(e.target).find('.cuar-js-dropdown-in-overflow-menu');
+
+                    dropdown.appendTo($wrapperJS).css({
+                        left: $(e.target).offset().left,
+                        top: $(e.target).offset().top + $(e.target).innerHeight()
+                    }).show();
+
+                    $(this).on('hidden.bs.dropdown', function () {
+                        dropdown.appendTo(e.target);
+                    });
+                });
+
                 // if btn has ".btn-states" class we monitor it for user clicks. On Click we remove
                 // the active class from its siblings and give it to the button clicked.
                 // This gives the button set a menu like feel or state
@@ -502,7 +568,7 @@
 
                 // Init smoothscroll on elements with set data attr
                 // data value determines smoothscroll offset
-                if ($.isFunction($.fn.smoothScroll)) {
+                if (typeof $.fn.smoothScroll === 'function') {
                     var SmoothScroll = $('[data-smoothscroll]', $wrapperCSS);
                     if (SmoothScroll.length) {
                         SmoothScroll.each(function (i, e) {
@@ -520,17 +586,17 @@
                 }
 
                 // Responsive JS Slider
-                if ($.isFunction($.fn.slick)) {
+                if (typeof $.fn.slick === 'function') {
                     var slickSlider = $('.cuar-js-slick-responsive', $wrapperJS);
                     if (slickSlider.length) {
-                        var slickSlidesCount = slickSlider.find('.slick-slide').length;
+                        var slickSlidesCount = slickSlider.find('.cuar-js-slick-slide-item').length;
                         slickSlider.slick({
                             autoplay: false,
                             centerMode: true,
-                            dots: true,
-                            infinite: true,
                             respondTo: 'slider',
+                            adaptiveHeight: false,
                             speed: 300,
+                            arrows: true,
                             slidesToShow: (slickSlidesCount < 4 ? slickSlidesCount : 4),
                             slidesToScroll: (slickSlidesCount < 4 ? slickSlidesCount : 4),
                             responsive: [{
@@ -542,7 +608,7 @@
                                     dots: true
                                 }
                             }, {
-                                breakpoint: 600,
+                                breakpoint: 880,
                                 settings: {
                                     slidesToShow: (slickSlidesCount < 2 ? 1 : 2),
                                     slidesToScroll: (slickSlidesCount < 2 ? 1 : 2)
@@ -563,6 +629,33 @@
         // Collections
         // -
             runCollection = function () {
+
+                // Instantiate Masonry
+                var $msnry = $('.cuar-js-msnry', $wrapperJS);
+                if ($msnry.length > 0) {
+                    $msnry.imagesLoaded(function ()
+                    {
+                        $msnry.masonry({
+                            columnWidth: '.cuar-js-msnry-sizer',
+                            itemSelector: '.cuar-js-msnry > .cuar-js-msnry-item',
+                            percentPosition: true
+                        });
+
+                        // Resize the main container if the height of one of the masonry item changed
+                        const observedItems = $('#cuar-js-content-cols-sizer > .cuar-js-msnry-item');
+                        const resizeObserver = new ResizeObserver(entries => {
+                          $msnry.masonry('layout');
+                        });
+
+                        observedItems.each(function(){
+                          resizeObserver.observe(this);
+                        });
+
+                    });
+                    $(wrapperJS).on('cuar:msnry:relayoutRequired', function(e){
+                      $msnry.masonry('layout');
+                    });
+                }
 
                 if ($collectionContainer.length > 0) {
 
@@ -664,7 +757,6 @@
 
         }
     }();
-
 
     $(document).ready(function () {
 

@@ -1,4 +1,13 @@
-<?php /** Template version: 3.0.0 */ ?>
+<?php /** Template version: 3.1.0
+ *
+ * -= 3.1.0 =-
+ * - Fix some jQuery deprecated functions
+ *
+ * -= 3.0.0 =-
+ * - Initial version
+ *
+ */
+?>
 
 <?php /** @var array $gateways */ ?>
 <?php /** @var CUAR_Settings $settings */ ?>
@@ -29,14 +38,15 @@
     }
 
     jQuery(document).ready(function ($) {
-        var iconPackSelector = $('#cuar_enabled_payment_icon_pack');
-        iconPackSelector.change(function () {
+        var iconPackID = '#cuar_enabled_payment_icon_pack;
+        var iconPackSelector = $(iconPackID);
+        $(document).on('change', iconPackID, function () {
             refreshDisplayedIconPack($, $(this));
         });
 
         refreshDisplayedIconPack($, iconPackSelector);
 
-        $('.cuar-payment-icon-setting select').change(function () {
+        $(document).on('change', '.cuar-payment-icon-setting select', function () {
             refreshSelectedIcons($, $(this));
         });
     });

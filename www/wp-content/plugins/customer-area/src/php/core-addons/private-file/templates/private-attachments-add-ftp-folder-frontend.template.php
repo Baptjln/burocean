@@ -1,6 +1,12 @@
 <?php /**
- * Template version: 3.0.0
+ * Template version: 3.1.0
  * Template zone: frontend
+ *
+ * -= 3.1.0 =-
+ * - Prevent Select2 assignment boxes to fail while initializing if the theme or a plugin is already loading Select2
+ *
+ * -= 3.0.0 =-
+ * - Initial version
  */ ?>
 
 <?php /** @var int $post_id */ ?>
@@ -45,7 +51,7 @@
             $('#cuar-js-content-container').on('cuar:wizard:initialized', function(){
                 $('.cuar-js-ftp-uploader').ftpUploader();
 
-                $("#cuar_ftp_file_selection").select2({
+                $("#cuar_ftp_file_selection").cuarSelect2({
                     dropdownParent: $('#cuar_ftp_file_selection').parent(),
                     width: "100%",
                     allowClear: true,

@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ function cuar_create_private_page($post_data, $owners)
     // Assign the owner
     /** @var CUAR_PostOwnerAddOn $po_addon */
     $po_addon = cuar_addon('post-owner');
-    $po_addon->save_post_owners($post_id, $owners);
+    $po_addon->save_post_owners($post_id, $owners, true, true);
 
     return $post_id;
 }

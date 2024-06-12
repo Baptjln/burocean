@@ -1,5 +1,8 @@
 <?php
-/** Template version: 2.0.0
+/** Template version: 2.1.0
+ *
+ * -= 2.1.0 =-
+ * - Fix jQuery un-compatibility that was preventing multiple checkboxes to work on capabilities screen
  *
  * -= 2.0.0 =-
  * - Add cuar- prefix to bootstrap classes
@@ -133,11 +136,11 @@ wp_enqueue_script('jquery-ui-tabs');
     jQuery(function ($) {
         $("#sections_tabs").tabs();
 
-        $('.cuar-toggle_roles').change(function () {
+        $(document).on('change', '.cuar-toggle_roles', function () {
             var $toggle_box = $(this);
             var $table = $(this).parents('table');
             var targetRole = $toggle_box.data('role');
-            var isChecked = $toggle_box.attr("checked");
+            var isChecked = $toggle_box.is(':checked');
 
             if (isChecked === undefined) isChecked = false;
 
@@ -148,11 +151,11 @@ wp_enqueue_script('jquery-ui-tabs');
             });
         });
 
-        $('.cuar-toggle_caps').change(function () {
+        $(document).on('change', '.cuar-toggle_caps', function () {
             var $toggle_box = $(this);
             var $table = $(this).parents('table');
             var targetCap = $toggle_box.data('cap');
-            var isChecked = $toggle_box.attr("checked");
+            var isChecked = $toggle_box.is(':checked');
 
             if (isChecked === undefined) isChecked = false;
 

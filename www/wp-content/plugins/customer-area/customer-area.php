@@ -2,15 +2,15 @@
 /*
 	Plugin Name: 	WP Customer Area
 	Description: 	WP Customer Area is a modular all-in-one solution to manage private content with WordPress.
-	Plugin URI: 	http://wp-customerarea.com
-	Version: 		7.8.6
-	Author: 		MarvinLabs
-	Author URI: 	http://www.marvinlabs.com
+	Plugin URI: 	https://wp-customerarea.com
+	Version: 		8.2.3
+	Author: 		Foobar Studio
+	Author URI: 	https://foobar.studio
 	Text Domain: 	cuar
 	Domain Path: 	/languages
 */
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -30,18 +30,25 @@
 if ( !defined('CUAR_PLUGIN_DIR')) define('CUAR_PLUGIN_DIR', untrailingslashit(plugin_dir_path(__FILE__)));
 if ( !defined('CUAR_INCLUDES_DIR')) define('CUAR_INCLUDES_DIR', CUAR_PLUGIN_DIR . '/src/php');
 
-define('CUAR_LANGUAGE_DIR', 'customer-area/languages');
+if ( !defined('CUAR_PLUGIN_DIR')) define('CUAR_PLUGIN_DIR', untrailingslashit(plugin_dir_path(__FILE__)));
+if ( !defined('CUAR_INCLUDES_DIR')) define('CUAR_INCLUDES_DIR', CUAR_PLUGIN_DIR . '/src/php');
 
-define('CUAR_PLUGIN_VERSION', '7.8.6');
-define('CUAR_PLUGIN_URL', untrailingslashit(plugins_url()) . '/customer-area/'); // plugin_dir_url( __FILE__ ) );
+define('CUAR_LANGUAGE_DIR', basename(CUAR_PLUGIN_DIR) . '/languages');
+
+define('CUAR_PLUGIN_VERSION', '8.2.3');
+define('CUAR_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('CUAR_SCRIPTS_URL', CUAR_PLUGIN_URL . 'scripts');
 define('CUAR_ADMIN_SKIN', 'plugin%%default-wp38');
 define('CUAR_FRONTEND_SKIN', 'plugin%%master');
-define('CUAR_PLUGIN_FILE', 'customer-area/customer-area.php');
-
+define('CUAR_PLUGIN_FILE', basename(CUAR_PLUGIN_DIR) . '/customer-area.php');
 define('CUAR_DEBUG_LICENSING', false);
 define('CUAR_DEBUG_UPGRADE_PROCEDURE_FROM_VERSION', false);
 // define( 'CUAR_DEBUG_UPGRADE_PROCEDURE_FROM_VERSION', '6.3.0' );
+
+// Prevent plugin folder to be renamed to ensure compatibility with add-ons.
+if(basename(CUAR_PLUGIN_DIR) !== 'customer-area') {
+	wp_die("WP Customer Area plugin's folder name MUST be customer-area. Please, don't rename it to something else.");
+}
 
 include_once(CUAR_PLUGIN_DIR . '/libs/php/cuar/cuar_commons.php');
 
@@ -68,9 +75,7 @@ include_once(CUAR_INCLUDES_DIR . '/core-classes/TemplateEngine/template-file.cla
 include_once(CUAR_INCLUDES_DIR . '/core-classes/TemplateEngine/template-finder.class.php');
 include_once(CUAR_INCLUDES_DIR . '/core-classes/TemplateEngine/template-engine.class.php');
 
-include_once(CUAR_INCLUDES_DIR . '/core-classes/Licensing/license-store.class.php');
-include_once(CUAR_INCLUDES_DIR . '/core-classes/Licensing/license-validation-result.class.php');
-include_once(CUAR_INCLUDES_DIR . '/core-classes/Licensing/licensing.class.php');
+include_once(CUAR_INCLUDES_DIR . '/core-classes/Licensing/licensing-client.class.php');
 
 include_once(CUAR_INCLUDES_DIR . '/core-classes/MessageCenter/message-center.class.php');
 
@@ -82,7 +87,6 @@ include_once(CUAR_INCLUDES_DIR . '/core-classes/Addon/addon-manager.class.php');
 
 // Core Plugin classes
 include_once(CUAR_INCLUDES_DIR . '/core-classes/settings.class.php');
-include_once(CUAR_INCLUDES_DIR . '/core-classes/plugin-store.class.php');
 include_once(CUAR_INCLUDES_DIR . '/core-classes/plugin-activation.class.php');
 include_once(CUAR_INCLUDES_DIR . '/core-classes/plugin.class.php');
 

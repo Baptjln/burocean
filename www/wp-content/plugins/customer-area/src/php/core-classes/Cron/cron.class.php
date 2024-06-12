@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,7 +26,12 @@ class CUAR_Cron
     public function register_hooks()
     {
         add_filter('cron_schedules', array($this, 'add_schedules'));
-        add_action('wp', array($this, 'schedule_events'));
+
+		if (is_admin())
+		{
+			add_action('cuar/core/activation/run-deferred-action?action_id=schedule-cron-events', [&$this, 'schedule_events']);
+			add_action('cuar/core/activation/run-deferred-action?action_id=clear-scheduled-cron-events', [&$this, 'clear_scheduled_events']);
+		}
     }
 
     /**
@@ -66,7 +71,7 @@ class CUAR_Cron
     private function schedule_weekly_events()
     {
         if ( !wp_next_scheduled('cuar/cron/events?schedule=weekly')) {
-            wp_schedule_event(current_time('timestamp', true), 'weekly', 'cuar/cron/events?schedule=weekly');
+            wp_schedule_event(time(), 'weekly', 'cuar/cron/events?schedule=weekly');
         }
     }
 
@@ -78,7 +83,7 @@ class CUAR_Cron
     private function schedule_daily_events()
     {
         if ( !wp_next_scheduled('cuar/cron/events?schedule=daily')) {
-            wp_schedule_event(current_time('timestamp', true), 'daily', 'cuar/cron/events?schedule=daily');
+            wp_schedule_event(time(), 'daily', 'cuar/cron/events?schedule=daily');
         }
     }
 
@@ -90,8 +95,21 @@ class CUAR_Cron
     private function schedule_hourly_events()
     {
         if ( !wp_next_scheduled('cuar/cron/events?schedule=hourly')) {
-            wp_schedule_event(current_time('timestamp', true), 'hourly', 'cuar/cron/events?schedule=hourly');
+            wp_schedule_event(time(), 'hourly', 'cuar/cron/events?schedule=hourly');
         }
     }
+
+	/**
+	 * Clear scheduled events
+	 *
+	 * @return void
+	 */
+	private function clear_scheduled_events()
+	{
+		wp_clear_scheduled_hook('cuar/cron/events?schedule=weekly');
+		wp_clear_scheduled_hook('cuar/cron/events?schedule=daily');
+		wp_clear_scheduled_hook('cuar/cron/events?schedule=hourly');
+	}
+
 
 }

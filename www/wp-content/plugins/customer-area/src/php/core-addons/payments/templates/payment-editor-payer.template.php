@@ -1,4 +1,16 @@
-<?php /** Template version: 3.0.0 */ ?>
+<?php
+/**
+ * Template version: 3.2.0
+ *
+ * -= 3.2.0 =-
+ * - Update address fields
+ *
+ * -= 3.1.0 =-
+ * - Prevent Select2 assignment boxes to fail while initializing if the theme or a plugin is already loading Select2
+ *
+ * -= 3.0.0 =-
+ * - Initial version
+ */ ?>
 
 <?php /** @var CUAR_Payment $payment */ ?>
 <?php /** @var array $gateways  */ ?>
@@ -38,13 +50,15 @@ $selectable_users = get_users();
     $am->print_address_editor($payment->get_address(),
         'cuar_address', '',
         array(), '',
-        'metabox');
+        'metabox',
+        'payment-' . $payment->ID
+    );
     ?>
 </div>
 
 <script type="text/javascript">
     jQuery(document).ready(function ($) {
-        $('#payer_user_id').select2({
+        $('#payer_user_id').cuarSelect2({
             width: "100%"
         });
     });

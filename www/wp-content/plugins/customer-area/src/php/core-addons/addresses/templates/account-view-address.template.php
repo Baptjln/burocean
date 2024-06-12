@@ -1,6 +1,12 @@
 <?php /**
- * Template version: 3.0.0
+ * Template version: 5.0.0
  * Template zone: frontend
+ *
+ * -= 5.0.0 =-
+ * - Code cleanup
+ *
+ * -= 4.0.0 =-
+ * - Updated markup for masonry compatibility
  *
  * -= 3.0.0 =-
  * - Updated markup for new master-skin
@@ -10,7 +16,7 @@
  */ ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -38,59 +44,55 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 /** @var CUAR_AddressesAddOn $ad_addon */
 $ad_addon = cuar_addon('address-manager');
 $user_addresses = $ad_addon->get_registered_user_addresses();
-$column_class = 'col-md-6 col-lg-4';
-if (count($user_addresses)==1) $column_class = 'col-md-12';
-else if (count($user_addresses)==2) $column_class = 'col-md-6';
 ?>
 
-<div class="<?php echo $column_class; ?>">
-    <div class="panel">
-        <div class="panel-heading">
-            <?php if (!empty($address_label)) : ?>
-                <span class="panel-title"><?php echo $address_label; ?></span>
-            <?php endif; ?>
-        </div>
-        <div class="panel-body">
-            <?php if (CUAR_AddressHelper::compare_addresses(CUAR_AddressHelper::sanitize_address(array()), $address)) : ?>
-                <div class="cuar-address cuar-<?php echo $address_class; ?>">
-                    <p><?php _e('No address yet', 'cuar'); ?></p>
-                </div>
-            <?php else: ?>
-                <div class="cuar-address cuar-<?php echo $address_class; ?>">
-                    <?php if (!empty($address['name']) || !empty($address['company'])) : ?>
-                    <p>
-                        <?php if ( !empty($address['company'])) : ?>
-                            <strong><?php echo $address['company']; ?></strong><br>
-                        <?php endif; ?>
 
-                        <?php if ( !empty($address['name'])) : ?>
-                            <strong><?php echo $address['name']; ?></strong>
-                        <?php endif; ?>
+<div class="cuar-js-msnry-item col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-2 panel clearfix masonry-brick panel">
+	<div class="panel-heading">
+		<?php if (!empty($address_label)) : ?>
+			<span class="panel-title"><?php echo esc_html($address_label); ?></span>
+		<?php endif; ?>
+	</div>
+	<div class="panel-body">
+		<?php if (CUAR_AddressHelper::compare_addresses(CUAR_AddressHelper::sanitize_address([]), $address)) : ?>
+			<div class="cuar-address cuar-<?php echo esc_attr($address_class); ?>">
+				<p><?php esc_html_e('No address yet', 'cuar'); ?></p>
+			</div>
+		<?php else: ?>
+			<div class="cuar-address cuar-<?php echo esc_attr($address_class); ?>">
+				<?php if (!empty($address['name']) || !empty($address['company'])) : ?>
+					<p>
+						<?php if (!empty($address['company'])) : ?>
+							<strong><?php echo esc_html($address['company']); ?></strong><br>
+						<?php endif; ?>
 
-                        <?php if ( !empty($address['vat_number'])) : ?>
-                            <br><?php echo __('VAT ID -', 'cuar') . ' ' . $address['vat_number']; ?>
-                        <?php endif; ?>
-                    </p>
-                    <?php endif; ?>
+						<?php if (!empty($address['name'])) : ?>
+							<strong><?php echo esc_html($address['name']); ?></strong>
+						<?php endif; ?>
 
-                    <p>
-                        <?php if ( !empty($address['line1'])) : ?>
-                            <?php echo $address['line1']; ?><br>
-                        <?php endif; ?>
-                        <?php if ( !empty($address['line2'])) : ?>
-                            <?php echo $address['line2']; ?><br>
-                        <?php endif; ?>
-                        <?php if ( !empty($address['zip']) || !empty($address['city'])) : ?>
-                            <?php echo $address['zip']; ?>&nbsp;<?php echo $address['city']; ?><br>
-                        <?php endif; ?>
-                        <?php if ( !empty($address['state']) || !empty($address['country'])) : ?>
-                            <?php if ( !empty($address['state'])) : ?><?php echo CUAR_CountryHelper::getStateName($address['country'],
-                                $address['state']); ?>,&nbsp;<?php endif; ?>
-                            <?php echo CUAR_CountryHelper::getCountryName($address['country']); ?>
-                        <?php endif; ?>
-                    </p>
-                </div>
-            <?php endif; ?>
-        </div>
-    </div>
+						<?php if (!empty($address['vat_number'])) : ?>
+							<br><?php printf(esc_html__('VAT ID - %s', 'cuar'), esc_html($address['vat_number'])); ?>
+						<?php endif; ?>
+					</p>
+				<?php endif; ?>
+
+				<p>
+					<?php if (!empty($address['line1'])) : ?>
+						<?php echo esc_html($address['line1']); ?><br>
+					<?php endif; ?>
+					<?php if (!empty($address['line2'])) : ?>
+						<?php echo esc_html($address['line2']); ?><br>
+					<?php endif; ?>
+					<?php if (!empty($address['zip']) || !empty($address['city'])) : ?>
+						<?php echo esc_html($address['zip']); ?>&nbsp;<?php echo esc_html($address['city']); ?><br>
+					<?php endif; ?>
+					<?php if (!empty($address['state']) || !empty($address['country'])) : ?>
+						<?php if (!empty($address['state'])) : ?>
+							<?php echo esc_html(CUAR_CountryHelper::getStateName($address['country'], $address['state'])); ?>,&nbsp;<?php endif; ?>
+						<?php echo esc_html(CUAR_CountryHelper::getCountryName($address['country'])); ?>
+					<?php endif; ?>
+				</p>
+			</div>
+		<?php endif; ?>
+	</div>
 </div>

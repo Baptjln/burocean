@@ -1,5 +1,11 @@
 <?php
-/** Template version: 3.1.1
+/** Template version: 4.1.0
+ *
+ * -= 4.1.0 =-
+ * - Hide file size and "Download" text in files attachments panel on mobile view
+ *
+ * -= 4.0.0 =-
+ * - Updated markup for masonry compatibility
  *
  * -= 3.1.1 =-
  * - Force download when downloading all (fixes bug with Enhanced Files addon)
@@ -32,7 +38,7 @@ $attachments = cuar_get_the_attached_files($post->ID);
 $attachment_count = count($attachments);
 ?>
 
-<div class="cuar-single-post-footer">
+<div class="cuar-single-post-footer cuar-js-msnry-item col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-4">
     <div class="panel top cuar-attachments">
         <div class="panel-heading">
             <span class="panel-title">
@@ -60,11 +66,12 @@ $attachment_count = count($attachments);
                             <?php cuar_the_attached_file_caption($post->ID, $file); ?>
                         </td>
                         <?php do_action('cuar/templates/file-attachment-item/after-caption', $post->ID, $file); ?>
-                        <td class="cuar-size"><?php cuar_the_attached_file_size($post->ID, $file); ?></td>
+                        <td class="cuar-size hidden-xs"><?php cuar_the_attached_file_size($post->ID, $file); ?></td>
                         <td class="cuar-actions">
                             <a href="<?php cuar_the_attached_file_link($post->ID, $file); ?>"
                                title="<?php esc_attr_e('Get file', 'cuar'); ?>" class="btn btn-default btn-sm">
-                                <span class="fa fa-download"></span>&nbsp;<?php _e('Download', 'cuar'); ?>
+                                <span class="fa fa-download"></span>
+                                <span class="hidden-xs"> <?php _e('Download','cuar'); ?></span>
                             </a>
                         </td>
                     </tr>

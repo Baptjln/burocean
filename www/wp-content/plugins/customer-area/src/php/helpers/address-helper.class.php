@@ -64,18 +64,12 @@ if ( !class_exists('CUAR_AddressHelper')) :
 
             if (empty($address['country'])) $address['state'] = '';
 
-            $address['name'] = stripslashes($address['name']);
-            $address['company'] = stripslashes($address['company']);
-            $address['vat_number'] = stripslashes($address['vat_number']);
-            $address['logo_url'] = stripslashes($address['logo_url']);
-            $address['line1'] = stripslashes($address['line1']);
-            $address['line2'] = stripslashes($address['line2']);
-            $address['zip'] = stripslashes($address['zip']);
-            $address['city'] = stripslashes($address['city']);
-            $address['country'] = stripslashes($address['country']);
-            $address['state'] = stripslashes($address['state']);
+	        $address = apply_filters('cuar/core/address', $address);
 
-            return apply_filters('cuar/core/address', $address);
+            return map_deep($address, function ($item)
+            {
+	            return sanitize_text_field($item);
+            });
         }
 
         /**

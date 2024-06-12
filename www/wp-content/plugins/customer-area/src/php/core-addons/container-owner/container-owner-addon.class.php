@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if ( !class_exists('CUAR_ContainerOwnerAddOn')) :
      * Add-on to provide all the stuff required to set an owner on a post type and include that post type in the
      * customer area.
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_ContainerOwnerAddOn extends CUAR_AddOn
     {
@@ -53,14 +53,15 @@ if ( !class_exists('CUAR_ContainerOwnerAddOn')) :
 
         /*------- QUERY FUNCTIONS ---------------------------------------------------------------------------------------*/
 
-        /**
-         * Builds the meta query to check if a user owns a post
-         *
-         * @param int $user_id The user ID of the owner
-         *
-         * @return array See the meta query documentation on WP codex
-         */
-        public function get_meta_query_containers_owned_by($user_id)
+	    /**
+	     * Builds the meta query to check if a user owns a post
+	     *
+	     * @param int $user_id The user ID of the owner
+	     * @param string|array $post_type The queried post type
+	     *
+	     * @return array See the meta query documentation on WP codex
+	     */
+        public function get_meta_query_containers_owned_by($user_id, $post_type)
         {
             $user_id = apply_filters('cuar/core/ownership/container/meta-query/override-owner-id', $user_id);
 
@@ -68,7 +69,8 @@ if ( !class_exists('CUAR_ContainerOwnerAddOn')) :
                 'relation' => 'OR'
             );
 
-            return apply_filters('cuar/core/ownership/container/meta-query', $base_meta_query, $user_id);
+            return apply_filters('cuar/core/ownership/container/meta-query', $base_meta_query, $user_id, null,
+	            $post_type);
         }
 
         public function get_owner_meta_query_component($key, $owner_id)

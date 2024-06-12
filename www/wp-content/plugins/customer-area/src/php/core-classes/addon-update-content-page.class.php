@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if ( !class_exists('CUAR_AbstractUpdateContentPageAddOn')) :
     /**
      * The base class for addons that should render a page to update private content
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     abstract class CUAR_AbstractUpdateContentPageAddOn extends CUAR_AbstractEditContentPageAddOn
     {
@@ -57,10 +57,10 @@ if ( !class_exists('CUAR_AbstractUpdateContentPageAddOn')) :
 
             if ( !is_admin())
             {
-                add_action('cuar/private-content/view/single-post-action-links?post-type=' . $this->get_friendly_post_type(),
+                add_filter('cuar/private-content/view/single-post-action-links?post-type=' . $this->get_friendly_post_type(),
                     array(&$this, 'get_single_content_action_links'));
 
-                add_action('cuar/private-container/view/single-post-action-links?post-type=' . $this->get_friendly_post_type(),
+                add_filter('cuar/private-container/view/single-post-action-links?post-type=' . $this->get_friendly_post_type(),
                     array(&$this, 'get_single_content_action_links'));
             }
         }

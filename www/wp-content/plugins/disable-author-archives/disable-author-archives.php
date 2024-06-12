@@ -3,7 +3,7 @@
  * Plugin Name: Disable Author Archives
  * Plugin URI: https://wordpress.org/plugins/disable-author-archives
  * Description: Disables author archives and makes the web server return status code 404 ('Not Found') instead.
- * Version: 1.3.1
+ * Version: 1.3.5
  * Author: freemp
  * Author URI: https://profiles.wordpress.org/freemp
  * Text Domain: disable-author-archives
@@ -12,8 +12,6 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
-
-load_plugin_textdomain( 'disable-author-archives', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
 /* Return status code 404 for existing and non-existing author archives. */
 add_action( 'template_redirect',
@@ -25,12 +23,22 @@ add_action( 'template_redirect',
 			nocache_headers();
 		}
 	}, 1 );
+
 /* Remove author links. */
 add_filter( 'user_row_actions',
 	function( $actions ) {
 		if ( isset( $actions['view'] ) )
 			unset( $actions['view'] );
 		return $actions;
-	}, PHP_INT_MAX, 2 );
+	}, PHP_INT_MAX );
 add_filter( 'author_link', function() { return '#'; }, PHP_INT_MAX );
-add_filter( 'the_author_posts_link', '__return_empty_string', PHP_INT_MAX );
+add_filter( 'the_author_posts_link', 'get_the_author', PHP_INT_MAX );
+
+/* Remove users from default sitemap. */
+if ( class_exists( 'WP_Sitemaps' ) )
+	add_filter( 'wp_sitemaps_add_provider',
+		function( $provider, $name ) {
+			if ( $name === 'users' )
+				return false;
+			return $provider;
+		}, PHP_INT_MAX, 2 );

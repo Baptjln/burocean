@@ -1,5 +1,8 @@
-<?php
-/** Template version: 2.0.0
+<?php /**
+ * Template version: 2.1.0
+ *
+ * -= 2.1.0 =-
+ * - Fix some WP Customer Area strings
  *
  * -= 2.0.0 =-
  * - Add cuar- prefix to bootstrap classes
@@ -11,7 +14,7 @@
 ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 	<h3><?php _e( 'Orphan pages', 'cuar' ); ?></h3>
 	
 	<p>
-		<?php _e( 'Some pages in your site seem to contain Customer Area shortcodes but are not registered in the Customer Area pages settings. Those are probably pages you had created and ' 
+		<?php _e( 'Some pages in your site seem to contain WP Customer Area shortcodes but are not registered in the settings of WP Customer Area pages. Those are probably pages you had created and '
 				. 'trashed when originally set up the plugin. You should delete them for good either manually or by letting us do it for you.', 'cuar' ); ?>
 	</p>
 		 

@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ if (!class_exists('CUAR_AbstractPageAddOn')) :
     /**
      * The base class for addons that should render a page
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     abstract class CUAR_AbstractPageAddOn extends CUAR_AddOn
     {
@@ -464,6 +464,52 @@ if (!class_exists('CUAR_AbstractPageAddOn')) :
         }
 
         /*------- OTHER FUNCTIONS ---------------------------------------------------------------------------------------*/
+
+        /**
+         * Helper used to return max-width markup for posts, pages and forms
+         *
+         * @param string $type
+         * @param null   $page_classes
+         * @return string
+         */
+        protected function get_max_width_markup($type = 'post', $page_classes = null)
+        {
+            global $content_width;
+
+            $cuar_content_width = '';
+            $cuar_content_max_width = '';
+
+            if ($type == 'post') {
+                $cuar_content_width = isset($content_width) ? $content_width : '';
+                $cuar_content_width = apply_filters('cuar/private-content/view/max-width', $cuar_content_width);
+
+            } else if ($type == 'page') {
+
+                $cuar_content_width = apply_filters('cuar/private-content/view/max-width-for-pages', '');
+                $resizables_forms = [];
+
+                if (!empty($page_classes)) {
+                    foreach ($page_classes as $k => $v) {
+                        if (preg_match("/\bcuar-page-customer-(new|update|login|register|forgot-password|reset-password)\b/i",
+                            $v)) {
+                            $resizables_forms[$k] = $v;
+                        }
+                    }
+                }
+
+                if (!empty($resizables_forms)) {
+                    $cuar_content_width = isset($content_width) ? $content_width : 1080;
+                    $cuar_content_width = apply_filters('cuar/private-content/view/max-width-for-forms', $cuar_content_width);
+                }
+            } else if ($type =='inner_page') {
+                $cuar_content_width = isset($content_width) ? $content_width : 1080;
+                $cuar_content_width = apply_filters('cuar/private-content/view/max-width-for-inner-pages',
+                    $cuar_content_width);
+            }
+
+            return !empty($cuar_content_width) ? ' style="margin: 0 auto; max-width: ' . $cuar_content_width . 'px;"'
+                : '';
+        }
 
         public function add_body_class($classes = array())
         {

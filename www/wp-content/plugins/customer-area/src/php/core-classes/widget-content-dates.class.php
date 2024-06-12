@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if ( !class_exists('CUAR_ContentDatesWidget')) :
     /**
      * Widget to show the dates of content
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     abstract class CUAR_ContentDatesWidget extends WP_Widget
     {
@@ -121,35 +121,71 @@ if ( !class_exists('CUAR_ContentDatesWidget')) :
             $po_addon = $cuar_plugin->get_addon('post-owner');
 
             $args = array(
+				'query_filter'	 => 'cuar_widget_add_authored_by',
                 'post_type'      => $this->get_post_type(),
                 'posts_per_page' => -1,
                 'orderby'        => 'date',
                 'order'          => 'DESC',
-                'meta_query'     => $po_addon->get_meta_query_post_owned_by(get_current_user_id())
+                'meta_query'     => $po_addon->get_meta_query_post_owned_by(get_current_user_id(), $this->get_post_type())
             );
+
             $args = apply_filters('cuar/core/widget/query-args?widget-id=' . $this->id_base, $args);
-            $posts = get_posts($args);
 
+			add_filter( 'posts_where', [&$this, 'filter_query_to_add_authored_by'], 9, 2);
+			$query = new WP_Query($args);
+			remove_filter('posts_where', [&$this, 'filter_query_to_add_authored_by']);
 
-            $out = array();
-            if (count($posts) > 0)
-            {
-                foreach ($posts as $p)
-                {
-                    $current_year = mysql2date('Y', $p->post_date);
+			$posts = $query->get_posts();
 
-                    if ( !isset($out[$current_year]))
-                    {
-                        $out[$current_year] = array();
-                    }
+			$out = array();
+			if (count($posts) > 0)
+			{
+				foreach ($posts as $p)
+				{
+					$current_year = mysql2date('Y', $p->post_date);
 
-                    $month_num = mysql2date('m', $p->post_date);
-                    $out[$current_year][$month_num] = $month_num;
-                }
-            }
+					if ( !isset($out[$current_year]))
+					{
+						$out[$current_year] = array();
+					}
 
-            return $out;
-        }
+					$month_num = mysql2date('m', $p->post_date);
+					$out[$current_year][$month_num] = $month_num;
+				}
+			}
+
+			return $out;
+		}
+
+		public function filter_query_to_add_authored_by( $where, $q ) {
+			if ( isset($q->query['query_filter']) && 'cuar_widget_add_authored_by' === $q->query['query_filter'] ) {
+				global $wpdb;
+
+				$disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by', true);
+				$post_types = is_array($q->query['post_type']) ? $q->query['post_type'] : [$q->query['post_type']];
+				foreach($post_types as $post_type)
+				{
+					$disable_authored_by = apply_filters('cuar/core/page/query-disable-authored-by?post_type=' . $post_type, $disable_authored_by, $q);
+					if ($disable_authored_by)
+					{
+						return $where;
+					}
+				}
+
+				$needle_open = ") AND ((" . $wpdb->prefix . "posts.post_type";
+				$pos_open = strpos($where, $needle_open);
+				if ($pos_open !== false) {
+					$new_needle_open = " OR ( post_author = " . (int) apply_filters('cuar/core/page/query-disable-authored-by/override-user-id', get_current_user_id()) . " )";
+					$new_pos_open = strpos($where, $new_needle_open);
+					if($new_pos_open === false)
+					{
+						$new_cond_open = $new_needle_open . $needle_open;
+						$where = substr_replace($where, $new_cond_open, $pos_open, strlen($needle_open));
+					}
+				}
+			}
+			return $where;
+		}
 
         /**
          * Print the list
@@ -235,4 +271,4 @@ if ( !class_exists('CUAR_ContentDatesWidget')) :
         }
     }
 
-endif; // if (!class_exists('CUAR_ContentDatesWidget')) 
+endif; // if (!class_exists('CUAR_ContentDatesWidget'))

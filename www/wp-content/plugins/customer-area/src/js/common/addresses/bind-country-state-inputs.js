@@ -1,6 +1,6 @@
 /*
  * 	Scripts to handle the billing address fields
- *  By Vincent Mimoun-Prat / MarvinLabs (www.marvinlabs.com)
+ *  By Vincent Mimoun-Prat / Foobar Studio (foobar.studio)
  *  Released under GPL License
  */
 (function ($) {
@@ -37,8 +37,8 @@
             base.options = $.extend({}, $.cuar.bindCountryStateInputs.defaultOptions, options);
 
             // Select2 should be enabled
-            base._getCountryField().select2(base.options.select2);
-            base._getStateField().select2(base.options.select2);
+            base._getCountryField().cuarSelect2(base.options.select2);
+            base._getStateField().cuarSelect2(base.options.select2);
 
             // Do something when country is updated
             base._getCountryField().on('change', base._onCountryChanged);
@@ -62,7 +62,8 @@
                 'action': 'cuar_get_country_states',
                 'country': selectedCountry,
                 'address_id': base._getAddressId(),
-                'cuar_nonce': base._getNonce()
+                'cuar_nonce': base._getNonce(),
+                'context': base._getContext(),
             };
 
             base._setAddressBusy(true);
@@ -78,7 +79,7 @@
                     }
 
                     if (response.data.states != null) {
-                        stateField.html(response.data.htmlOptions).select2(base.options.select2);
+                        stateField.html(response.data.htmlOptions).cuarSelect2(base.options.select2);
                         stateField.val(stateField.data('pending-value')).trigger('change');
                         stateFieldGroup.show();
                     } else {
@@ -108,6 +109,11 @@
         /** Getter */
         base._getNonce = function () {
             return base._getFieldContainer().triggerHandler('cuar:address:getNonce');
+        };
+
+        /** Getter */
+        base._getContext = function () {
+            return base._getFieldContainer().triggerHandler('cuar:address:getContext');
         };
 
         /** Getter */

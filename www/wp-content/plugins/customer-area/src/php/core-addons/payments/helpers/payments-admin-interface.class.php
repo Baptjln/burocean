@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com) */
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio) */
 
 require_once(CUAR_INCLUDES_DIR . '/core-classes/settings.class.php');
 
@@ -8,7 +8,7 @@ if ( !class_exists('CUAR_PaymentsAdminInterface')) :
     /**
      * Administation area for payments
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_PaymentsAdminInterface
     {
@@ -68,6 +68,7 @@ if ( !class_exists('CUAR_PaymentsAdminInterface')) :
             if (isset($_GET["post_type"]) && $_GET["post_type"] == CUAR_Payment::$POST_TYPE)
             {
                 wp_redirect(admin_url("admin.php?page=" . self::$PAYMENT_PAGE_SLUG));
+                exit;
             }
         }
 
@@ -129,7 +130,7 @@ if ( !class_exists('CUAR_PaymentsAdminInterface')) :
         {
             if ( !isset($_GET['cuar_action']) || $_GET['cuar_action'] != 'create-payment') return;
 
-            $nonce = isset($_GET['_wpnonce']) ? $_GET['_wpnonce'] : '';
+            $nonce = isset($_GET['_wpnonce']) ? sanitize_key($_GET['_wpnonce']) : '';
             $action = 'create-payment';
             if ( !wp_verify_nonce($nonce, $action))
             {
@@ -158,6 +159,8 @@ if ( !class_exists('CUAR_PaymentsAdminInterface')) :
                 'extra_data' => array(),
             ), $object_type, $object_id);
 
+	        // Slashing there because we expect slashed data in later use
+	        $payment_data = wp_slash($payment_data);
             $payment_id = $this->pa_addon->payments()->add(
                 $object_type, $object_id,
                 $payment_data['title'],
@@ -167,6 +170,7 @@ if ( !class_exists('CUAR_PaymentsAdminInterface')) :
                 $payment_data['extra_data']);
 
             wp_redirect(admin_url('post.php?action=edit&post_type=' . CUAR_Payment::$POST_TYPE . '&post=' . $payment_id));
+            exit;
         }
 
         /*------- EDIT PAGE ----------------------------------------------------------------------------------------------------------------------------------*/

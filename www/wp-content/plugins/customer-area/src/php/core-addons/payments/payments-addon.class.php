@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com) */
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio) */
 
 require_once(CUAR_INCLUDES_DIR . '/core-classes/addon.class.php');
 include_once(CUAR_INCLUDES_DIR . '/core-addons/payments/payment.class.php');
@@ -20,7 +20,7 @@ if ( !class_exists('CUAR_PaymentsAddOn')) :
     /**
      * Add-on to allow users to send messages to each other
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_PaymentsAddOn extends CUAR_AddOn
     {
@@ -170,15 +170,15 @@ if ( !class_exists('CUAR_PaymentsAddOn')) :
          */
         public function ajax_delete_payment_note()
         {
-            $payment_id = isset($_POST['payment_id']) ? $_POST['payment_id'] : 0;
+            $payment_id = isset($_POST['payment_id']) ? (int) $_POST['payment_id'] : 0;
             if ($payment_id <= 0) {
-                wp_send_json_error(__('Payment id is not specified', 'cuar'));
+                wp_send_json_error(__('Payment ID is not specified', 'cuar'));
             }
 
             // Check nonce
             $nonce_action = 'cuar_delete_payment_note';
             $nonce_name = 'cuar_delete_payment_note_nonce';
-            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce($_POST[$nonce_name], $nonce_action)) {
+            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce(sanitize_key($_POST[$nonce_name]), $nonce_action)) {
                 wp_send_json_error(__('Trying to cheat?', 'cuar'));
             }
 
@@ -187,13 +187,34 @@ if ( !class_exists('CUAR_PaymentsAddOn')) :
                 wp_send_json_error(__('You are not allowed to manage payment notes', 'cuar'));
             }
 
-            $note_id = isset($_POST['note_id']) ? $_POST['note_id'] : 0;
+            $note_id = isset($_POST['note_id']) ? (int) $_POST['note_id'] : 0;
             if ($note_id <= 0) {
-                wp_send_json_error(__('Note id is not specified', 'cuar'));
+                wp_send_json_error(__('Payment note ID is not specified', 'cuar'));
             }
 
             $payment = new CUAR_Payment($payment_id);
-            $payment->delete_note($note_id);
+
+	        // Check ownership
+	        $parent = $payment->get_object();
+	        $po_addon = cuar_addon('post-owner');
+	        if (
+		        // Do not allow the user to delete note if
+		        // 1. He's not the one who created the payment
+		        get_current_user_id() !== (int) get_post_field( 'post_author', $payment_id)
+
+		        // 2. And, he's not the one for which the payment has been made
+		        && get_current_user_id() !== $payment->get_user_id()
+
+		        // 3. And, he's not author nor owner of the parent invoice
+		        && ( empty($parent['id'])
+		             || (!$po_addon->is_user_owner_of_post($parent['id'], get_current_user_id())
+		                 && get_current_user_id() !== ((int) (get_post_field( 'post_author', $parent['id'] ))))))
+	        {
+		        $errors[] = __('You are not allowed to delete a note from this payment', 'cuar');
+		        wp_send_json_error($errors);
+	        }
+
+	        $payment->delete_note($note_id);
 
             wp_send_json_success(array('deleted' => true));
         }
@@ -203,7 +224,7 @@ if ( !class_exists('CUAR_PaymentsAddOn')) :
          */
         public function ajax_add_payment_note()
         {
-            $payment_id = isset($_POST['payment_id']) ? $_POST['payment_id'] : 0;
+            $payment_id = isset($_POST['payment_id']) ? (int) $_POST['payment_id'] : 0;
             if ($payment_id <= 0) {
                 wp_send_json_error(__('Payment id is not specified', 'cuar'));
             }
@@ -211,7 +232,7 @@ if ( !class_exists('CUAR_PaymentsAddOn')) :
             // Check nonce
             $nonce_action = 'cuar_add_payment_note';
             $nonce_name = 'cuar_add_payment_note_nonce';
-            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce($_POST[$nonce_name], $nonce_action)) {
+            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce(sanitize_key($_POST[$nonce_name]), $nonce_action)) {
                 wp_send_json_error(__('Trying to cheat?', 'cuar'));
             }
 
@@ -221,14 +242,35 @@ if ( !class_exists('CUAR_PaymentsAddOn')) :
             }
 
 
-            $message = isset($_POST['message']) ? $_POST['message'] : '';
+            $message = isset($_POST['message']) ? sanitize_textarea_field($_POST['message']) : '';
             if (empty($message)) {
                 wp_send_json_error(__('You must provide a message', 'cuar'));
             }
 
             $author = get_userdata(get_current_user_id());
 
-            $payment = new CUAR_Payment($payment_id);
+	        $payment = new CUAR_Payment($payment_id);
+
+	        // Check ownership
+	        $parent = $payment->get_object();
+	        $po_addon = cuar_addon('post-owner');
+	        if (
+				// Do not allow the user to add note if
+		        // 1. He's not the one who created the payment
+				get_current_user_id() !== (int) get_post_field( 'post_author', $payment_id)
+
+				// 2. And, he's not the one for which the payment has been made
+		        && get_current_user_id() !== $payment->get_user_id()
+
+				// 3. And, he's not author nor owner of the parent invoice
+		        && ( empty($parent['id'])
+	            || (!$po_addon->is_user_owner_of_post($parent['id'], get_current_user_id())
+	                && get_current_user_id() !== ((int) (get_post_field( 'post_author', $parent['id'] ))))))
+	        {
+		        $errors[] = __('You are not allowed to add a note to this payment', 'cuar');
+		        wp_send_json_error($errors);
+	        }
+
             $note = $payment->add_note($author->user_login, $message);
 
             wp_send_json_success($note);
@@ -264,4 +306,4 @@ if ( !class_exists('CUAR_PaymentsAddOn')) :
     // Make sure the addon is loaded
     new CUAR_PaymentsAddOn();
 
-endif; // if (!class_exists('CUAR_PaymentsAddOn')) 
+endif; // if (!class_exists('CUAR_PaymentsAddOn'))

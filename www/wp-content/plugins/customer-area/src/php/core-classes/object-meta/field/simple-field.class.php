@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ include_once( CUAR_INCLUDES_DIR . '/core-classes/object-meta/field/abstract-fiel
 /**
  * A simple object field (composition of renderer, storage and validation). This object is meant to serve as a base to very basic field types.
 *
-* @author Vincent Prat @ MarvinLabs
+* @author Vincent Prat @ Foobar Studio
 */
 abstract class CUAR_SimpleField extends CUAR_AbstractField implements CUAR_Field {
 

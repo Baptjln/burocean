@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ if ( !class_exists('CUAR_CustomerPrivatePagesAddOn')) :
     /**
      * Add-on to put private pages in the customer area
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_CustomerPrivatePagesAddOn extends CUAR_AbstractContentPageAddOn
     {
@@ -85,6 +85,11 @@ if ( !class_exists('CUAR_CustomerPrivatePagesAddOn')) :
             if (is_admin())
             {
                 $this->enable_settings('cuar_private_pages');
+            } else {
+                add_filter('cuar/core/page/toolbar/project-content-submenu-dropdown-items',
+                    [&$this, 'toolbar_add_links_to_project_dropdown'], 5);
+                add_filter('cuar/core/ownership/owner-submenu-items',
+                    [&$this, 'owner_add_links_to_dropdown_menu'], 5, 3);
             }
         }
 
@@ -151,6 +156,78 @@ if ( !class_exists('CUAR_CustomerPrivatePagesAddOn')) :
             $w->widget($this->get_default_widget_args($w->id_base), array(
                 'title' => __('Created By', 'cuar'),
             ));
+        }
+
+        /**
+         * Add some links to the single-project dropdown button
+         * (requires Front-Office add-on)
+         *
+         * @param $links array Current dropdown links
+         *
+         * @return array New dropdown links
+         */
+        public function toolbar_add_links_to_project_dropdown($links)
+        {
+            if (!$this->pp_addon->is_enabled() || !class_exists('CUAR_CollaborationAddon'))
+            {
+                return $links;
+            }
+
+            /** @var CUAR_CustomerNewPageAddOn $new_page_addon */
+            $new_page_addon = $this->plugin->get_addon('customer-new-private-page');
+            $new_page_addon_id = $new_page_addon->get_page_id();
+
+            if (!$new_page_addon->current_user_can_select_owner() || !$new_page_addon->current_user_can_create_content())
+            {
+                return $links;
+            }
+
+            $links[] = [
+                'title' => __('Attach new page', 'cuar'),
+                'url' => CUAR_CollaborationAddOn::get_owners_autofill_permalink($new_page_addon_id, 'prj,' .
+                                                                                                    get_queried_object_id()),
+                'tooltip' => __('Create a new page linked to this project', 'cuar'),
+                'extra_class' => 'text-right',
+            ];
+
+            return $links;
+        }
+
+        /**
+         * Add some links to the user dropdown menus
+         * (requires Front-Office add-on)
+         *
+         * @param $links      array Current dropdown links
+         * @param $owner_id   integer The owner unique ID
+         * @param $owner_type string The owner type
+         *
+         * @return array New dropdown links
+         */
+        public function owner_add_links_to_dropdown_menu($links, $owner_id, $owner_type)
+        {
+            if (!$this->pp_addon->is_enabled() || !class_exists('CUAR_CollaborationAddon'))
+            {
+                return $links;
+            }
+
+            /** @var CUAR_CustomerNewPageAddOn $new_page_addon */
+            $new_page_addon = $this->plugin->get_addon('customer-new-private-page');
+            $new_page_addon_id = $new_page_addon->get_page_id();
+
+            if (!$new_page_addon->current_user_can_select_owner() || !$new_page_addon->current_user_can_create_content())
+            {
+                return $links;
+            }
+
+            $links[] = [
+                'title' => __('Assign new page', 'cuar'),
+                'url' => CUAR_CollaborationAddOn::get_owners_autofill_permalink($new_page_addon_id, $owner_type . ',' .
+                                                                                                    $owner_id),
+                'tooltip' => __('Create a new page assigned to this owner', 'cuar'),
+                'extra_class' => '',
+            ];
+
+            return $links;
         }
 
         /*------- SETTINGS ACCESSORS ------------------------------------------------------------------------------------*/

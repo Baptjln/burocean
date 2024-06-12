@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ include_once( CUAR_INCLUDES_DIR . '/core-classes/object-meta/renderer/field-rend
 /**
  * The base class for field renderers
 *
-* @author Vincent Prat @ MarvinLabs
+* @author Vincent Prat @ Foobar Studio
 */
 abstract class CUAR_AbstractFieldRenderer implements CUAR_FieldRenderer {
 
@@ -79,7 +79,7 @@ abstract class CUAR_AbstractFieldRenderer implements CUAR_FieldRenderer {
 	}
 	
 	protected function get_before_readonly_field_label( $id, $value ) {
-		return '<div class="cuar-field-label">';
+		return '<div class="cuar-field-label col-xs-12 col-sm-4">';
 	}
 	
 	protected function get_after_readonly_field_label( $id, $value ) {
@@ -89,7 +89,7 @@ abstract class CUAR_AbstractFieldRenderer implements CUAR_FieldRenderer {
 	protected abstract function get_readonly_field_value( $id, $value );
 
 	protected function get_before_readonly_field_value( $id, $value ) {
-		return '<div class="cuar-field-value">';
+		return '<div class="cuar-field-value col-xs-12 col-sm-8">';
 	}
 
 	protected function get_after_readonly_field_value( $id, $value ) {

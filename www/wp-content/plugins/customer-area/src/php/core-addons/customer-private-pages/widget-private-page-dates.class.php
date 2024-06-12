@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if (!class_exists('CUAR_PrivatePageDatesWidget')) :
 /**
  * Widget to show private page categories
 *
-* @author Vincent Prat @ MarvinLabs
+* @author Vincent Prat @ Foobar Studio
 */
 class CUAR_PrivatePageDatesWidget extends CUAR_ContentDatesWidget {
 
@@ -36,7 +36,7 @@ class CUAR_PrivatePageDatesWidget extends CUAR_ContentDatesWidget {
 				'cuar_private_page_archives', 
 				__('WPCA - Page Archives', 'cuar'),
 				array( 
-						'description' => __( 'Shows the private page yearly archives of the Customer Area', 'cuar' ), 
+						'description' => __( 'Shows the private page yearly archives', 'cuar' ),
 					)
 			);
 	}

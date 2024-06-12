@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2015 MarvinLabs (contact@marvinlabs.com) */
+/*  Copyright 2015 Foobar Studio (contact@foobar.studio) */
 
 class CUAR_PaymentStatus
 {
@@ -54,7 +54,7 @@ class CUAR_PaymentStatus
 
             register_post_status($id, array(
                 'label'                     => $label,
-                'public'                    => true,
+                'public'                    => false,
                 'internal'                  => true,
                 'exclude_from_search'       => true,
                 'show_in_admin_all_list'    => true,

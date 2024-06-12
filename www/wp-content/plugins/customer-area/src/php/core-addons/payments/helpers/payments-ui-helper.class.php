@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2015 MarvinLabs (contact@marvinlabs.com) */
+/*  Copyright 2015 Foobar Studio (contact@foobar.studio) */
 
 class CUAR_PaymentsUiHelper
 {
@@ -130,7 +130,8 @@ class CUAR_PaymentsUiHelper
 
         // Verify nonce
         $nonce_action = 'process_payment_' . md5($object_type . $object_id);
-        $nonce_value = isset($_POST['cuar_process_payment_nonce']) ? $_POST['cuar_process_payment_nonce'] : '';
+        $nonce_value = isset($_POST['cuar_process_payment_nonce']) ? sanitize_key
+        ($_POST['cuar_process_payment_nonce']) : '';
         if ( !wp_verify_nonce($nonce_value, $nonce_action))
         {
             wp_die('Trying to cheat!');
@@ -187,11 +188,14 @@ class CUAR_PaymentsUiHelper
 
         if ($payment_id === false)
         {
-            $_SESSION['cuar_checkout_data'] = $_POST;
-            $_SESSION['cuar_checkout_error'] = __('The payment could not be processed, please contact us.', 'cuar');
-            wp_redirect(cuar_get_checkout_url());
+            $this->plugin->set_session_var('cuar_checkout_data', $_POST);
+            $this->plugin->set_session_var(
+                'cuar_checkout_error',
+                __('The payment could not be processed, please contact us.', 'cuar')
+            );
 
-            return;
+            wp_redirect(cuar_get_checkout_url());
+            exit;
         }
 
         // Send for processing to the gateway

@@ -1,12 +1,16 @@
-<?php /** Template version: 1.1.0
-
- -= 1.1.0 =-
+<?php /**
+ * Template version: 1.2.0
+ *
+ * -= 1.2.0 =-
+ * - Fix some WP Customer Area strings
+ *
+ * -= 1.1.0 =-
  * Add uninstall button
-
+ *
  */ ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -46,7 +50,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 <h3><?php _e( 'Reset settings', 'cuar' ); ?></h3>
 
-<p><?php _e('Pressing the button below will reset all your Customer Area settings to the default values. This cannot be undone!', 'cuar' ); ?></p>
+<p><?php _e('Pressing the button below will reset all your WP Customer Area settings to the default values. This cannot be undone!', 'cuar' ); ?></p>
 
 <p>
 	<?php wp_nonce_field( 'cuar-reset-all-settings', 'cuar-reset-all-settings_nonce' ); ?>

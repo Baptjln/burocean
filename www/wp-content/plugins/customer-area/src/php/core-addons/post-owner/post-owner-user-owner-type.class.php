@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 /**
  * Add-on to allow setting user groups or user roles as owner of a private content
  *
- * @author Vincent Prat @ MarvinLabs
+ * @author Vincent Prat @ Foobar Studio
  */
 class CUAR_PostOwnerUserOwnerType
 {
@@ -32,7 +32,7 @@ class CUAR_PostOwnerUserOwnerType
         $this->po_addon = $po_addon;
 
         add_filter('cuar/core/ownership/owner-types', array(&$this, 'declare_new_owner_types'));
-        add_filter('cuar/core/ownership/content/meta-query', array(&$this, 'extend_private_posts_meta_query'), 10, 3);
+        add_filter('cuar/core/ownership/content/meta-query', array(&$this, 'extend_private_posts_meta_query'), 10, 4);
         add_filter('cuar/core/ownership/real-user-ids?owner-type=usr',
             array(&$this, 'get_post_owner_user_ids_from_usr'), 10, 2);
         add_filter('cuar/core/ownership/validate-post-ownership', array(&$this, 'is_user_owner_of_post'), 10, 5);
@@ -145,10 +145,11 @@ class CUAR_PostOwnerUserOwnerType
      * @param array               $base_meta_query
      * @param int                 $user_id The user we want to fetch private posts for
      * @param CUAR_PostOwnerAddOn $po_addon
+     * @param string|array        $post_type
      *
      * @return array
      */
-    public function extend_private_posts_meta_query($base_meta_query, $user_id, $po_addon)
+    public function extend_private_posts_meta_query($base_meta_query, $user_id, $po_addon, $post_type = null)
     {
         // For users
         $user_meta_query = array(

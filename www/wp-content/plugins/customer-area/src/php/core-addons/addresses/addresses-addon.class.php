@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
     /**
      * Add-on to manage addresses used in the customer area
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_AddressesAddOn extends CUAR_AddOn
     {
@@ -97,7 +97,10 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
 
                 $this->print_address_editor($address,
                     $address_id, $address_label,
-                    $address_actions, $extra_scripts, 'profile');
+                    $address_actions, $extra_scripts,
+	                'profile',
+                    'user-' . $user->ID
+                );
             }
         }
 
@@ -111,7 +114,8 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
             $user_addresses = $this->get_registered_user_addresses();
             foreach ($user_addresses as $address_id => $address_label)
             {
-                $address = isset($_POST[$address_id]) ? $_POST[$address_id] : array();
+	            // Unslashing $_POST since we later use update_option which does not unslash data
+                $address = isset($_POST[$address_id]) ? wp_unslash($_POST[$address_id]) : array();
 
                 $this->set_owner_address('usr', array($user_id), $address_id, $address);
             }
@@ -142,21 +146,22 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
          */
         public function ajax_get_country_states()
         {
-            $address_id = isset($_POST['address_id']) ? $_POST['address_id'] : '';
+            $address_id = isset($_POST['address_id']) ? sanitize_text_field($_POST['address_id']) : '';
             if (empty($address_id))
             {
                 wp_send_json_error(__('Address ID must be specified', 'cuar'));
             }
 
             // Check nonce
-            $nonce_action = 'cuar_' . $address_id;
+	        $context = isset($_POST['context']) ? sanitize_text_field($_POST['context']) : '';
+            $nonce_action = 'cuar_' . $address_id . '_' . $context;
             $nonce_name = 'cuar_nonce';
-            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce($_POST[$nonce_name], $nonce_action))
+            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce(sanitize_key($_POST[$nonce_name]), $nonce_action))
             {
                 wp_send_json_error(__('Trying to cheat?', 'cuar'));
             }
 
-            $country = isset($_POST['country']) ? $_POST['country'] : null;
+            $country = isset($_POST['country']) ? sanitize_text_field($_POST['country']) : null;
             if ($country == null)
             {
                 wp_send_json_success(array('states' => null));
@@ -180,16 +185,17 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
          */
         public function ajax_load_address_from_owner()
         {
-            $address_id = isset($_POST['address_id']) ? $_POST['address_id'] : '';
+            $address_id = isset($_POST['address_id']) ? sanitize_text_field($_POST['address_id']) : '';
             if (empty($address_id))
             {
                 wp_send_json_error(__('Address ID must be specified', 'cuar'));
             }
 
             // Check nonce
-            $nonce_action = 'cuar_' . $address_id;
+	        $context = isset($_POST['context']) ? sanitize_text_field($_POST['context']) : '';
+	        $nonce_action = 'cuar_' . $address_id . '_' . $context;
             $nonce_name = 'cuar_nonce';
-            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce($_POST[$nonce_name], $nonce_action))
+            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce(sanitize_key($_POST[$nonce_name]), $nonce_action))
             {
                 wp_send_json_error(__('Trying to cheat?', 'cuar'));
             }
@@ -198,7 +204,12 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
             if ($owner == null)
             {
                 wp_send_json_error(__('You must specify the owner', 'cuar'));
+            } else {
+	            $owner['type'] = sanitize_text_field($owner['type']);
+				$owner['ids'] = wp_parse_id_list($owner['ids']);
             }
+
+	        $this->json_authorize_context($owner['type'], $owner['ids']);
 
             $address = $this->get_owner_address($owner['type'], $owner['ids'], $address_id);
 
@@ -220,24 +231,31 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
             }
 
             // Check nonce
-            $nonce_action = 'cuar_' . $address_id;
+	        $context = isset($_POST['context']) ? sanitize_text_field($_POST['context']) : '';
+            $nonce_action = 'cuar_' . $address_id . '_' . $context;
             $nonce_name = 'cuar_nonce';
-            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce($_POST[$nonce_name], $nonce_action))
+            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce(sanitize_key($_POST[$nonce_name]), $nonce_action))
             {
                 wp_send_json_error(__('Trying to cheat?', 'cuar'));
             }
 
             $owner = isset($_POST['owner']) ? $_POST['owner'] : null;
-            if ($owner == null)
+            if ($owner === null)
             {
                 wp_send_json_error(__('You must specify the owner', 'cuar'));
+            } else {
+	            $owner['type'] = sanitize_text_field($owner['type']);
+	            $owner['ids'] = wp_parse_id_list($owner['ids']);
             }
 
-            $address = isset($_POST['address']) ? $_POST['address'] : null;
-            if ($address == null)
+	        // Unslashing $_POST since we later use update_option which does not unslash data
+            $address = isset($_POST['address']) ? wp_unslash($_POST['address']) : null;
+            if ($address === null)
             {
                 wp_send_json_error(__('You must specify the address', 'cuar'));
             }
+
+            $this->json_authorize_context($owner['type'], $owner['ids']);
 
             $this->set_owner_address($owner['type'], $owner['ids'], $address_id, $address);
 
@@ -246,6 +264,41 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
                 'address'    => $address,
             ));
         }
+
+	    protected function json_authorize_context($ownerType, $ownerIds) {
+		    $context = isset($_POST['context']) ? explode('-', sanitize_text_field($_POST['context'])) : null;
+		    if ($context === null || count($context) !== 2)
+		    {
+			    wp_send_json_error(__('You must specify the context', 'cuar'));
+		    }
+
+		    $authorized = false;
+		    $user_id = get_current_user_id();
+		    if ($context[0] === 'post')
+		    {
+			    $po_addon = cuar_addon('post-owner');
+			    $authorized = $po_addon->is_user_owner_of_post($context[1], $user_id )
+			                  || $user_id === ((int) (get_post($context[1])->post_author));
+		    }
+		    else if ($context[0] === 'user')
+		    {
+			    $authorized = ((int)$context[1]) === $user_id
+				    && $ownerType === 'usr'
+				    && count($ownerIds) === 1
+				    && ((int) $ownerIds[0]) === $user_id;
+		    }
+		    else if ($context[0] === 'payment')
+		    {
+			    $authorized = $ownerType === 'post'
+			                  && count($ownerIds) === 1
+			                  && ((int) $ownerIds[0]) === ((int)$context[1]);
+		    }
+
+		    if (!$authorized)
+		    {
+			    wp_send_json_error(__('You are not allowed to edit this address', 'cuar'));
+		    }
+		}
 
         /*------- OWNER ADDRESS FUNCTIONS ----------------------------------------------------------------------------*/
 
@@ -343,7 +396,9 @@ if ( !class_exists('CUAR_AddressesAddOn')) :
             $address_label = '',
             $address_actions = array(),
             $extra_scripts = '',
-            $template_prefix = '')
+            $template_prefix = '',
+            $context = ''
+        )
         {
             $this->plugin->enable_library('jquery.select2');
 

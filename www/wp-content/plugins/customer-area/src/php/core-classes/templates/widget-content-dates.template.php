@@ -1,5 +1,8 @@
 <?php
-/** Template version: 3.0.0
+/** Template version: 3.1.0
+ *
+ * -= 3.1.0 =-
+ * - Add a "year archives" link in each fancy tree subfolder
  *
  * -= 3.0.0 =-
  * - Bootstrap support
@@ -32,6 +35,16 @@
             if (count($months) > 0) :
                 ?>
                 <ul class="cuar-tree-depth-1">
+                    <li>
+                        <?php
+                        // Print the year
+                        printf('<a href="%1$s" title="%3$s" target="_self">%2$s</a>',
+                            $link,
+                            esc_attr__('Year archives', 'cuar'),
+                            sprintf(esc_attr__('Show all content published in %s', 'cuar'), $year)
+                        );
+                        ?>
+                    </li>
                     <?php
                     foreach ($months as $month) :
                         $link = $this->get_link($year, $month);

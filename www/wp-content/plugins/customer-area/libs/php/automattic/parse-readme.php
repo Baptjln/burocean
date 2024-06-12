@@ -1,4 +1,7 @@
 <?php
+
+defined('ABSPATH') or die('Nope, not accessing this');
+
 // This is the path to markdown.php
 if ( !defined('WORDPRESS_README_MARKDOWN'))
 {
@@ -8,9 +11,11 @@ if ( !defined('WORDPRESS_README_MARKDOWN'))
     }
     else
     {
-        define('WORDPRESS_README_MARKDOWN', dirname(__FILE__) . '/markdown.php');
+        define('WORDPRESS_README_MARKDOWN', CUAR_PLUGIN_DIR . '/libs/php/vendor/michelf/php-markdown/Michelf/Markdown.inc.php');
     }
 }
+
+use Michelf\Markdown;
 
 Class WordPress_Readme_Parser
 {
@@ -330,11 +335,11 @@ Class WordPress_Readme_Parser
 
         if ($markdown)
         { // Parse markdown.
-            if ( !function_exists('Markdown'))
+            if ( !class_exists('Markdown'))
             {
                 require(WORDPRESS_README_MARKDOWN);
             }
-            $text = Markdown($text);
+            $text = Markdown::defaultTransform($text);
         }
 
         $allowed = array(

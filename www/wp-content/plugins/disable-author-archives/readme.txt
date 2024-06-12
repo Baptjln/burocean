@@ -2,7 +2,7 @@
 Contributors: freemp
 Tags: author, archives, pages, links, disable, remove, 404
 Requires at least: 2.9
-Tested up to: 6.0
+Tested up to: 6.5
 Stable tag: trunk
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -27,6 +27,21 @@ The plugin does not require any configuration. Once activated, it will start doi
 The plugin does not require any kind of configuration. Author archives are disabled as soon as the plugin is activated.
 
 == Changelog ==
+
+= 1.3.5 =
+* Fixed malformed URLs by restoring a previous author link filter.
+
+= 1.3.4 =
+* Leaving comment author link untouched.
+* Restored priority of template_redirect action.
+
+= 1.3.3 =
+* Added removal of author links in comments.
+* No longer remove author name, just the link to the author archive.
+* Removed needless loading of plugin text domain.
+
+= 1.3.2 =
+* Removed users section from WordPress built-in sitemap. Suggested by @constracti. Thanks!
 
 = 1.3.1 =
 * Removed View link from admin's Users list. Suggested by @khaiknievel. Thanks!

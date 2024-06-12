@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if ( !class_exists('CUAR_ContentAuthorsWidget')) :
     /**
      * Widget to show the authors of content
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     abstract class CUAR_ContentAuthorsWidget extends WP_Widget
     {
@@ -107,7 +107,8 @@ if ( !class_exists('CUAR_ContentAuthorsWidget')) :
          */
         protected function get_authors()
         {
-            $current_user_id = get_current_user_id();
+            $current_user_id = apply_filters('cuar/core/ownership/protect-single-post/override-user-id',
+                get_current_user_id());
 
             // TODO SETUP SOME CACHING MECHANISM
 
@@ -121,7 +122,7 @@ if ( !class_exists('CUAR_ContentAuthorsWidget')) :
                 'posts_per_page' => -1,
                 'orderby'        => 'date',
                 'order'          => 'DESC',
-                'meta_query'     => $po_addon->get_meta_query_post_owned_by(get_current_user_id())
+                'meta_query'     => $po_addon->get_meta_query_post_owned_by(get_current_user_id(), $this->get_post_type())
             );
             $args = apply_filters('cuar/core/widget/query-args?widget-id=' . $this->id_base, $args);
             $posts = get_posts($args);

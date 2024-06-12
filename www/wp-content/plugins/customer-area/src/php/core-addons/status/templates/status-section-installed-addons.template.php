@@ -1,7 +1,7 @@
 <?php /** Template version: 1.0.0 */ ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ $all_plugins = get_plugins();
 ?>
 
 <p>
-	<a href="http://wp-customerarea.com/my-account" class="button button-primary"><?php _e( 'Get latest add-ons from your account', 'cuar' ); ?> &raquo;</a>
+	<a href="<?php echo cuar_site_url('/my-account'); ?>" class="button button-primary"><?php _e( 'Get latest add-ons from your account', 'cuar' ); ?> &raquo;</a>
 
 	<input type="submit" id="cuar-refresh-version-mismatch" name="cuar-refresh-version-mismatch" class="button" value="<?php esc_attr_e('Check versions again', 'cuar'); ?> &raquo;"/>
 	<?php wp_nonce_field('cuar-refresh-version-mismatch', 'cuar-refresh-version-mismatch_nonce'); ?>
@@ -72,7 +72,7 @@ $all_plugins = get_plugins();
 			<td><?php echo $plugin_info['Version']; ?></td>
 			<td><?php echo $recommended_versions[$plugin_name]; ?></td>
 		</tr>
-<?php 
+<?php
 	endforeach; ?>
 	</tbody>
 </table>

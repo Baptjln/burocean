@@ -1,6 +1,6 @@
 /*
  * 	Scripts to handle the billing address fields
- *  By Vincent Mimoun-Prat / MarvinLabs (www.marvinlabs.com)
+ *  By Vincent Mimoun-Prat / Foobar Studio (foobar.studio)
  *  Released under GPL License
  */
 (function ($) {
@@ -34,6 +34,7 @@
             base.$el.on('cuar:address:set', base._onSetAddress);
             base.$el.on('cuar:address:get', base._onGetAddress);
             base.$el.on('cuar:address:getNonce', base._onGetNonce);
+            base.$el.on('cuar:address:getContext', base._onGetContext);
             base.$el.on('cuar:address:getAddressId', base._onGetAddressId);
             base.$el.on('cuar:address:isEmpty', base._onIsAddressEmpty);
             base.$el.on('cuar:address:setBusy', base._onSetBusy);
@@ -66,7 +67,8 @@
                 'action': 'cuar_load_address_from_owner',
                 'cuar_nonce': base._onGetNonce(),
                 'owner': owner,
-                'address_id': base._onGetAddressId()
+                'address_id': base._onGetAddressId(),
+                'context': base._onGetContext()
             };
 
             base._onSetBusy(null, true);
@@ -113,7 +115,8 @@
                 'cuar_nonce': base._onGetNonce(),
                 'owner': owner,
                 'address_id': base._onGetAddressId(),
-                'address': base._onGetAddress()
+                'address': base._onGetAddress(),
+                'context': base._onGetContext()
             };
 
             base._onSetBusy(null, true);
@@ -228,15 +231,15 @@
                 var field = base.fields[i];
                 var elt = base._getField(field);
 
-                if (field == 'country') {
+                if (field === 'country') {
                     elt.val(address[field]).trigger("change");
-                } else if (field == 'state') {
+                } else if (field === 'state') {
                     elt.val(address[field]);
                     elt.data('pending-value', address[field]);
-                } else if (field == 'vat_number') {
-                    elt.val(address['vat-number']);
-                } else if (field == 'logo_url') {
-                    elt.val(address['logo-url']);
+                } else if (field === 'vat-number') {
+                    elt.val(address['vat_number']);
+                } else if (field === 'logo-url') {
+                    elt.val(address['logo_url']);
                 } else {
                     elt.val(address[field]);
                 }
@@ -254,11 +257,16 @@
         };
 
         /** Getter */
+        base._onGetContext = function () {
+            return base.$el.data('context');
+        };
+
+        /** Getter */
         base._getField = function (name) {
             var fieldGroupSelector = '.cuar-js-address-';
-            if (name == 'vat_number') {
+            if (name === 'vat_number') {
                 fieldGroupSelector += 'vat-number';
-            } else if (name == 'logo_url') {
+            } else if (name === 'logo_url') {
                 fieldGroupSelector += 'logo-url';
             } else {
                 fieldGroupSelector += name;

@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -28,17 +28,18 @@ function cuar_the_owner( $post_id = 0 ) {
 
 /**
  * Get the display name of the owner of a post
- * 
- * @param int $post_id
+ *
+ * @param int  $post_id
+ * @param bool $displayable
+ *
  * @return mixed
  */
-function cuar_get_the_owner( $post_id = 0 ) {
+function cuar_get_the_owner( $post_id = 0, $displayable = true ) {
     /** @var CUAR_PostOwnerAddOn $po_addon */
     $po_addon = cuar_addon( 'post-owner' );
 	
 	$post_id = $post_id==0 ? get_the_ID() : $post_id;		
-	$owner_names = $po_addon->get_post_displayable_owners( $post_id );
-    $owner_names = implode(', ', $owner_names);
+	$owner_names = $displayable ? implode(', ',$po_addon->get_post_displayable_owners( $post_id )) : $po_addon->get_post_owners( $post_id );
 
 	return apply_filters( 'cuar/private-content/the-owner', $owner_names, $post_id );
 }

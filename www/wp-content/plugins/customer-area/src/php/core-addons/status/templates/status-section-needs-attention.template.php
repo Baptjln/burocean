@@ -1,7 +1,16 @@
-<?php /** Template version: 1.0.0 */ ?>
+<?php /**
+ * Template version: 1.1.0
+ *
+ * -= 1.1.0 =-
+ * - Fix some WP Customer Area strings
+ *
+ * -= 1.0.0 =-
+ * Initial version
+ *
+ */ ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -61,6 +70,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 <?php 	if ( empty( $attention_needed_messages ) ) : ?>
 	<div class="cuar-congrats">
-		<p><?php _e('Congratulations, everything seems to be configured properly. You can enjoy your customer area now.', 'cuar'); ?></p>
+		<p><?php _e('Congratulations, everything seems to be configured properly. You can enjoy your private area now.',
+                'cuar'); ?></p>
 	</div>
 <?php 	endif; ?>

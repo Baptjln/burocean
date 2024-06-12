@@ -1,5 +1,9 @@
 <?php
-/** Template version: 3.1.0
+/** Template version: 3.2.0
+ *
+ * -= 3.2.0 =-
+ * - Use bootstrap columns system instead of percentages width in collection view to prevent too much columns to be
+ * generated on large screens
  *
  * -= 3.1.0 =-
  * - Added collection title
@@ -43,9 +47,6 @@ $post_type = $current_addon->get_friendly_post_type();
             include($item_template);
         }
         ?>
-        <div class="gap"></div>
-        <div class="gap"></div>
-        <div class="gap"></div>
-        <div class="gap"></div>
+        <div class="gap col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-2"></div>
     </div>
 </div>

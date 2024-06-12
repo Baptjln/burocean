@@ -1,5 +1,8 @@
-<?php
-/** Template version: 2.0.0
+<?php /**
+ * Template version: 2.1.0
+ *
+ * -= 2.1.0 =-
+ * - Fix some WP Customer Area strings
  *
  * -= 2.0.0 =-
  * - Add cuar- prefix to bootstrap classes
@@ -11,7 +14,7 @@
 ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
     <h3><?php _e('Navigation menu is out of sync', 'cuar'); ?></h3>
 
     <p>
-        <?php _e('Some pages of the customer area have been changed and our current navigation menu probably references the previous pages. We recommend to synchronize the menu with the new pages. ', 'cuar'); ?>
+        <?php _e('Some pages of the private area have been changed and our current navigation menu probably references the previous pages. We recommend to synchronize the menu with the new pages. ', 'cuar'); ?>
         <?php printf(__('You can also manually edit that menu in the <a href="%1$s">Appearance &raquo; Menus</a> page.', 'cuar'), admin_url('nav-menus.php')); ?>
     </p>
 

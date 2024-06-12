@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if (!class_exists('CUAR_PrivateFileAuthorsWidget')) :
 /**
  * Widget to show private file categories
 *
-* @author Vincent Prat @ MarvinLabs
+* @author Vincent Prat @ Foobar Studio
 */
 class CUAR_PrivateFileAuthorsWidget extends CUAR_ContentAuthorsWidget {
 
@@ -36,7 +36,7 @@ class CUAR_PrivateFileAuthorsWidget extends CUAR_ContentAuthorsWidget {
 				'cuar_private_file_authors', 
 				__('WPCA - File Authors', 'cuar'),
 				array( 
-						'description' => __( 'Shows the private file author archives of the Customer Area', 'cuar' ), 
+						'description' => __( 'Shows the private file author archives', 'cuar' ),
 					)
 			);
 	}

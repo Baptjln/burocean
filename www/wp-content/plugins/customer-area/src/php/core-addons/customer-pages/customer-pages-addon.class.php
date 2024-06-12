@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
     /**
      * Add-on to show the customer page
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_CustomerPagesAddOn extends CUAR_AddOn
     {
@@ -42,55 +42,55 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
         public function run_addon($plugin)
         {
             // Add a WordPress menu
-            register_nav_menus(array(
-                    'cuar_main_menu' => 'WP Customer Area Navigation Menu',
-            ));
+            register_nav_menus([
+                'cuar_main_menu' => 'WP Customer Area Navigation Menu',
+            ]);
 
-            add_filter('wp_nav_menu_objects', array(&$this, 'fix_menu_item_classes'));
-            add_filter('wp_get_nav_menu_items', array(&$this, 'filter_nav_menu_items'), 10, 3);
+            add_filter('wp_nav_menu_objects', [&$this, 'fix_menu_item_classes']);
+            add_filter('wp_get_nav_menu_items', [&$this, 'filter_nav_menu_items'], 10, 3);
 
             if ($this->is_auto_menu_on_single_private_content_pages_enabled())
             {
-                add_filter('cuar/core/the_content', array(&$this, 'get_main_menu_for_single_private_content'), 99);
+                add_filter('cuar/core/the_content', [&$this, 'get_main_menu_for_single_private_content'], 99);
             }
 
             if ($this->is_auto_menu_on_customer_area_pages_enabled())
             {
-                add_filter('cuar/core/the_content', array(&$this, 'get_main_menu_for_customer_area_pages'), 99);
+                add_filter('cuar/core/the_content', [&$this, 'get_main_menu_for_customer_area_pages'], 99);
             }
 
-            add_filter('wp_page_menu_args', array(&$this, 'exclude_pages_from_wp_page_menu'));
+            add_filter('wp_page_menu_args', [&$this, 'exclude_pages_from_wp_page_menu']);
 
-            add_action('pre_get_posts', array(&$this, 'exclude_pages_from_search_results'));
+            add_action('pre_get_posts', [&$this, 'exclude_pages_from_search_results']);
 
             if (is_admin())
             {
-                add_filter('cuar/core/status/sections', array(&$this, 'add_status_sections'));
+                add_filter('cuar/core/status/sections', [&$this, 'add_status_sections']);
 
-                add_action('save_post_page', array(&$this, 'flush_rewrite_rules_for_wpca_pages'), 1000, 2);
+                add_action('save_post_page', [&$this, 'flush_rewrite_rules_for_wpca_pages'], 1000, 2);
 
                 // Settings
-                add_filter('cuar/core/settings/settings-tabs', array(&$this, 'add_settings_tab'), 300, 1);
+                add_filter('cuar/core/settings/settings-tabs', [&$this, 'add_settings_tab'], 300, 1);
 
-                add_action('cuar/core/settings/print-settings?tab=cuar_frontend', array(&$this,
-                                                                                        'print_frontend_settings'), 50, 2);
-                add_filter('cuar/core/settings/validate-settings?tab=cuar_frontend', array(&$this,
-                                                                                           'validate_frontend_settings'), 50, 3);
+                add_action('cuar/core/settings/print-settings?tab=cuar_frontend',
+                    [&$this, 'print_frontend_settings'], 50, 2);
+                add_filter('cuar/core/settings/validate-settings?tab=cuar_frontend',
+                    [&$this, 'validate_frontend_settings'], 50, 3);
 
-                add_action('cuar/core/settings/print-settings?tab=cuar_customer_pages', array(&$this,
-                                                                                              'print_pages_settings'), 50, 2);
-                add_filter('cuar/core/settings/validate-settings?tab=cuar_customer_pages', array(&$this,
-                                                                                                 'validate_pages_settings'), 50, 3);
+                add_action('cuar/core/settings/print-settings?tab=cuar_customer_pages',
+                    [&$this, 'print_pages_settings'], 50, 2);
+                add_filter('cuar/core/settings/validate-settings?tab=cuar_customer_pages',
+                    [&$this, 'validate_pages_settings'], 50, 3);
             }
             else
             {
-                add_filter('body_class', array(&$this, 'add_body_class'), 100);
-                add_filter('cuar/core/page/toolbar', array(&$this, 'add_subpages_contextual_toolbar_group'), 100);
+                add_filter('body_class', [&$this, 'add_body_class'], 100);
+                add_filter('cuar/core/page/toolbar', [&$this, 'add_subpages_contextual_toolbar_group'], 100);
 
-                add_filter('the_content', array(&$this, 'define_main_content_filter'), 9998);
-                add_filter('cuar/core/the_content', array(&$this, 'get_contextual_toolbar_for_pages'), 80);
-                add_filter('cuar/core/the_content', array(&$this, 'wrap_content_into_container'), 100);
-                add_filter('cuar/core/the_content', array(&$this, 'wrap_content_into_entry_container'), 1);
+                add_filter('the_content', [&$this, 'define_main_content_filter'], 9998);
+                add_filter('cuar/core/the_content', [&$this, 'get_contextual_toolbar_for_pages'], 80);
+                add_filter('cuar/core/the_content', [&$this, 'wrap_content_into_container'], 100);
+                add_filter('cuar/core/the_content', [&$this, 'wrap_content_into_entry_container'], 10);
             }
         }
 
@@ -101,10 +101,10 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             $defaults [self::$OPTION_AUTO_MENU_ON_SINGLE_PRIVATE_CONTENT] = true;
             $defaults [self::$OPTION_AUTO_MENU_ON_CUSTOMER_AREA_PAGES] = true;
             $defaults [self::$OPTION_CATEGORY_ARCHIVE_SLUG] = _x('category', 'Private content category archive slug',
-                    'cuar');
+                'cuar');
             $defaults [self::$OPTION_DATE_ARCHIVE_SLUG] = _x('archive', 'Private content date archive slug', 'cuar');
             $defaults [self::$OPTION_AUTHOR_ARCHIVE_SLUG] = _x('created-by', 'Private content author archive slug',
-                    'cuar');
+                'cuar');
             $defaults [self::$OPTION_UPDATE_CONTENT_SLUG] = _x('update', 'Private content update slug', 'cuar');
             $defaults [self::$OPTION_DELETE_CONTENT_SLUG] = _x('delete', 'Private content delete slug', 'cuar');
 
@@ -121,7 +121,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             foreach ($all_pages as $slug => $page)
             {
                 $page_id = $this->get_page_id($slug);
-                if ($page_id <= 0 || null == get_post($page_id))
+                if ($page_id <= 0 || null === get_post($page_id))
                 {
                     $needs_attention = true;
                     break;
@@ -130,8 +130,8 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             if ($needs_attention)
             {
                 $this->plugin->set_attention_needed('pages-without-id',
-                        __('Some pages of the customer area have not yet been created.', 'cuar'),
-                        20);
+                    __('Some pages of the private area have not yet been created.', 'cuar'),
+                    20);
             }
             else
             {
@@ -147,12 +147,12 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                 $menu = wp_get_nav_menu_object($locations[$menu_name]);
             }
 
-            if ($menu == null)
+            if ($menu === null)
             {
                 $this->plugin->clear_attention_needed('nav-menu-needs-sync');
                 $this->plugin->set_attention_needed('missing-nav-menu',
-                        __('The navigation menu for the customer area has not been created.', 'cuar'),
-                        50);
+                    __('The navigation menu for the private area has not been created.', 'cuar'),
+                    50);
             }
             else
             {
@@ -162,20 +162,22 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
 
         public function add_status_sections($sections)
         {
-            $sections['customer-pages'] = array(
-                    'id'            => 'customer-pages',
-                    'label'         => __('Pages', 'cuar'),
-                    'title'         => __('Pages of the Customer Area', 'cuar'),
-                    'template_path' => CUAR_INCLUDES_DIR . '/core-addons/customer-pages',
-                    'linked-checks' => array('pages-without-id', 'missing-nav-menu', 'nav-menu-needs-sync',
-                                             'orphan-pages'),
-                    'actions'       => array(
-                            'cuar-create-all-missing-pages' => array(&$this, 'create_all_missing_pages'),
-                            'cuar-synchronize-menu'         => array(&$this, 'recreate_default_navigation_menu'),
-                            'cuar-clear-sync-nav-warning'   => array(&$this, 'ignore_nav_menu_needs_sync_warning'),
-                            'cuar-remove-orphan-pages'      => array(&$this, 'delete_orphan_pages'),
-                    ),
-            );
+            $sections['customer-pages'] = [
+                'id' => 'customer-pages',
+                'label' => __('Pages', 'cuar'),
+                'title' => __('Pages of the private area', 'cuar'),
+                'template_path' => CUAR_INCLUDES_DIR . '/core-addons/customer-pages',
+                'linked-checks' => ['pages-without-id',
+                                    'missing-nav-menu',
+                                    'nav-menu-needs-sync',
+                                    'orphan-pages'],
+                'actions' => [
+                    'cuar-create-all-missing-pages' => [&$this, 'create_all_missing_pages'],
+                    'cuar-synchronize-menu' => [&$this, 'recreate_default_navigation_menu'],
+                    'cuar-clear-sync-nav-warning' => [&$this, 'ignore_nav_menu_needs_sync_warning'],
+                    'cuar-remove-orphan-pages' => [&$this, 'delete_orphan_pages'],
+                ],
+            ];
 
             return $sections;
         }
@@ -284,7 +286,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
         {
             if ($this->pages == null)
             {
-                $this->pages = apply_filters('cuar/core/page/customer-pages', array());
+                $this->pages = apply_filters('cuar/core/page/customer-pages', []);
             }
 
             return $this->pages;
@@ -299,7 +301,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
          */
         public function get_customer_area_child_pages($parent_slug)
         {
-            $child_pages = array();
+            $child_pages = [];
 
             $pages = $this->get_customer_area_pages();
             foreach ($pages as $slug => $page)
@@ -436,7 +438,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                 if ($query->is_search)
                 {
                     $customer_area_pages = $this->get_customer_area_pages();
-                    $pages_to_exclude = array();
+                    $pages_to_exclude = [];
                     foreach ($customer_area_pages as $slug => $page)
                     {
                         $pages_to_exclude[] = $page->get_page_id();
@@ -471,7 +473,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
 
             // Build the array of page links
             $pagination_param_name = _x('page-num', 'pagination_parameter_name (should not be "page")', 'cuar');
-            $page_links = array();
+            $page_links = [];
 
             for ($i = 1; $i <= $total; ++$i)
             {
@@ -482,10 +484,10 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                         if (!$left_spacer_added)
                         {
                             $left_spacer_added = true;
-                            $page_links[$i] = array(
-                                    'link'       => false,
-                                    'is_current' => false,
-                            );
+                            $page_links[$i] = [
+                                'link' => false,
+                                'is_current' => false,
+                            ];
                         }
                         continue;
                     }
@@ -494,31 +496,31 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                         if (!$right_spacer_added)
                         {
                             $right_spacer_added = true;
-                            $page_links[$i] = array(
-                                    'link'       => false,
-                                    'is_current' => false,
-                            );
+                            $page_links[$i] = [
+                                'link' => false,
+                                'is_current' => false,
+                            ];
                         }
                         continue;
                     }
                 }
                 $link = add_query_arg($pagination_param_name, $i, $pagination_base);
-                $page_links[$i] = array(
-                        'link'       => $link,
-                        'is_current' => ($i == $current_page),
-                );
+                $page_links[$i] = [
+                    'link' => $link,
+                    'is_current' => ($i == $current_page),
+                ];
             }
 
             $page_links = apply_filters('cuar/core/page/pagination-items', $page_links, $current_page, $total);
 
             include($this->plugin->get_template_file_path(
-                    array(
-                            $current_page_addon->get_page_addon_path(),
-                            CUAR_INCLUDES_DIR . '/core-addons/customer-pages',
-                    ),
-                    $current_page_addon->get_slug() . "-pagination.template.php",
-                    'templates',
-                    "pagination.template.php"));
+                [
+                    $current_page_addon->get_page_addon_path(),
+                    CUAR_INCLUDES_DIR . '/core-addons/customer-pages',
+                ],
+                $current_page_addon->get_slug() . "-pagination.template.php",
+                'templates',
+                "pagination.template.php"));
         }
 
         public function add_body_class($classes)
@@ -543,7 +545,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
 
             // Augment the pages list with their page IDs
             $pages = $this->get_customer_area_pages();
-            $page_ids = array();
+            $page_ids = [];
             foreach ($pages as $slug => $page)
             {
                 $page_id = $page->get_page_id();
@@ -553,8 +555,8 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                 }
             }
 
-            $excluded_item_ids = array();
-            $new_items = array();
+            $excluded_item_ids = [];
+            $new_items = [];
             foreach ($items as $item)
             {
                 $exclude = false;
@@ -623,7 +625,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
 
             // Augment the pages list with their page IDs
             $pages = $this->get_customer_area_pages();
-            $page_ids = array();
+            $page_ids = [];
             foreach ($pages as $slug => $page)
             {
                 $page_id = $page->get_page_id();
@@ -660,7 +662,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                     {
                         /** @var CUAR_AbstractPageAddOn $menu_item_page */
                         $menu_item_page = isset($page_ids[$menu_item->object_id]) ? $page_ids[$menu_item->object_id]
-                                : null;
+                            : null;
 
                         if ($menu_item_page == null)
                         {
@@ -668,7 +670,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                         }
 
                         if ($menu_item_page->get_friendly_post_type() == $post_type
-                            && in_array($menu_item_page->get_type(), array('list-content', 'redirect'))
+                            && in_array($menu_item_page->get_type(), ['list-content', 'redirect'])
                         )
                         {
                             if ($highlighted_menu_item == null)
@@ -740,7 +742,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             }
 
             $customer_area_pages = $this->get_customer_area_pages();
-            $pages_to_exclude = array();
+            $pages_to_exclude = [];
             foreach ($customer_area_pages as $slug => $page)
             {
                 $exclude = false;
@@ -815,15 +817,15 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             if ($menu == null)
             {
                 wp_delete_nav_menu(_x('wp-customer-area-menu',
-                        'Localised slug for the main navigation menu (small caps version of the "WP Customer Area Menu" translation)',
-                        'cuar'));
+                    'Localised slug for the main navigation menu (small caps version of the "WP Customer Area Menu" translation)',
+                    'cuar'));
                 $menu = wp_create_nav_menu(__('WP Customer Area Menu', 'cuar'));
             }
 
             if (is_wp_error($menu))
             {
                 $this->plugin->add_admin_notice(sprintf(__('Could not create the menu. %s', 'cuar'),
-                        $menu->get_error_message()));
+                    $menu->get_error_message()));
 
                 return;
             }
@@ -838,7 +840,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
 
             // Now add all default menu items
             $pages = $this->get_customer_area_pages();
-            $menu_items = array();
+            $menu_items = [];
             foreach ($pages as $slug => $page)
             {
                 // Ignore home on purpose
@@ -864,12 +866,12 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                     continue;
                 }
 
-                $args = array(
-                        'menu-item-object-id' => $page->get_page_id(),
-                        'menu-item-object'    => 'page',
-                        'menu-item-type'      => 'post_type',
-                        'menu-item-status'    => 'publish',
-                );
+                $args = [
+                    'menu-item-object-id' => $page->get_page_id(),
+                    'menu-item-object' => 'page',
+                    'menu-item-type' => 'post_type',
+                    'menu-item-status' => 'publish',
+                ];
 
 
                 // Find parent if any
@@ -889,7 +891,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
 
             $this->plugin->clear_attention_needed('nav-menu-needs-sync');
             $this->plugin->add_admin_notice(sprintf(__('The menu has been created: <a href="%s">view menu</a>', 'cuar'),
-                    admin_url('nav-menus.php?menu=') . $menu->term_id), 'updated');
+                admin_url('nav-menus.php?menu=') . $menu->term_id), 'updated');
         }
 
         /**
@@ -909,17 +911,17 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             }
 
             /** @noinspection PhpUnusedLocalVariableInspection */
-            $nav_menu_args = apply_filters('cuar/core/page/nav-menu-args', array(
-                    'theme_location' => 'cuar_main_menu',
-                    'menu_class'     => 'cuar-menu',
-            ));
+            $nav_menu_args = apply_filters('cuar/core/page/nav-menu-args', [
+                'theme_location' => 'cuar_main_menu',
+                'menu_class' => 'cuar-menu',
+            ]);
 
             ob_start();
 
             include($this->plugin->get_template_file_path(
-                    CUAR_INCLUDES_DIR . '/core-addons/customer-pages',
-                    'customer-pages-navigation-menu.template.php',
-                    'templates'));
+                CUAR_INCLUDES_DIR . '/core-addons/customer-pages',
+                'customer-pages-navigation-menu.template.php',
+                'templates'));
 
             $out = ob_get_contents();
             ob_end_clean();
@@ -1006,15 +1008,15 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             }
 
             /** @noinspection PhpUnusedLocalVariableInspection */
-            $toolbar_groups = apply_filters('cuar/core/page/toolbar', array());
+            $toolbar_groups = apply_filters('cuar/core/page/toolbar', []);
             if (!empty($toolbar_groups))
             {
                 ob_start();
 
                 include($this->plugin->get_template_file_path(
-                        CUAR_INCLUDES_DIR . '/core-addons/customer-pages',
-                        'customer-pages-contextual-toolbar.template.php',
-                        'templates'));
+                    CUAR_INCLUDES_DIR . '/core-addons/customer-pages',
+                    'customer-pages-contextual-toolbar.template.php',
+                    'templates'));
 
                 $out = ob_get_contents();
                 ob_end_clean();
@@ -1044,11 +1046,8 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
          */
         public function define_main_content_filter($content)
         {
-            $post_id = get_the_ID();
-            if (!$this->is_customer_area_page($post_id)
-                && !cuar_is_customer_area_private_content($post_id)
-            )
-            {
+            if (!in_the_loop() || (!$this->is_customer_area_page(get_queried_object_id()) &&
+                                   !cuar_is_customer_area_private_content(get_the_ID()))) {
                 return $content;
             }
 
@@ -1098,42 +1097,65 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
 
             $current_item_id = $this->get_current_menu_item_id();
 
-            $group_items = array();
+            $group_items = [];
             foreach ($menu_items as $item)
             {
                 if ($item->menu_item_parent == $current_item_id)
                 {
-                    $group_items[] = array(
-                            'title'       => $item->title,
-                            'url'         => $item->url,
-                            'tooltip'     => '',
-                            'extra_class' => '',
-                    );
+                    $group_items[] = [
+                        'title' => $item->title,
+                        'url' => $item->url,
+                        'tooltip' => '',
+                        'extra_class' => '',
+                    ];
                 }
             }
 
             if (!empty($group_items))
             {
-                $groups['subpages'] = array(
-                        'items'       => $group_items,
-                        'extra_class' => '',
-                );
+                $groups['subpages'] = [
+                    'items' => $group_items,
+                    'extra_class' => '',
+                ];
             }
 
             return $groups;
         }
 
-        /**
-         * Wrap the WP Customer Area generated content into a container, always
-         *
-         * @param string $content
-         *
-         * @return string
-         */
-        public function wrap_content_into_container($content)
-        {
-            return '<div id="cuar-js-content-container" class="cuar-content-container cuar-css-wrapper">' . $content . '</div>';
-        }
+	    /**
+	     * Wrap the WP Customer Area generated content into a container, always
+	     *
+	     * @param string $content
+	     *
+	     * @return string
+	     */
+	    public function wrap_content_into_container($content)
+	    {
+		    $atts = apply_filters('cuar/core/page/sidebar-attributes', [
+			    'data-tray-height-base' => 'window',
+			    'data-tray-height-substract' => '#wpadminbar,#header,#footer,#cuar-js-content-container>.cuar-toolbar,#cuar-js-content-container>.cuar-menu-container,#cuar-js-content-container>.cuar-page-header,#cuar-js-content-container>.cuar-page-footer',
+			    'data-tray-height-minimum' => 400,
+			    'data-tray-mobile' => '#cuar-js-mobile-sidebar',
+			    'data-content-substract' => '#wpadminbar,#header,#footer',
+			    'data-bypass-pages-without-sidebars' => true,
+		    ]);
+
+		    $resets = '';
+		    $disable_CSS_resets = apply_filters('cuar/private-content/view/disable-css-resets', false);
+		    if ($disable_CSS_resets === false)
+		    {
+			    $resets = ' cuar-css-resets';
+		    }
+
+		    return '<div id="cuar-js-content-container" class="cuar-content-container cuar-css-wrapper clearfix'
+		           . $resets . '" data-tray-height-base="' . esc_attr($atts['data-tray-height-base']) . '"'
+		           . 'data-tray-height-substract="' . esc_attr($atts['data-tray-height-substract']) . '"'
+		           . 'data-tray-height-minimum="' . esc_attr($atts['data-tray-height-minimum']) . '"'
+		           . 'data-tray-mobile="' . esc_attr($atts['data-tray-mobile']) . '"'
+		           . 'data-content-substract="' . esc_attr($atts['data-content-substract']) . '"'
+		           . 'data-bypass-pages-without-sidebars="' . esc_attr($atts['data-bypass-pages-without-sidebars']) . '">'
+		           . $content . '</div>';
+	    }
 
         /**
          * Wrap the WP Customer Area generated content into an entry container, for singular view content
@@ -1160,7 +1182,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                 return '';
             }
 
-            return '<div class="cuar-single-entry">' . $content . '</div>';
+            return '<div class="cuar-single-post-wrapper clearfix">' . $content . '</div>';
         }
 
         public function get_current_menu_item_id()
@@ -1199,10 +1221,10 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
         public function print_pages_settings($cuar_settings, $options_group)
         {
             add_settings_section(
-                    'cuar_core_pages',
-                    __('Customer Pages', 'cuar'),
-                    array(&$this, 'print_page_settings_section_info'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG
+                'cuar_core_pages',
+                __('Customer Pages', 'cuar'),
+                [&$this, 'print_page_settings_section_info'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG
             );
 
             $customer_area_pages = $this->get_customer_area_pages();
@@ -1211,196 +1233,196 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
                 $hint = $page->get_hint();
 
                 add_settings_field(
-                        $this->get_page_option_name($page->get_slug()),
-                        $page->get_label(),
-                        array(&$cuar_settings, 'print_post_select_field'),
-                        CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                        'cuar_core_pages',
-                        array(
-                                'option_id'          => $this->get_page_option_name($page->get_slug()),
-                                'post_type'          => 'page',
-                                'show_create_button' => true,
-                                'after'              => !empty($hint) ? '<p class="description">' . $hint . '</p>' : '',
-                        )
+                    $this->get_page_option_name($page->get_slug()),
+                    $page->get_label(),
+                    [&$cuar_settings, 'print_post_select_field'],
+                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                    'cuar_core_pages',
+                    [
+                        'option_id' => $this->get_page_option_name($page->get_slug()),
+                        'post_type' => 'page',
+                        'show_create_button' => true,
+                        'after' => !empty($hint) ? '<p class="description">' . $hint . '</p>' : '',
+                    ]
                 );
             }
 
             add_settings_field(
-                    'cuar_recreate_all_pages',
-                    __('Reset', 'cuar'),
-                    array(&$cuar_settings, 'print_submit_button'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                    'cuar_core_pages',
-                    array(
-                            'option_id'       => 'cuar_recreate_all_pages',
-                            'label'           => __('Reset all pages &raquo;', 'cuar'),
-                            'nonce_action'    => 'recreate_all_pages',
-                            'nonce_name'      => 'cuar_recreate_all_pages_nonce',
-                            'before'          => '<p>' . __('Delete all existing pages and recreate them.', 'cuar') . '</p>',
-                            'confirm_message' => __('Are you sure that you want to delete all existing pages and recreate them (this operation cannot be undone)?',
-                                    'cuar'),
-                    )
+                'cuar_recreate_all_pages',
+                __('Reset', 'cuar'),
+                [&$cuar_settings, 'print_submit_button'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                'cuar_core_pages',
+                [
+                    'option_id' => 'cuar_recreate_all_pages',
+                    'label' => __('Reset all pages &raquo;', 'cuar'),
+                    'nonce_action' => 'recreate_all_pages',
+                    'nonce_name' => 'cuar_recreate_all_pages_nonce',
+                    'before' => '<p>' . __('Delete all existing pages and recreate them.', 'cuar') . '</p>',
+                    'confirm_message' => __('Are you sure that you want to delete all existing pages and recreate them (this operation cannot be undone)?',
+                        'cuar'),
+                ]
             );
         }
 
         public function print_frontend_settings($cuar_settings, $options_group)
         {
             add_settings_section(
-                    'cuar_core_nav_menu',
-                    __('Main Navigation Menu', 'cuar'),
-                    array(&$this, 'print_nav_menu_settings_section_info'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG
+                'cuar_core_nav_menu',
+                __('Main Navigation Menu', 'cuar'),
+                [&$this, 'print_nav_menu_settings_section_info'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG
             );
 
             if (!current_theme_supports('customer-area.navigation-menu'))
             {
                 add_settings_field(
-                        self::$OPTION_AUTO_MENU_ON_CUSTOMER_AREA_PAGES,
-                        __('WP Customer Area pages', 'cuar'),
-                        array(&$cuar_settings, 'print_input_field'),
-                        CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                        'cuar_core_nav_menu',
-                        array(
-                                'option_id' => self::$OPTION_AUTO_MENU_ON_CUSTOMER_AREA_PAGES,
-                                'type'      => 'checkbox',
-                                'after'     =>
-                                        __('Automatically print the Customer Area navigation menu on the Customer Area pages.',
-                                                'cuar')
-                                        . '<p class="description">'
-                                        . __('By checking this box, the menu will automatically be shown automatically on the Customer Area pages (the ones defined in the tab named "Site Pages"). '
-                                             . 'It may however not appear at the place you would want it. If that is the case, you can refer to our documentation to see how to edit your theme.',
-                                                'cuar')
-                                        . '</p>',
-                        )
+                    self::$OPTION_AUTO_MENU_ON_CUSTOMER_AREA_PAGES,
+                    __('WP Customer Area pages', 'cuar'),
+                    [&$cuar_settings, 'print_input_field'],
+                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                    'cuar_core_nav_menu',
+                    [
+                        'option_id' => self::$OPTION_AUTO_MENU_ON_CUSTOMER_AREA_PAGES,
+                        'type' => 'checkbox',
+                        'after' =>
+                            __('Automatically print the WP Customer Area navigation menu on the pages of the private area.',
+                                'cuar')
+                            . '<p class="description">'
+                            . __('By checking this box, the menu will automatically be shown automatically on the pages of the private area (the ones defined in the tab named "Site Pages"). '
+                                 . 'It may however not appear at the place you would want it. If that is the case, you can refer to our documentation to see how to edit your theme.',
+                                'cuar')
+                            . '</p>',
+                    ]
                 );
 
                 add_settings_field(
-                        self::$OPTION_AUTO_MENU_ON_SINGLE_PRIVATE_CONTENT,
-                        __('Private content single pages', 'cuar'),
-                        array(&$cuar_settings, 'print_input_field'),
-                        CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                        'cuar_core_nav_menu',
-                        array(
-                                'option_id' => self::$OPTION_AUTO_MENU_ON_SINGLE_PRIVATE_CONTENT,
-                                'type'      => 'checkbox',
-                                'after'     =>
-                                        __('Automatically print the Customer Area navigation menu on private content single pages.',
-                                                'cuar')
-                                        . '<p class="description">'
-                                        . __('By checking this box, the menu will automatically be shown automatically on the pages displaying a single private content (a private page or a private file for example). '
-                                             . 'It may however not appear at the place you would want it. If that is the case, you can refer to our documentation to see how to edit your theme.',
-                                                'cuar')
-                                        . '</p>',
-                        )
+                    self::$OPTION_AUTO_MENU_ON_SINGLE_PRIVATE_CONTENT,
+                    __('Private content single pages', 'cuar'),
+                    [&$cuar_settings, 'print_input_field'],
+                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                    'cuar_core_nav_menu',
+                    [
+                        'option_id' => self::$OPTION_AUTO_MENU_ON_SINGLE_PRIVATE_CONTENT,
+                        'type' => 'checkbox',
+                        'after' =>
+                            __('Automatically print the WP Customer Area navigation menu on private single posts.',
+                                'cuar')
+                            . '<p class="description">'
+                            . __('By checking this box, the menu will automatically be shown automatically on the pages displaying a single private content (a private page or a private file for example). '
+                                 . 'It may however not appear at the place you would want it. If that is the case, you can refer to our documentation to see how to edit your theme.',
+                                'cuar')
+                            . '</p>',
+                    ]
                 );
             }
 
             add_settings_field(
-                    'cuar_recreate_navigation_menu',
-                    __('Reset', 'cuar'),
-                    array(&$cuar_settings, 'print_submit_button'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                    'cuar_core_nav_menu',
-                    array(
-                            'option_id'       => 'cuar_recreate_navigation_menu',
-                            'label'           => __('Recreate menu', 'cuar'),
-                            'nonce_action'    => 'recreate_navigation_menu',
-                            'nonce_name'      => 'cuar_recreate_navigation_menu_nonce',
-                            'before'          => '<p>' . __('Delete and recreate the main navigation menu.', 'cuar') . '</p>',
-                            'confirm_message' => __('Are you sure that you want to recreate the main navigation menu (this operation cannot be undone)?',
-                                    'cuar'),
-                    )
+                'cuar_recreate_navigation_menu',
+                __('Reset', 'cuar'),
+                [&$cuar_settings, 'print_submit_button'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                'cuar_core_nav_menu',
+                [
+                    'option_id' => 'cuar_recreate_navigation_menu',
+                    'label' => __('Recreate menu', 'cuar'),
+                    'nonce_action' => 'recreate_navigation_menu',
+                    'nonce_name' => 'cuar_recreate_navigation_menu_nonce',
+                    'before' => '<p>' . __('Delete and recreate the main navigation menu.', 'cuar') . '</p>',
+                    'confirm_message' => __('Are you sure that you want to recreate the main navigation menu (this operation cannot be undone)?',
+                        'cuar'),
+                ]
             );
 
             add_settings_section(
-                    'cuar_core_permalinks',
-                    __('Permalinks', 'cuar'),
-                    array(&$this, 'print_empty_settings_section_info'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG
+                'cuar_core_permalinks',
+                __('Permalinks', 'cuar'),
+                [&$this, 'print_empty_settings_section_info'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG
             );
 
             add_settings_field(
-                    self::$OPTION_CATEGORY_ARCHIVE_SLUG,
-                    __('Category Archive', 'cuar'),
-                    array(&$cuar_settings, 'print_input_field'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                    'cuar_core_permalinks',
-                    array(
-                            'option_id' => self::$OPTION_CATEGORY_ARCHIVE_SLUG,
-                            'type'      => 'text',
-                            'is_large'  => false,
-                            'after'     => '<p class="description">'
-                                           . __('Slug that is used in the URL for category archives of private content. For example, the list of files in the "my-awesome-category" category would look '
-                                                . 'like:<br/>http://example.com/customer-area/files/<b>my-slug</b>/my-awesome-category',
-                                            'cuar')
-                                           . '</p>',
-                    )
+                self::$OPTION_CATEGORY_ARCHIVE_SLUG,
+                __('Category Archive', 'cuar'),
+                [&$cuar_settings, 'print_input_field'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                'cuar_core_permalinks',
+                [
+                    'option_id' => self::$OPTION_CATEGORY_ARCHIVE_SLUG,
+                    'type' => 'text',
+                    'is_large' => false,
+                    'after' => '<p class="description">'
+                               . __('Slug that is used in the URL for category archives of private content. For example, the list of files in the "my-awesome-category" category would look '
+                                    . 'like:<br/>http://example.com/customer-area/files/<b>my-slug</b>/my-awesome-category',
+                            'cuar')
+                               . '</p>',
+                ]
             );
 
             add_settings_field(
-                    self::$OPTION_DATE_ARCHIVE_SLUG,
-                    __('Date Archive', 'cuar'),
-                    array(&$cuar_settings, 'print_input_field'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                    'cuar_core_permalinks',
-                    array(
-                            'option_id' => self::$OPTION_DATE_ARCHIVE_SLUG,
-                            'type'      => 'text',
-                            'is_large'  => false,
-                            'after'     => '<p class="description">'
-                                           . __('Slug that is used in the URL for date archives of private content. For example, the list of files for 2014 would look '
-                                                . 'like:<br/>http://example.com/customer-area/files/<b>my-slug</b>/2014', 'cuar')
-                                           . '</p>',
-                    )
+                self::$OPTION_DATE_ARCHIVE_SLUG,
+                __('Date Archive', 'cuar'),
+                [&$cuar_settings, 'print_input_field'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                'cuar_core_permalinks',
+                [
+                    'option_id' => self::$OPTION_DATE_ARCHIVE_SLUG,
+                    'type' => 'text',
+                    'is_large' => false,
+                    'after' => '<p class="description">'
+                               . __('Slug that is used in the URL for date archives of private content. For example, the list of files for 2014 would look '
+                                    . 'like:<br/>http://example.com/customer-area/files/<b>my-slug</b>/2014', 'cuar')
+                               . '</p>',
+                ]
             );
 
             add_settings_field(
-                    self::$OPTION_AUTHOR_ARCHIVE_SLUG,
-                    __('Author Archive', 'cuar'),
-                    array(&$cuar_settings, 'print_input_field'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                    'cuar_core_permalinks',
-                    array(
-                            'option_id' => self::$OPTION_AUTHOR_ARCHIVE_SLUG,
-                            'type'      => 'text',
-                            'is_large'  => false,
-                            'after'     => '<p class="description">'
-                                           . __('Slug that is used in the URL for author archives of private content. For example, the list of files created by user with ID 2 would look '
-                                                . 'like:<br/>http://example.com/customer-area/files/<b>my-slug</b>/2', 'cuar')
-                                           . '</p>',
-                    )
+                self::$OPTION_AUTHOR_ARCHIVE_SLUG,
+                __('Author Archive', 'cuar'),
+                [&$cuar_settings, 'print_input_field'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                'cuar_core_permalinks',
+                [
+                    'option_id' => self::$OPTION_AUTHOR_ARCHIVE_SLUG,
+                    'type' => 'text',
+                    'is_large' => false,
+                    'after' => '<p class="description">'
+                               . __('Slug that is used in the URL for author archives of private content. For example, the list of files created by user with ID 2 would look '
+                                    . 'like:<br/>http://example.com/customer-area/files/<b>my-slug</b>/2', 'cuar')
+                               . '</p>',
+                ]
             );
 
             add_settings_field(
-                    self::$OPTION_UPDATE_CONTENT_SLUG,
-                    __('Update Content', 'cuar'),
-                    array(&$cuar_settings, 'print_input_field'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                    'cuar_core_permalinks',
-                    array(
-                            'option_id' => self::$OPTION_UPDATE_CONTENT_SLUG,
-                            'type'      => 'text',
-                            'is_large'  => false,
-                            'after'     => '<p class="description">'
-                                           . __('Slug that is used in the URL to update existing private content', 'cuar')
-                                           . '</p>',
-                    )
+                self::$OPTION_UPDATE_CONTENT_SLUG,
+                __('Update Content', 'cuar'),
+                [&$cuar_settings, 'print_input_field'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                'cuar_core_permalinks',
+                [
+                    'option_id' => self::$OPTION_UPDATE_CONTENT_SLUG,
+                    'type' => 'text',
+                    'is_large' => false,
+                    'after' => '<p class="description">'
+                               . __('Slug that is used in the URL to update existing private content', 'cuar')
+                               . '</p>',
+                ]
             );
 
             add_settings_field(
-                    self::$OPTION_DELETE_CONTENT_SLUG,
-                    __('Delete Content', 'cuar'),
-                    array(&$cuar_settings, 'print_input_field'),
-                    CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                    'cuar_core_permalinks',
-                    array(
-                            'option_id' => self::$OPTION_DELETE_CONTENT_SLUG,
-                            'type'      => 'text',
-                            'is_large'  => false,
-                            'after'     => '<p class="description">'
-                                           . __('Slug that is used in the URL to delete existing private content', 'cuar')
-                                           . '</p>',
-                    )
+                self::$OPTION_DELETE_CONTENT_SLUG,
+                __('Delete Content', 'cuar'),
+                [&$cuar_settings, 'print_input_field'],
+                CUAR_Settings::$OPTIONS_PAGE_SLUG,
+                'cuar_core_permalinks',
+                [
+                    'option_id' => self::$OPTION_DELETE_CONTENT_SLUG,
+                    'type' => 'text',
+                    'is_large' => false,
+                    'after' => '<p class="description">'
+                               . __('Slug that is used in the URL to delete existing private content', 'cuar')
+                               . '</p>',
+                ]
             );
 
         }
@@ -1412,20 +1434,20 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
         public function print_nav_menu_settings_section_info()
         {
             echo '<p class="cuar-section-info">'
-                 . __('Since version 4.0.0, Customer Area handles navigation using menus.', 'cuar');
+                 . __('Since version 4.0.0, WP Customer Area handles navigation using menus.', 'cuar');
             echo ' '
-                 . sprintf(__('You can customize the Customer Area menu in the <a href="%1$s">Appearance &raquo; Menus</a> panel. '
-                              . 'If you do not define any custom menu there, Customer Area will generate a default menu for you with all the pages '
+                 . sprintf(__('You can customize the WP Customer Area menu in the <a href="%1$s">Appearance &raquo; Menus</a> panel. '
+                              . 'If you do not define any custom menu there, WP Customer Area will generate a default menu for you with all the pages '
                               . 'you have set below.', 'cuar'),
-                            admin_url('nav-menus.php'))
+                    admin_url('nav-menus.php'))
                  . '</p>';
         }
 
         public function print_page_settings_section_info()
         {
             echo '<p class="cuar-section-info">'
-                 . __('Since version 4.0.0, Customer Area is using various pages to show the content for your customers. Create those pages from here or simply indicate existing ones. ',
-                            'cuar')
+                 . __('Since version 4.0.0, WP Customer Area is using various pages to show the content for your users. Create those pages from here or simply indicate existing ones.',
+                    'cuar')
                  . '</p>';
         }
 
@@ -1497,8 +1519,8 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             if ($has_created_pages)
             {
                 $this->plugin->set_attention_needed('nav-menu-needs-sync',
-                        __('Some pages of the customer area have been created or deleted. The customer area navigation menu needs to be updated.',
-                                'cuar'), 30);
+                    __('Some pages of the private area have been created or deleted. The WP Customer Area navigation menu needs to be updated.',
+                        'cuar'), 30);
             }
 
             return $validated;
@@ -1509,7 +1531,7 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             $customer_area_pages = $this->get_customer_area_pages();
             uasort($customer_area_pages, 'cuar_sort_pages_by_priority');
 
-            $created_pages = array();
+            $created_pages = [];
 
             foreach ($customer_area_pages as $slug => $page)
             {
@@ -1532,16 +1554,16 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             if (!empty($created_pages))
             {
                 $this->plugin->add_admin_notice(sprintf(__('The following pages have been created: %s', 'cuar'),
-                        implode(', ', $created_pages)), 'updated');
+                    implode(', ', $created_pages)), 'updated');
 
                 $this->plugin->set_attention_needed('nav-menu-needs-sync',
-                        __('Some pages of the customer area have been created or deleted. The customer area navigation menu needs to be updated.',
-                                'cuar'), 30);
+                    __('Some pages of the private area have been created or deleted. The WP Customer Area navigation menu needs to be updated.',
+                        'cuar'), 30);
             }
             else
             {
                 $this->plugin->add_admin_notice(__('There was no missing page that could be created.', 'cuar'),
-                        'error');
+                    'error');
             }
         }
 
@@ -1550,10 +1572,10 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
          */
         public function get_potential_orphan_pages()
         {
-            $all_pages = get_pages(array('numposts' => -1));
+            $all_pages = get_pages(['numposts' => -1]);
             $cp_pages = $this->get_customer_area_pages();
 
-            $orphans = array();
+            $orphans = [];
 
             foreach ($all_pages as $suspect)
             {
@@ -1585,8 +1607,8 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             if (!empty($orphans))
             {
                 $this->plugin->set_attention_needed('orphan-pages',
-                        __('Some pages in your site seem to contain Customer Area shortcodes but are not registered in the Customer Area pages settings.',
-                                'cuar'), 20);
+                    __('Some pages in your site seem to contain WP Customer Area shortcodes but are not registered in the settings of WP Customer Area pages.',
+                        'cuar'), 20);
             }
             else
             {
@@ -1610,12 +1632,12 @@ if (!class_exists('CUAR_CustomerPagesAddOn')) :
             }
 
             $this->plugin->add_admin_notice(sprintf(_n('%s page has been deleted', '%s pages have been deleted', 'cuar',
-                    'cuar'), $delete_count), 'updated');
+                'cuar'), $delete_count), 'updated');
 
             $this->plugin->clear_attention_needed('orphan-pages');
             $this->plugin->set_attention_needed('nav-menu-needs-sync',
-                    __('Some pages of the customer area have been created or deleted. The customer area navigation menu needs to be updated.',
-                            'cuar'), 30);
+                __('Some pages of the private area have been created or deleted. The WP Customer Area navigation menu needs to be updated.',
+                    'cuar'), 30);
 
             flush_rewrite_rules();
         }

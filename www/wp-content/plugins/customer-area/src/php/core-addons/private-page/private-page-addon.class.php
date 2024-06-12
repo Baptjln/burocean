@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,14 +18,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 require_once( CUAR_INCLUDES_DIR . '/core-classes/addon.class.php' );
 
-require_once(dirname(__FILE__) . '/private-page-admin-interface.class.php');
+require_once(__DIR__ . '/private-page-admin-interface.class.php');
 
 if (!class_exists('CUAR_PrivatePageAddOn')) :
 
 /**
  * Add-on to put private files in the customer area
 *
-* @author Vincent Prat @ MarvinLabs
+* @author Vincent Prat @ Foobar Studio
 */
 class CUAR_PrivatePageAddOn extends CUAR_AddOn {
 	

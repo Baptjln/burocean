@@ -1,6 +1,6 @@
 /*
  * 	Scripts for the private files core add-on
- *  By Vincent Mimoun-Prat / MarvinLabs (www.marvinlabs.com)
+ *  By Vincent Mimoun-Prat / Foobar Studio (foobar.studio)
  *  Released under GPL License
  */
 (function ($) {
@@ -30,7 +30,7 @@
             base._getSelectors().first().show();
 
             // Change the selector when the combo box value changes
-            base._getSelectorInput().change(base._onSelectorInputChanged);
+            $(document).on('change', base.options.selectorInput, base._onSelectorInputChanged);
 
             // Removal of items
             base._getAttachmentList().on('click', base.options.removeAction, base._onRemoveActionClick);

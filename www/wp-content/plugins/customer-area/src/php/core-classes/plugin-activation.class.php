@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,6 +32,9 @@ class CUAR_PluginActivation implements CUAR_PluginActivationDelegate
         // Schedule checking for updating/setting up the plugin
         CUAR_PluginActivationManager::schedule_deferred_action('check-plugin-version', 10);
 
+		// Schedule cron events
+		CUAR_PluginActivationManager::schedule_deferred_action('schedule-cron-events', 15);
+
         // Schedule a check of the template files
         CUAR_PluginActivationManager::schedule_deferred_action('check-template-files', 20);
 
@@ -50,5 +53,7 @@ class CUAR_PluginActivation implements CUAR_PluginActivationDelegate
      */
     public function on_deactivate()
     {
+		// Clear schedule cron events
+		CUAR_PluginActivationManager::schedule_deferred_action('clear-scheduled-cron-events', 15);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2013 MarvinLabs (contact@marvinlabs.com) This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ * Copyright 2013 Foobar Studio (contact@foobar.studio) This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 require_once(CUAR_INCLUDES_DIR . '/helpers/wordpress-helper.class.php');
 
@@ -38,37 +38,37 @@ if (!class_exists('CUAR_Settings')) :
          */
         public function setup()
         {
-            add_action('cuar/core/admin/submenu-items?group=tools', array(&$this, 'add_menu_items'), 10);
+            add_action('cuar/core/admin/submenu-items?group=tools', [&$this, 'add_menu_items'], 10);
 
             if (is_admin())
             {
-                add_action('admin_init', array(&$this, 'page_init'));
-                add_action('cuar/core/admin/print-admin-page?page=settings', array(&$this, 'print_settings_page'), 99);
+                add_action('admin_init', [&$this, 'page_init']);
+                add_action('cuar/core/admin/print-admin-page?page=settings', [&$this, 'print_settings_page'], 99);
 
                 // Links under the plugin name
                 $plugin_file = 'customer-area/customer-area.php';
-                add_filter("plugin_action_links_{$plugin_file}", array(&$this, 'print_plugin_action_links'), 10, 2);
+                add_filter("plugin_action_links_{$plugin_file}", [&$this, 'print_plugin_action_links'], 10, 2);
 
                 // We have some core settings to take care of too
-                add_filter('cuar/core/settings/settings-tabs', array(&$this, 'add_core_settings_tab'), 200, 1);
-                add_filter('cuar/core/settings/settings-tabs', array(&$this, 'add_licensing_settings_tab'), 900, 1);
+                add_filter('cuar/core/settings/settings-tabs', [&$this, 'add_core_settings_tab'], 200, 1);
+                add_filter('cuar/core/settings/settings-tabs', [&$this, 'add_licensing_settings_tab'], 900, 1);
 
-                add_action('cuar/core/settings/print-settings?tab=cuar_core', array(&$this,
-                                                                                    'print_core_settings'), 10, 2);
-                add_filter('cuar/core/settings/validate-settings?tab=cuar_core', array(&$this,
-                                                                                       'validate_core_settings'), 10, 3);
+                add_action('cuar/core/settings/print-settings?tab=cuar_core',
+                    [&$this, 'print_core_settings'], 10, 2);
+                add_filter('cuar/core/settings/validate-settings?tab=cuar_core',
+                    [&$this, 'validate_core_settings'], 10, 3);
 
-                add_action('cuar/core/settings/print-settings?tab=cuar_frontend', array(&$this,
-                                                                                        'print_frontend_settings'), 10, 2);
-                add_filter('cuar/core/settings/validate-settings?tab=cuar_frontend', array(&$this,
-                                                                                           'validate_frontend_settings'), 10, 3);
+                add_action('cuar/core/settings/print-settings?tab=cuar_frontend',
+                    [&$this, 'print_frontend_settings'], 10, 2);
+                add_filter('cuar/core/settings/validate-settings?tab=cuar_frontend',
+                    [&$this, 'validate_frontend_settings'], 10, 3);
 
-                add_action('cuar/core/settings/print-settings?tab=cuar_licenses', array(&$this,
-                                                                                        'print_license_settings'), 10, 2);
-                add_filter('cuar/core/settings/validate-settings?tab=cuar_licenses', array(&$this,
-                                                                                           'validate_license_options'), 10, 3);
+                add_action('cuar/core/settings/print-settings?tab=cuar_licenses',
+                    [&$this, 'print_license_settings'], 10, 2);
+                add_filter('cuar/core/settings/validate-settings?tab=cuar_licenses',
+                    [&$this, 'validate_license_options'], 10, 3);
 
-                add_action('wp_ajax_cuar_validate_license', array('CUAR_Settings', 'ajax_validate_license'));
+                add_action('wp_ajax_cuar_validate_license', ['CUAR_Settings', 'ajax_validate_license']);
             }
         }
 
@@ -89,22 +89,22 @@ if (!class_exists('CUAR_Settings')) :
                     __('WP Customer Area', 'cuar'),
                     'manage_options',
                     self::$OPTIONS_PAGE_SLUG,
-                    array(&$this, 'print_settings_page')
+                    [&$this, 'print_settings_page']
                 );
             }
 
-            $item = array(
-                'page_title'    => __('WP Customer Area Settings', 'cuar'),
-                'title'         => __('Settings', 'cuar'),
-                'slug'          => self::$OPTIONS_PAGE_SLUG,
-                'href'          => admin_url('options-general.php?page=' . self::$OPTIONS_PAGE_SLUG),
-                'capability'    => 'manage_options',
+            $item = [
+                'page_title' => __('WP Customer Area Settings', 'cuar'),
+                'title' => __('Settings', 'cuar'),
+                'slug' => self::$OPTIONS_PAGE_SLUG,
+                'href' => admin_url('options-general.php?page=' . self::$OPTIONS_PAGE_SLUG),
+                'capability' => 'manage_options',
                 'adminbar-only' => true,
-                'children'      => array(),
-            );
+                'children' => [],
+            ];
 
-            $tabs = apply_filters('cuar/core/settings/settings-tabs', array());
-            $tabs_to_skip = array('cuar_addons', 'cuar_troubleshooting');
+            $tabs = apply_filters('cuar/core/settings/settings-tabs', []);
+            $tabs_to_skip = ['cuar_addons', 'cuar_troubleshooting'];
             foreach ($tabs as $tab_id => $tab_label)
             {
                 if (in_array($tab_id, $tabs_to_skip))
@@ -112,11 +112,11 @@ if (!class_exists('CUAR_Settings')) :
                     continue;
                 }
 
-                $item['children'][] = array(
-                    'slug'  => 'customer-area-admin-settings-' . $tab_id,
+                $item['children'][] = [
+                    'slug' => 'customer-area-admin-settings-' . $tab_id,
                     'title' => $tab_label,
-                    'href'  => admin_url('options-general.php?page=' . self::$OPTIONS_PAGE_SLUG . '&tab=' . $tab_id),
-                );
+                    'href' => admin_url('options-general.php?page=' . self::$OPTIONS_PAGE_SLUG . '&tab=' . $tab_id),
+                ];
             }
 
             $submenus[] = $item;
@@ -144,7 +144,7 @@ if (!class_exists('CUAR_Settings')) :
 
                 if (isset($_POST['submit']))
                 {
-                    $errors = array();
+                    $errors = [];
                     if (!isset($_POST["cuar_page_title"]) || empty($_POST["cuar_page_title"]))
                     {
                         $errors[] = __('The page title cannot be empty', 'cuar');
@@ -152,14 +152,14 @@ if (!class_exists('CUAR_Settings')) :
 
                     if (empty($errors))
                     {
-                        $post_data = array(
-                            'post_content'   => '[customer-area /]',
-                            'post_title'     => $_POST["cuar_page_title"],
-                            'post_status'    => 'publish',
-                            'post_type'      => 'page',
+                        $post_data = [
+                            'post_content' => '[customer-area /]',
+                            'post_title' => $_POST["cuar_page_title"],
+                            'post_status' => 'publish',
+                            'post_type' => 'page',
                             'comment_status' => 'closed',
-                            'ping_status'    => 'closed',
-                        );
+                            'ping_status' => 'closed',
+                        ];
                         $page_id = wp_insert_post($post_data);
                         if (is_wp_error($page_id))
                         {
@@ -208,9 +208,9 @@ if (!class_exists('CUAR_Settings')) :
             $this->setup_tabs();
 
             // Register the main settings and for the current tab too
-            register_setting(self::$OPTIONS_GROUP, self::$OPTIONS_GROUP, array(&$this, 'validate_options'));
-            register_setting(self::$OPTIONS_GROUP . '_' . $this->current_tab, self::$OPTIONS_GROUP, array(&$this,
-                                                                                                          'validate_options'));
+            register_setting(self::$OPTIONS_GROUP, self::$OPTIONS_GROUP, [&$this, 'validate_options']);
+            register_setting(self::$OPTIONS_GROUP . '_' . $this->current_tab, self::$OPTIONS_GROUP, [&$this,
+                                                                                                     'validate_options']);
 
             // Let the current tab add its own settings to the page
             do_action("cuar/core/settings/print-settings?tab=" . $this->current_tab, $this, self::$OPTIONS_GROUP . '_' . $this->current_tab);
@@ -221,13 +221,13 @@ if (!class_exists('CUAR_Settings')) :
          */
         public function setup_tabs()
         {
-            $this->tabs = apply_filters('cuar/core/settings/settings-tabs', array());
+            $this->tabs = apply_filters('cuar/core/settings/settings-tabs', []);
 
             // Get current tab from GET or POST params or default to first in list
-            $this->current_tab = isset($_GET ['tab']) ? $_GET ['tab'] : '';
+            $this->current_tab = isset($_GET ['tab']) ? sanitize_text_field($_GET['tab']) : '';
             if (!isset($this->tabs [$this->current_tab]))
             {
-                $this->current_tab = isset($_POST ['tab']) ? $_POST ['tab'] : '';
+                $this->current_tab = isset($_POST ['tab']) ? sanitize_text_field($_POST['tab']) : '';
             }
             if (!isset($this->tabs [$this->current_tab]))
             {
@@ -247,7 +247,7 @@ if (!class_exists('CUAR_Settings')) :
          */
         public function validate_options($input)
         {
-            $validated = array();
+            $validated = [];
 
             // Allow addons to validate their settings here
             $validated = apply_filters('cuar/core/settings/validate-settings?tab=' . $this->current_tab, $validated,
@@ -307,18 +307,18 @@ if (!class_exists('CUAR_Settings')) :
             // General settings
             add_settings_section('cuar_general_settings',
                 __('General Settings', 'cuar'),
-                array(&$cuar_settings, 'print_empty_section_info'),
+                [&$cuar_settings, 'print_empty_section_info'],
                 self::$OPTIONS_PAGE_SLUG);
 
             add_settings_field(self::$OPTION_ADMIN_SKIN,
                 __('Admin theme', 'cuar'),
-                array(&$cuar_settings, 'print_theme_select_field'),
+                [&$cuar_settings, 'print_theme_select_field'],
                 self::$OPTIONS_PAGE_SLUG,
                 'cuar_general_settings',
-                array(
-                    'option_id'  => self::$OPTION_ADMIN_SKIN,
+                [
+                    'option_id' => self::$OPTION_ADMIN_SKIN,
                     'theme_type' => 'admin',
-                )
+                ]
             );
         }
 
@@ -349,54 +349,54 @@ if (!class_exists('CUAR_Settings')) :
             // General settings
             add_settings_section('cuar_general_settings',
                 __('General Settings', 'cuar'),
-                array(&$cuar_settings, 'print_frontend_section_info'),
+                [&$cuar_settings, 'print_frontend_section_info'],
                 self::$OPTIONS_PAGE_SLUG);
 
             if (!current_theme_supports('customer-area.stylesheet'))
             {
                 add_settings_field(self::$OPTION_INCLUDE_CSS,
                     __('Use skin', 'cuar'),
-                    array(&$cuar_settings, 'print_input_field'),
+                    [&$cuar_settings, 'print_input_field'],
                     self::$OPTIONS_PAGE_SLUG,
                     'cuar_general_settings',
-                    array(
+                    [
                         'option_id' => self::$OPTION_INCLUDE_CSS,
-                        'type'      => 'checkbox',
-                        'after'     => __('Includes the WP Customer Area skin to provide a stylesheet for the plugin.', 'cuar') . '<p class="description">'
-                                       . __('You can uncheck this if your theme includes support for WP Customer Area.', 'cuar') . '</p>',
-                    )
+                        'type' => 'checkbox',
+                        'after' => __('Includes the WP Customer Area skin to provide a stylesheet for the plugin.', 'cuar') . '<p class="description">'
+                                   . __('You can uncheck this if your theme includes support for WP Customer Area.', 'cuar') . '</p>',
+                    ]
                 );
 
                 add_settings_field(self::$OPTION_FRONTEND_SKIN,
                     __('Skin to use', 'cuar'),
-                    array(&$cuar_settings, 'print_theme_select_field'),
+                    [&$cuar_settings, 'print_theme_select_field'],
                     self::$OPTIONS_PAGE_SLUG,
                     'cuar_general_settings',
-                    array(
-                        'option_id'  => self::$OPTION_FRONTEND_SKIN,
+                    [
+                        'option_id' => self::$OPTION_FRONTEND_SKIN,
                         'theme_type' => 'frontend',
-                        'after'      => '<p class="description">'
-                                        . sprintf(__('You can make your own skin, please refer to <a href="%1$s">our documentation about skins</a>.', 'cuar'),
-                                'http://wp-customerarea.com' . __('/documentation/the-skin-system/', 'cuar'))
-                                        . '</p>',
-                    )
+						'after' => '<p class="description">'
+								   . sprintf(__('You can make your own skin, please refer to <a href="%1$s">our documentation about skins</a>.', 'cuar'),
+								cuar_site_url('/documentation/developer-guides/the-skin-system'))
+								   . '</p>',
+                    ]
                 );
             }
 
             add_settings_field(self::$OPTION_DEBUG_TEMPLATES,
                 __('Debug templates', 'cuar'),
-                array(&$cuar_settings, 'print_input_field'),
+                [&$cuar_settings, 'print_input_field'],
                 self::$OPTIONS_PAGE_SLUG,
                 'cuar_general_settings',
-                array(
+                [
                     'option_id' => self::$OPTION_DEBUG_TEMPLATES,
-                    'type'      => 'checkbox',
-                    'after'     => __('Print debug information about the templates used by Customer Area.', 'cuar')
-                                   . '<p class="description">'
-                                   . __('If checked, the plugin will print HTML comments in the page source code to show which template files '
-                                        . 'are used. This is very helpful if you are a developer and want to customize the plugin layout.',
+                    'type' => 'checkbox',
+                    'after' => __('Print debug information about the templates used by WP Customer Area.', 'cuar')
+                               . '<p class="description">'
+                               . __('If checked, the plugin will print HTML comments in the page source code to show which template files '
+                                    . 'are used. This is very helpful if you are a developer and want to customize the plugin layout.',
                             'cuar') . '</p>',
-                )
+                ]
             );
         }
 
@@ -431,63 +431,30 @@ if (!class_exists('CUAR_Settings')) :
         public function print_license_settings($cuar_settings, $options_group)
         {
             add_settings_section(
-                'cuar_licensing_options_section',
-                __('Licensing and updates', 'cuar'),
-                array(&$this, 'print_empty_section_info'),
-                CUAR_Settings::$OPTIONS_PAGE_SLUG
-            );
-
-            add_settings_field(
-                self::$OPTION_GET_BETA_VERSION_NOTIFICATIONS,
-                __('Beta versions', 'cuar'),
-                array(&$cuar_settings, 'print_input_field'),
-                CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                'cuar_licensing_options_section',
-                array(
-                    'option_id' => self::$OPTION_GET_BETA_VERSION_NOTIFICATIONS,
-                    'type'      => 'checkbox',
-                    'after'     =>
-                        __('If checked, you will be notified when a beta version is published. Else, only stable updates will be delivered.', 'cuar'),
-                )
-            );
-
-            add_settings_field(
-                self::$OPTION_BYPASS_SSL,
-                __('Bypass SSL', 'cuar'),
-                array(&$cuar_settings, 'print_input_field'),
-                CUAR_Settings::$OPTIONS_PAGE_SLUG,
-                'cuar_licensing_options_section',
-                array(
-                    'option_id' => self::$OPTION_BYPASS_SSL,
-                    'type'      => 'checkbox',
-                    'after'     =>
-                        __('Check this box if you have problems validating your license keys. The license server will be called using simple HTTP protocol instead of HTTPS.', 'cuar')
-                        . ' <strong>' . __('You need to save your changes before validating the licenses again!.', 'cuar') . '</strong>',
-                )
-            );
-
-            add_settings_section(
                 'cuar_license_keys_section',
                 __('License keys for commercial add-ons', 'cuar'),
-                array(&$this, 'print_license_section_info'),
+                [&$this, 'print_license_section_info'],
                 CUAR_Settings::$OPTIONS_PAGE_SLUG
             );
 
             $commercial_addons = $this->plugin->get_commercial_addons();
             foreach ($commercial_addons as $id => $addon)
             {
+                $licensing_client = $addon->get_licensing_client();
+                $api_key_option_id = $licensing_client->get_option_key('api_key');
+
                 add_settings_field(
-                    $addon->get_license_key_option_name(),
+                    $api_key_option_id,
                     $addon->get_addon_name(),
-                    array(&$cuar_settings, 'print_license_key_field'),
+                    [&$cuar_settings, 'print_license_key_field'],
                     CUAR_Settings::$OPTIONS_PAGE_SLUG,
                     'cuar_license_keys_section',
-                    array(
-                        'option_id'        => $addon->get_license_key_option_name(),
-                        'status_option_id' => $addon->get_license_status_option_name(),
-                        'check_option_id'  => $addon->get_license_check_option_name(),
-                        'addon_id'         => $id,
-                        'after'            => '')
+                    [
+                        'addon_id' => $id,
+                        'addon' => $addon,
+                        'licensing_client' => $licensing_client,
+                        'after' => '',
+                    ]
                 );
             }
         }
@@ -503,9 +470,6 @@ if (!class_exists('CUAR_Settings')) :
          */
         public function validate_license_options($validated, $cuar_settings, $input)
         {
-            $cuar_settings->validate_boolean($input, $validated, self::$OPTION_GET_BETA_VERSION_NOTIFICATIONS);
-            $cuar_settings->validate_boolean($input, $validated, self::$OPTION_BYPASS_SSL);
-
             return $validated;
         }
 
@@ -517,10 +481,26 @@ if (!class_exists('CUAR_Settings')) :
         {
             echo '<p>';
             _e('This page allows you to enter license key you have received when you purchased commercial addons.', 'cuar');
-            echo ' <strong>' . __('Do not activate your license on your development site. Only on the final site where you are running the plugin.', 'cuar') . '</strong>';
+            echo ' ';
+            _e('You must set the proper product ID (personal, professional or developer) or else activation will fail.',
+                'cuar');
             echo '</p>';
-
-            echo $this->plugin->get_licensing()->get_store()->get_store_url();
+            echo '<p>';
+            echo sprintf(
+                __('You should have received those keys in your purchase confirmation email. You can however also find them in the %smy account page%s on the WP Customer Area website.',
+                    'cuar'),
+				'<a href="' . cuar_site_url('/my-account/api-keys') . '" target="_blank">',
+                '</a>'
+            );
+            echo '</p>';
+            echo '<p>';
+            echo sprintf(
+                __('You can also manage license activations from the %smy account page%s on the WP Customer Area website. For example, when you want to move a license from one website to another.',
+                    'cuar'),
+                '<a href="' . cuar_site_url('/my-account/api-keys') . '" target="_blank">',
+                '</a>'
+            );
+            echo '</p>';
         }
 
         public function print_frontend_section_info()
@@ -529,7 +509,7 @@ if (!class_exists('CUAR_Settings')) :
             <script type="text/javascript">
                 jQuery(document).ready(function ($)
                 {
-                    $('#cuar_include_css').change(function ()
+                    $(document).on('change', '#cuar_include_css', function ()
                     {
                         $('#cuar_frontend_theme_url').parents('tr').slideToggle();
                     });
@@ -764,7 +744,7 @@ if (!class_exists('CUAR_Settings')) :
             {
                 if (empty($input[$option_id]))
                 {
-                    $input[$option_id] = array();
+                    $input[$option_id] = [];
                 }
 
                 if (!is_array($input[$option_id]))
@@ -776,7 +756,7 @@ if (!class_exists('CUAR_Settings')) :
                     return;
                 }
 
-                $validated[$option_id] = array();
+                $validated[$option_id] = [];
                 foreach ($input[$option_id] as $item)
                 {
                     if (isset($select_options[$item]))
@@ -894,17 +874,17 @@ if (!class_exists('CUAR_Settings')) :
         {
             if (empty($input[$option_id]))
             {
-                $validated[$option_id] = array();
+                $validated[$option_id] = [];
                 $validated[$owner_type_option_id] = '';
             }
             else if (is_array($input[$option_id]))
             {
-                $owners = array();
+                $owners = [];
                 foreach ($input[$option_id] as $type => $ids)
                 {
                     if (!is_array($ids))
                     {
-                        $ids = array($ids);
+                        $ids = [$ids];
                     }
 
                     // Check if $ids is not really empty
@@ -957,7 +937,7 @@ if (!class_exists('CUAR_Settings')) :
             {
                 if (!is_array($term_ids))
                 {
-                    $term_ids = empty($term_ids) ? array() : array($term_ids);
+                    $term_ids = empty($term_ids) ? [] : [$term_ids];
                 }
 
                 $validated[$option_id] = $term_ids;
@@ -992,7 +972,7 @@ if (!class_exists('CUAR_Settings')) :
             {
                 if (!is_array($term_ids))
                 {
-                    $term_ids = empty($term_ids) ? array() : array($term_ids);
+                    $term_ids = empty($term_ids) ? [] : [$term_ids];
                 }
 
                 $validated[$option_id] = $term_ids;
@@ -1011,23 +991,25 @@ if (!class_exists('CUAR_Settings')) :
             $cuar_plugin = cuar();
 
             $addon_id = $_POST["addon_id"];
-            $license = $_POST["license"];
+            $api_key = $_POST["api_key"];
+            $product_id = isset($_POST['product_id']) ? $_POST['product_id'] : '';
 
             /** @var CUAR_AddOn $addon */
             $addon = $cuar_plugin->get_addon($addon_id);
 
-            $license_key_option_id = $addon->get_license_key_option_name();
-            $cuar_plugin->update_option($license_key_option_id, $license);
+            $licensing_client = $addon->get_licensing_client();
+            if ($licensing_client === null)
+            {
+                return "";
+            }
 
-            $licensing = $cuar_plugin->get_licensing();
-            $result = $licensing->validate_license($license, $addon);
+            $license_types = $addon->get_license_types();
+            if (count($license_types) === 1)
+            {
+                $product_id = $license_types[0];
+            }
 
-            $today = new DateTime();
-            $license_check_option_id = $addon->get_license_check_option_name();
-            $cuar_plugin->update_option($license_check_option_id, $today->format('Y-m-d'));
-
-            $license_status_option_id = $addon->get_license_status_option_name();
-            $cuar_plugin->update_option($license_status_option_id, $result);
+            $result = $licensing_client->activate_license($product_id, $api_key);
 
             // Tell WordPress to look for updates
             set_site_transient('update_plugins', null);
@@ -1047,20 +1029,62 @@ if (!class_exists('CUAR_Settings')) :
         {
             extract($args);
 
-            $license_key = $this->options[$option_id];
-            $last_status = $this->plugin->get_option($status_option_id);
+            $api_key_option_id = $licensing_client->get_option_key('api_key');
+            $api_key = isset($this->options[$api_key_option_id]) ? $this->options[$api_key_option_id] : null;
 
-            if ($last_status != null && !empty($license_key))
+            $product_id_option_id = $licensing_client->get_option_key('product_id');
+            $product_id = isset($this->options[$product_id_option_id]) ? $this->options[$product_id_option_id] : null;
+
+            $status = $licensing_client->get_option('status');
+            $last_result = $licensing_client->get_option('last_validation_result');
+
+            if (!empty($last_result) && !empty($api_key))
             {
-                $status_class = $last_status->success ? 'cuar-ajax-success' : 'cuar-ajax-failure';
-                $status_message = $last_status->message;
+                $status_class = $last_result->success ? 'cuar-ajax-success' : 'cuar-ajax-failure';
+                if (isset($last_result->status_check) && !empty($last_result->data))
+                {
+                    if ($last_result->data->activated)
+                    {
+                        if ($last_result->data->unlimited_activations)
+                        {
+                            $status_class = 'cuar-ajax-success';
+                            $status_message = __('License is active and you are allowed to activate it on any number of website.', 'cuar');
+                        }
+                        else if ($last_result->data->activations_remaining > 0)
+                        {
+                            $status_class = 'cuar-ajax-success';
+                            $status_message = sprintf(
+                                __('License is active on this website. You are still allowed to activate it on %d other website(s).', 'cuar'),
+                                $last_result->data->activations_remaining
+                            );
+                        }
+                        else
+                        {
+                            $status_class = 'cuar-ajax-success';
+                            $status_message = sprintf(
+                                __('License is active on this website. You have used your %d activation(s) included in that license type.',
+                                    'cuar'),
+                                $last_result->data->activations_remaining
+                            );
+                        }
+                    }
+                    else
+                    {
+                        $status_class = 'cuar-ajax-failure';
+                        $status_message = __('License is not active.', 'cuar');
+                    }
+                }
+                else
+                {
+                    $status_message = $last_result->success ? $last_result->message : $last_result->error;
+                }
             }
-            else if (empty($license_key))
+            else if (empty($api_key))
             {
-                $status_class = '';
-                $status_message = '';
-                $this->options[$status_option_id] = null;
-                $this->options[$check_option_id] = null;
+                $status_class = 'cuar-ajax-failure';
+                $status_message = __('Please enter your license key, the right product ID and press the « activate » button.', 'cuar');
+                $licensing_client->update_option('status', 'Deactivated');
+                $licensing_client->update_option('last_validation_result', []);
             }
             else
             {
@@ -1073,13 +1097,52 @@ if (!class_exists('CUAR_Settings')) :
                 echo $before;
             }
 
-            echo '<div class="license-control cuar-js-license-field">';
-            echo sprintf('<input type="text" id="%s" name="%s[%s]" value="%s" class="regular-text cuar-js-license-key" data-addon="%s" />',
-                esc_attr($option_id), self::$OPTIONS_GROUP, esc_attr($option_id), esc_attr($this->options[$option_id]),
-                esc_attr($addon_id));
-            echo sprintf('<a href="#" class="button cuar-js-validate-button">%s</a>', __('Validate', 'cuar'));
-            echo sprintf('<span class="cuar-ajax-container cuar-js-result"><span id="%s_check_result" class="%s">%s</span></span>',
-                esc_attr($option_id), $status_class, $status_message);
+            $extra_class = !empty($license_types) && count($license_types) > 1 ? 'without-type-select' : 'with-type-select';
+
+            echo '<div class="license-control cuar-js-license-field ' . $extra_class . '">';
+
+            echo sprintf(
+                '<input type="text" id="%s" name="%s[%s]" value="%s" class="regular-text cuar-js-api-key" data-addon="%s" />',
+                esc_attr($api_key_option_id . "_key"),
+                self::$OPTIONS_GROUP,
+                esc_attr($api_key_option_id),
+                esc_attr($api_key),
+                esc_attr($addon_id)
+            );
+
+            $license_types = $addon->get_license_types();
+            if (count($license_types) > 1)
+            {
+                echo sprintf(
+                    '<select id="%s" name="%s[%s]" class="cuar-js-product-id" data-addon="%s" />',
+                    esc_attr($api_key_option_id . "_type"),
+                    self::$OPTIONS_GROUP,
+                    esc_attr($api_key_option_id),
+                    esc_attr($addon_id)
+                );
+
+                foreach ($license_types as $id => $name)
+                {
+                    echo sprintf(
+                        '<option value="%s" %s>%s</option>',
+                        esc_attr($id),
+                        selected($product_id, $id),
+                        $name
+                    );
+                }
+
+                echo '</select>';
+            }
+
+            echo sprintf('<a href="#" class="button cuar-js-activate-button">%s</a>', __('Activate', 'cuar'));
+
+            echo sprintf(
+                '<span class="cuar-ajax-container cuar-js-result"><span id="%s_check_result" class="%s">%s</span></span>',
+                esc_attr($api_key_option_id),
+                $status_class,
+                $status_message
+            );
+
             echo '</div>';
 
             if (isset($after))
@@ -1087,15 +1150,10 @@ if (!class_exists('CUAR_Settings')) :
                 echo $after;
             }
 
-//			$last_check = $this->plugin->get_option( $check_option_id, null );
-//			if ( $last_check!=null ) {
-//				$next_check = new DateTime( $last_check );
-//				$next_check->modify('+10 day');
-//
-//				$should_check_license = ( new DateTime('now') > $next_check );
-//			} else {
-//				$should_check_license = true;
-//			}
+//            echo '<pre><code>';
+//            echo json_encode($last_result, JSON_PRETTY_PRINT);
+//            echo '</code></pre>';
+
             wp_enqueue_script('cuar.admin');
         }
 
@@ -1325,7 +1383,7 @@ if (!class_exists('CUAR_Settings')) :
             echo '<script type="text/javascript">
                 <!--
                 jQuery("document").ready(function ($) {
-                    $("#' . esc_attr($option_id) . '").select2({
+                    $("#' . esc_attr($option_id) . '").cuarSelect2({
                         ' . (!is_admin() ? 'dropdownParent: $("#' . esc_attr($option_id) . '.parent()"),' : '') . '
                         width: "100%"
                     });
@@ -1345,12 +1403,12 @@ if (!class_exists('CUAR_Settings')) :
         {
             extract($args);
 
-            $query_args = array(
-                'post_type'      => $post_type,
+            $query_args = [
+                'post_type' => $post_type,
                 'posts_per_page' => -1,
-                'orderby'        => 'title',
-                'order'          => 'ASC',
-            );
+                'orderby' => 'title',
+                'order' => 'ASC',
+            ];
             $pages_query = new WP_Query($query_args);
 
             if (isset($before))
@@ -1438,7 +1496,7 @@ if (!class_exists('CUAR_Settings')) :
 
             /** @var CUAR_AddressesAddOn $am_addon */
             $am_addon = $this->plugin->get_addon("address-manager");
-            $am_addon->print_address_editor($address, $option_id, '', array(), '', 'settings');
+            $am_addon->print_address_editor($address, $option_id, '', [], '', 'settings', $context);
 
             if (isset($after))
             {
@@ -1468,7 +1526,7 @@ if (!class_exists('CUAR_Settings')) :
                 $owner_type = $this->options[$owner_type_option_id];
                 $owner_ids = $this->options [$option_id];
 
-                $owners = array($owner_type => $owner_ids);
+                $owners = [$owner_type => $owner_ids];
             }
             else
             {
@@ -1536,7 +1594,7 @@ if (!class_exists('CUAR_Settings')) :
             echo '<script type="text/javascript">
                 <!--
                 jQuery("document").ready(function ($) {
-                    $("#' . esc_attr($option_id) . '").select2({
+                    $("#' . esc_attr($option_id) . '").cuarSelect2({
                         ' . (!is_admin() ? 'dropdownParent: $("#' . esc_attr($option_id) . '.parent()"),' : '') . '
                         width: "100%"
                     });
@@ -1567,10 +1625,10 @@ if (!class_exists('CUAR_Settings')) :
             }
 
             $this->plugin->enable_library('jquery.select2');
-            $terms = get_terms($taxonomy, array(
+            $terms = get_terms($taxonomy, [
                 'hide_empty' => 0,
-                'orderby'    => 'name',
-            ));
+                'orderby' => 'name',
+            ]);
 
             $current_option_value = $this->options[$option_id];
 
@@ -1610,8 +1668,9 @@ if (!class_exists('CUAR_Settings')) :
                 <!--
                 jQuery("document").ready(function ($)
                 {
-                    $("#<?php echo esc_attr($option_id); ?>").select2({
-                        <?php if (!is_admin()) {
+                    $("#<?php echo esc_attr($option_id); ?>").cuarSelect2({
+                        <?php if (!is_admin())
+                        {
                             echo "dropdownParent: $('#" . esc_attr($option_id) . "').parent(),";
                         } ?>
                         width: "100%"
@@ -1688,8 +1747,9 @@ if (!class_exists('CUAR_Settings')) :
                 <!--
                 jQuery("document").ready(function ($)
                 {
-                    $("#<?php echo esc_attr($option_id); ?>").select2({
-                        <?php if (!is_admin()) {
+                    $("#<?php echo esc_attr($option_id); ?>").cuarSelect2({
+                        <?php if (!is_admin())
+                        {
                             echo "dropdownParent: $('#" . esc_attr($option_id) . "').parent(),";
                         } ?>
                         width: "100%"
@@ -1725,26 +1785,26 @@ if (!class_exists('CUAR_Settings')) :
             echo sprintf('<select id="%s" name="%s[%s]">', esc_attr($option_id), self::$OPTIONS_GROUP,
                 esc_attr($option_id));
 
-            $theme_locations = apply_filters('cuar/core/settings/theme-root-directories', array(
-                array(
-                    'base'  => 'plugin',
-                    'type'  => $theme_type,
-                    'dir'   => CUAR_PLUGIN_DIR . '/skins/' . $theme_type,
+            $theme_locations = apply_filters('cuar/core/settings/theme-root-directories', [
+                [
+                    'base' => 'plugin',
+                    'type' => $theme_type,
+                    'dir' => CUAR_PLUGIN_DIR . '/skins/' . $theme_type,
                     'label' => __('Main plugin folder', 'cuar'),
-                ),
-                array(
-                    'base'  => 'user-theme',
-                    'type'  => $theme_type,
-                    'dir'   => untrailingslashit(get_stylesheet_directory()) . '/customer-area/skins/' . $theme_type,
+                ],
+                [
+                    'base' => 'user-theme',
+                    'type' => $theme_type,
+                    'dir' => untrailingslashit(get_stylesheet_directory()) . '/customer-area/skins/' . $theme_type,
                     'label' => __('Current theme folder', 'cuar'),
-                ),
-                array(
-                    'base'  => 'wp-content',
-                    'type'  => $theme_type,
-                    'dir'   => untrailingslashit(WP_CONTENT_DIR) . '/customer-area/skins/' . $theme_type,
+                ],
+                [
+                    'base' => 'wp-content',
+                    'type' => $theme_type,
+                    'dir' => untrailingslashit(WP_CONTENT_DIR) . '/customer-area/skins/' . $theme_type,
                     'label' => __('WordPress content folder', 'cuar'),
-                ),
-            ));
+                ],
+            ]);
 
             foreach ($theme_locations as $theme_location)
             {
@@ -1784,7 +1844,7 @@ if (!class_exists('CUAR_Settings')) :
             echo '<script type="text/javascript">
                 <!--
                 jQuery("document").ready(function ($) {
-                    $("#' . esc_attr($option_id) . '").select2({
+                    $("#' . esc_attr($option_id) . '").cuarSelect2({
                         ' . (!is_admin() ? 'dropdownParent: $("#' . esc_attr($option_id) . '.parent()"),' : '') . '
                         width: "100%"
                     });
@@ -1840,7 +1900,7 @@ if (!class_exists('CUAR_Settings')) :
 
         public function reset_defaults()
         {
-            $this->options = array();
+            $this->options = [];
             $this->save_options();
             $this->reload_options();
         }
@@ -1880,11 +1940,11 @@ if (!class_exists('CUAR_Settings')) :
         {
             $current_options = get_option(CUAR_Settings::$OPTIONS_GROUP);
 
-            $this->default_options = apply_filters('cuar/core/settings/default-options', array());
+            $this->default_options = apply_filters('cuar/core/settings/default-options', []);
 
             if (!is_array($current_options))
             {
-                $current_options = array();
+                $current_options = [];
             }
             $this->options = array_merge($this->default_options, $current_options);
 
@@ -1925,10 +1985,10 @@ if (!class_exists('CUAR_Settings')) :
     }
 
     // This filter needs to be executed too early to be registered in the constructor
-    add_filter('cuar/core/settings/default-options', array(
+    add_filter('cuar/core/settings/default-options', [
         'CUAR_Settings',
         'set_default_core_options',
-    ));
+    ]);
 
 
 endif; // if (!class_exists('CUAR_Settings')) :

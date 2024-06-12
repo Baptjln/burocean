@@ -1,5 +1,8 @@
-<?php
-/** Template version: 2.0.0
+<?php /**
+ * Template version: 2.1.0
+ *
+ * -= 2.1.0 =-
+ * - Fix some WP Customer Area strings
  *
  * -= 2.0.0 =-
  * - Add cuar- prefix to bootstrap classes
@@ -11,7 +14,7 @@
 ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,7 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
     <h3><?php _e('Missing navigation menu', 'cuar'); ?></h3>
 
     <p>
-        <?php _e('A navigation menu organizes the customer area. It allows to browse the files, the pages, to view the account details and much more. It seems that this menu has not yet been created.', 'cuar'); ?>
+        <?php _e('A navigation menu organizes the private area. It allows to browse the files, the pages, to view the account details and much more. It seems that this menu has not yet been created.', 'cuar'); ?>
         <?php printf(__('You can review which menus are currently created on the <a href="%1$s">menus page</a>.', 'cuar'),
             admin_url('nav-menus.php')); ?>
     </p>

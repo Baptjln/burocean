@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 /**
  * Helpers for Ajax features of the post owner addon
  *
- * @author Vincent Prat @ MarvinLabs
+ * @author Vincent Prat @ Foobar Studio
  */
 class CUAR_PostOwnerAjaxHelper
 {
@@ -222,7 +222,7 @@ class CUAR_PostOwnerAjaxHelper
     {
         $nonce = $this->get_query_param($name, '', true);
 
-        if (!wp_verify_nonce($nonce, $action))
+        if (!wp_verify_nonce(sanitize_key($nonce), $action))
         {
             wp_send_json_error(__('Trying to cheat?', 'cuar'));
         }

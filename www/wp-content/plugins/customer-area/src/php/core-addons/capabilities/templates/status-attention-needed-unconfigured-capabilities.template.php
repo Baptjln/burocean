@@ -1,5 +1,8 @@
-<?php
-/** Template version: 2.0.0
+<?php /**
+ * Template version: 2.1.0
+ *
+ * -= 2.1.0 =-
+ * - Fix some WP Customer Area strings
  *
  * -= 2.0.0 =-
  * - Add cuar- prefix to bootstrap classes
@@ -11,7 +14,7 @@
 ?>
 
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -32,8 +35,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 <div class="cuar-needs-attention">
     <h3><?php _e('Configure permissions', 'cuar'); ?></h3>
 
-    <p><?php _e('You have not yet configured the permissions. By default, the plugin will allows the administrators to do everything but the other roles will not be able to use the customer area. '
-            . 'The permissions can easily be configured from the Customer Area settings.', 'cuar'); ?></p>
+    <p><?php _e('You have not yet configured the permissions. By default, the plugin will allows the administrators to do everything but the other roles will not be able to use the private area. '
+            . 'The permissions can easily be configured from the WP Customer Area settings.', 'cuar'); ?></p>
 
     <p class="cuar-suggested-action"><span class="cuar-text"><?php _e('Suggested action', 'cuar'); ?></span>
         <a href="<?php echo admin_url('admin.php?page=wpca-settings&tab=cuar_capabilities'); ?>"

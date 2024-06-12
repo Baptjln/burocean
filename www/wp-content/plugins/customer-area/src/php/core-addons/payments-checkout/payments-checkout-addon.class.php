@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if ( !class_exists('CUAR_PaymentsCheckoutAddOn')) :
     /**
      * Add-on to show the form to validate a payment
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_PaymentsCheckoutAddOn extends CUAR_AbstractPageAddOn
     {
@@ -80,18 +80,18 @@ if ( !class_exists('CUAR_PaymentsCheckoutAddOn')) :
             // Bail if not on frontend
             if (is_admin()) return;
 
-            if (isset($_SESSION['cuar_checkout_data']) && !empty($_SESSION['cuar_checkout_data']))
+            $form_data = $this->plugin->get_session_var('cuar_checkout_data', []);
+            if (!empty($form_data))
             {
-                $form_data = $_SESSION['cuar_checkout_data'];
-                unset($_SESSION['cuar_checkout_data']);
+                $this->plugin->unset_session_var('cuar_checkout_data');
             }
             else
             {
                 $form_data = $_POST;
             }
 
-            $error_message = isset($_SESSION['cuar_checkout_error']) ? $_SESSION['cuar_checkout_error'] : '';
-            unset($_SESSION['cuar_checkout_error']);
+            $error_message = $this->plugin->get_session_var('cuar_checkout_error', '');
+            $this->plugin->unset_session_var('cuar_checkout_error');
 
             $object_id = isset($form_data['cuar_object_id']) ? $form_data['cuar_object_id'] : 0;
             $object_type = isset($form_data['cuar_object_type']) ? $form_data['cuar_object_type'] : '';

@@ -1,6 +1,9 @@
 <?php /**
- * Template version: 4.0.0
+ * Template version: 4.1.0
  * Template zone: frontend
+ *
+ * -= 4.1.0 =-
+ * - Reduced width for customer-account-edit page based on cuar/private-content/view/max-width-for-forms
  *
  * -= 4.0.0 =-
  * - Added field groups
@@ -19,6 +22,7 @@
  */
 
 $current_user = get_userdata(get_current_user_id());
+$cuar_content_max_width = $this->get_max_width_markup('inner_page', ['cuar-page-' . $this->page_description['slug']]);
 ?>
 
 <?php $this->print_form_header(); ?>
@@ -52,7 +56,7 @@ $current_user = get_userdata(get_current_user_id());
         </ul>
 
     </div>
-    <div class="tab-content pn br-n">
+    <div class="tab-content pn br-n"<?php echo $cuar_content_max_width; ?>>
         <div id="cuar-js-account-edit-fields" class="tab-pane active">
             <?php $this->print_account_fields(); ?>
         </div>

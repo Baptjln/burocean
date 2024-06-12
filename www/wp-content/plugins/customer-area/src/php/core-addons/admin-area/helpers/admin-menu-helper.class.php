@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -176,9 +176,9 @@ class CUAR_AdminMenuHelper
     private function add_main_menu_item()
     {
         add_menu_page(__('WP Customer Area', 'cuar'),
-            __('Customer Area', 'cuar'),
+            __('Private area', 'cuar'),
             'view-customer-area-menu',
-            self::$MENU_SLUG, null, '', '2.1.cuar');
+            self::$MENU_SLUG, null, null, 3);
 
         add_submenu_page(self::$MENU_SLUG,
             __('About WP Customer Area', 'cuar'),

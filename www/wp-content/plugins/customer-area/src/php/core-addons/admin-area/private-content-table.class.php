@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@ class CUAR_PrivateContentTable extends CUAR_ListTable
         $args['meta_query'] = array('relation' => 'OR');
         if ( !empty($this->parameters['visible-by']))
         {
-            $args['meta_query'] = $this->po_addon->get_meta_query_post_owned_by($this->parameters['visible-by']);
+            $args['meta_query'] = $this->po_addon->get_meta_query_post_owned_by($this->parameters['visible-by'], $this->post_type);
         }
 
         if ( !empty($this->parameters['search-query']))

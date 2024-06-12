@@ -1,4 +1,4 @@
-/* 
+/*
  * Auto Expanding Text Area (1.2.2)
  * by Chrys Bader (www.chrysbader.com)
  * chrysb@gmail.com
@@ -8,7 +8,7 @@
  * John Resig - jeresig@gmail.com
  *
  * Copyright (c) 2008 Chrys Bader (www.chrysbader.com)
- * Licensed under the GPL (GPL-LICENSE.txt) license. 
+ * Licensed under the GPL (GPL-LICENSE.txt) license.
  *
  *
  * NOTE: This script requires $ to work.  Download $ at www.jquery.com
@@ -100,14 +100,7 @@
             var html = this.textarea.val().replace(/(<|>)/g, '');
 
             // IE is different, as per usual
-            if ($.browser.msie)
-            {
-                html = html.replace(/\n/g, '<BR>new');
-            }
-            else
-            {
-                html = html.replace(/\n/g, '<br>new');
-            }
+            html = html.replace(/\n/g, '<br>new');
 
             if (this.dummy.html() != html)
             {

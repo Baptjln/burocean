@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2015 MarvinLabs (contact@marvinlabs.com) */
+/*  Copyright 2015 Foobar Studio (contact@foobar.studio) */
 
 require_once(CUAR_INCLUDES_DIR . '/core-classes/Content/custom-post.class.php');
 
@@ -388,7 +388,7 @@ class CUAR_Payment extends CUAR_CustomPost
             'hierarchical'        => false,
             'supports'            => false,
             'taxonomies'          => array(),
-            'public'              => true,
+            'public'              => false,
             'show_ui'             => true,
             'show_in_menu'        => false,
             'show_in_nav_menus'   => false,

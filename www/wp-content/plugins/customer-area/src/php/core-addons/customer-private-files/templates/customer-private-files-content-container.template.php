@@ -1,5 +1,8 @@
 <?php
-/** Template version: 3.0.0
+/** Template version: 4.0.0
+ *
+ * -= 4.0.0 =-
+ * - Updated markup for masonry compatibility
  *
  * -= 3.0.0 =-
  * - Initial version
@@ -17,7 +20,8 @@ $current_addon = cuar_addon($current_addon_slug);
 $post_type = $current_addon->get_friendly_post_type();
 ?>
 
-<div class="panel top <?php echo $post_type; ?>">
+<div class="cuar-js-msnry-item col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 clearfix panel top <?php echo
+$post_type; ?>">
     <div class="panel-heading">
         <span class="panel-icon">
             <i class="<?php echo $current_addon_icon; ?>"></i>

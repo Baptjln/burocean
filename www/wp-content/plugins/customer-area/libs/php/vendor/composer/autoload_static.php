@@ -4,12 +4,16 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7fecbb23d7506d11274ed0c48248cd90
+class ComposerStaticInit90b6ab515a580817434324b4f0c1fadf
 {
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
             'Spipu\\Html2Pdf\\' => 15,
+        ),
+        'M' => 
+        array (
+            'Michelf\\' => 8,
         ),
     );
 
@@ -18,9 +22,24 @@ class ComposerStaticInit7fecbb23d7506d11274ed0c48248cd90
         array (
             0 => __DIR__ . '/..' . '/spipu/html2pdf/src',
         ),
+        'Michelf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/michelf/php-markdown/Michelf',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'M' => 
+        array (
+            'Michelf' => 
+            array (
+                0 => __DIR__ . '/../../../..' . '/',
+            ),
+        ),
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
         'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
@@ -40,9 +59,10 @@ class ComposerStaticInit7fecbb23d7506d11274ed0c48248cd90
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7fecbb23d7506d11274ed0c48248cd90::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7fecbb23d7506d11274ed0c48248cd90::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit7fecbb23d7506d11274ed0c48248cd90::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit90b6ab515a580817434324b4f0c1fadf::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit90b6ab515a580817434324b4f0c1fadf::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit90b6ab515a580817434324b4f0c1fadf::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit90b6ab515a580817434324b4f0c1fadf::$classMap;
 
         }, null, ClassLoader::class);
     }

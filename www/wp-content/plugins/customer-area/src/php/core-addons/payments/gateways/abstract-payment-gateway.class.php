@@ -1,6 +1,6 @@
 <?php
 
-/*  Copyright 2015 MarvinLabs (contact@marvinlabs.com) */
+/*  Copyright 2015 Foobar Studio (contact@foobar.studio) */
 
 abstract class CUAR_AbstractPaymentGateway implements CUAR_PaymentGateway
 {
@@ -100,7 +100,7 @@ abstract class CUAR_AbstractPaymentGateway implements CUAR_PaymentGateway
 
     protected function set_result_message($message)
     {
-        $_SESSION['cuar_gateway_message'] = $message;
+        $this->plugin->set_session_var('cuar_gateway_message', $message);
     }
 
     //-- Settings functions -----------------------------------------------------------------------------------------------------------------------------------/

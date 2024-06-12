@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 /**
  * Administation area for private files
  *
- * @author Vincent Prat @ MarvinLabs
+ * @author Vincent Prat @ Foobar Studio
  */
 class CUAR_PrivateFileAdminInterface
 {
@@ -131,7 +131,7 @@ class CUAR_PrivateFileAdminInterface
         if ( !$post || get_post_type($post->ID) != 'cuar_private_file') return;
 
         // Security check
-        if ( !wp_verify_nonce($_POST['wp_cuar_nonce_file'], plugin_basename(__FILE__))) return;
+        if ( !wp_verify_nonce(sanitize_key($_POST['wp_cuar_nonce_file']), plugin_basename(__FILE__))) return;
 
         // Move the legacy files to the new storage folders
         $this->pf_addon->move_legacy_files($post_id, $previous_owners);
@@ -176,7 +176,7 @@ class CUAR_PrivateFileAdminInterface
                 'option_id' => CUAR_PrivateFileAddOn::$OPTION_ENABLE_ADDON,
                 'type'      => 'checkbox',
                 'after'     =>
-                    __('Check this to enable the private files add-on.', 'cuar')
+                    __('Check this to enable the Private Files add-on.', 'cuar')
             )
         );
 
@@ -277,8 +277,11 @@ class CUAR_PrivateFileAdminInterface
         // Folder does not exist.
         if ( !file_exists($path))
         {
-            $out .= '<p class="cuar-error cuar-folder-action" data-path="' . esc_attr($path) . '" data-action="mkdir" data-extra="0' . $permissions
-                . '" data-success-message="' . __('Save settings to check again', 'cuar') . '">';
+            $out .= '<p class="cuar-error cuar-folder-action" data-path="' . esc_attr($path)
+                    . '" data-action="mkdir" data-extra="0' . $permissions
+                    . '" data-success-message="' . __('Save settings to check again', 'cuar')
+                    . '" data-nonce="' . wp_create_nonce('cuar_folder_action')
+                    . '">';
             $out .= __('The folder does not exist.', 'cuar');
 
             // Propose to try create it
@@ -295,8 +298,11 @@ class CUAR_PrivateFileAdminInterface
         $current_perms = substr(sprintf('%o', fileperms($path)), -3);
         if ($permissions < $current_perms)
         {
-            $out .= '<p class="cuar-error cuar-folder-action" data-path="' . esc_attr($path) . '" data-action="chmod" data-extra="0' . $permissions
-                . '" data-success-message="' . __('Save settings to check again', 'cuar') . '">';
+            $out .= '<p class="cuar-error cuar-folder-action" data-path="' . esc_attr($path)
+                    . '" data-action="chmod" data-extra="0' . $permissions
+                    . '" data-success-message="' . __('Save settings to check again', 'cuar')
+                    . '" data-nonce="' . wp_create_nonce('cuar_folder_action')
+                    . '">';
             $out .= sprintf(__('That directory should at least have the permissions set to %s. Currently it is %s. You should adjust that directory permissions as upload or download might not work properly.',
                 'cuar'), $permissions, $current_perms);
 
@@ -312,7 +318,9 @@ class CUAR_PrivateFileAdminInterface
         if ($accessible_from_web !== false)
         {
             $out .= '<p class="cuar-error cuar-folder-action" data-path="' . esc_attr($path)
-                . '" data-action="secure-htaccess" data-extra="" data-success-message="' . __('Save settings to check again', 'cuar') . '">';
+                    . '" data-action="secure-htaccess" data-extra="" data-success-message="' . __('Save settings to check again', 'cuar')
+                    . '" data-nonce="' . wp_create_nonce('cuar_folder_action')
+                    . '">';
             $out .= __('That directory seems to be accessible from the web. <strong>This is not safe</strong>. The most secure would be to move it outside of the web folder of your server',
                 'cuar');
             $out .= '<br/>';

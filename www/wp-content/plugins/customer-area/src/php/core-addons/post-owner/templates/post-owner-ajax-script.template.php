@@ -1,6 +1,12 @@
 <?php /**
- * Template version: 3.0.0
+ * Template version: 3.1.0
  * Template zone: admin|frontend
+ *
+ * -= 3.1.0 =-
+ * - Prevent Select2 assignment boxes to fail while initializing if the theme or a plugin is already loading Select2
+ *
+ * -= 3.0.0 =-
+ * - Initial version
  */ ?>
 
 <?php /** @var string $field_id */ ?>
@@ -15,7 +21,7 @@
         "use strict";
         $(document).ready(function ()
         {
-            $("#<?php echo esc_attr($field_id); ?>").select2({
+            $("#<?php echo esc_attr($field_id); ?>").cuarSelect2({
                 width     : '40%',
                 allowClear: true,
                 placeholder: '',

@@ -2,8 +2,97 @@
 
 <?php
 $whats_new = array(
-    '7.8' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-in-wp-customer-area-7-8-0', 'cuar'),
+	'8.2' => array(
+		'blog_post' => cuar_site_url('/whats-new-in-wp-customer-area-8-2'),
+		'codename'  => 'Stevie Wonder',
+		'tagline'   => __('New Bulk Import add-on', 'cuar'),
+		'blocks'    => array(
+			array(
+				'title' => __('Bulk import private content from JSON file', 'cuar'),
+				'text'  => sprintf(__('We are happy to announce a new %1$s that will help you to import private contents from a JSON file. This is a developer-oriented add-on, but, %2$s, it can be used to import private pages, tasks lists and its sub-tasks, or conversations and its replies.',
+					'cuar'),
+					'<a href="' . cuar_site_url('/product/wpca-bulk-import') .'">' . __('a new Bulk Import add-on','cuar') . '</a>',
+					'<a href="' . cuar_site_url('/product/wpca-ftp-mass-import') .'">' . __('unlike the FTP Mass Import add-on','cuar') . '</a>'
+				),
+			),
+			array(
+				'title' => __('Improved the UI', 'cuar'),
+				'text'  => sprintf(__('We focused on improving the UI in various area of the main plugin and its add-ons. For instance, we created %1$s, %2$s is now compatible with %3$s. We also improved the layout and the compatibility with some themes.','cuar'),
+					'<a href="' . cuar_site_url('/product/wpca-compatibility-elementor') .'">' . __('a new Elementor Compatibility add-on','cuar') . '</a>',
+					'<a href="' . cuar_site_url('/product/wpca-content-expiry') .'">' . __('the Content Expiry add-on','cuar') . '</a>',
+					'<a href="' . cuar_site_url('/product/wpca-front-office-publishing') .'">' . __('the Front Office Publishing add-on','cuar') . '</a>'),
+			),
+		),
+		array(
+			'title' => __('Improvements and bug fixes', 'cuar'),
+			'text'  => __('Since our 8.1.0 version, there have been 22 new features and over 60 bug fixes and tweaks. For example, we fixed some performances issues, some problems related the login forms, some queries, and many small issues that may have hindered your user experience.',
+				'cuar'),
+		),
+	),
+	'8.1' => array(
+        'blog_post' => cuar_site_url('/whats-new-in-wp-customer-area-8-1'),
+        'codename'  => 'Django Reinhardt',
+        'tagline'   => __('New FTP Mass Import add-on', 'cuar'),
+        'blocks'    => array(
+            array(
+                'title' => __('Bulk import files from your FTP', 'cuar'),
+                'text'  => __('We are happy to announce a new utility add-on that will help you to import files from your FTP. You\'ll get a simple form allowing you to select files located on your server and the associated owners, in order to automatically create the posts that belongs to them.',
+                    'cuar'),
+            ),
+            array(
+                'title' => __('New translations', 'cuar'),
+                'text'  => sprintf(__('We\'ll now be maintaining translations for the main plugin from %s. Please use your WordPress account to commit translations in your own language directly to this platform.', 'cuar'),
+                    '<a href="https://translate.wordpress.org/projects/wp-plugins/customer-area/stable/">' . __('the official WP translation system', 'cuar') . '</a>'
+                ),
+            ),
+            array(
+                'title' => __('Improvements and bug fixes', 'cuar'),
+                'text'  => __('Since our 8.0 version, you probably had troubles validating your licences. This is due to a root certificate update from LetsEncrypt. And openSSL on your server now needs to be updated to 1.1.x. The plugin will now check if you have the correct version.',
+                    'cuar'),
+            ),
+        )
+    ),
+    '8.0' => array(
+        'blog_post' => cuar_site_url('/whats-new-in-wp-customer-area-8-0'),
+        'codename'  => 'Joey Ramone',
+        'tagline'   => __('New backend for our add-on licensing system', 'cuar'),
+        'blocks'    => array(
+            array(
+                'title' => __('Add-on licensing', 'cuar'),
+                'text'  => __('Our licensing system has changed completely and thus we had to adapt the plugin to that new backend. This is why we considered this version a breaking change. All add-ons will need to be updated too. If you have any add-on and need to renew your licence keys, please read our blog post and send us an email with all the details we require.',
+                    'cuar'),
+            ),
+            array(
+                'title' => __('Improvements and bug fixes', 'cuar'),
+                'text'  => __('Since our 7.10.0 version, focus has mainly been on restoring our website, licensing backend and shop. However, we have included in this release a few bug fixes and a couple of new minor features.',
+                    'cuar'),
+            ),
+        )
+    ),
+    '7.10' => array(
+        'blog_post' => '',
+        'codename'  => 'Ray Charles',
+        'tagline'   => __('Tweaking the User Experience', 'cuar'),
+        'blocks'    => array(
+            array(
+                'title' => __('Design enhancements', 'cuar'),
+                'text'  => __('We improved the design to make it more elegant on large screens and added the possibility to set max-width through a filter for single content posts and forms. We also added a filter to display post titles, added a "year archives" link in date archives widgets, improved the way our columns system work, and many other cool things.',
+                    'cuar'),
+            ),
+            array(
+                'title' => __('Third-party plugins integration', 'cuar'),
+                'text'  => __('We created a new filter cuar/private-content/view/disable-css-resets to disable CSS overrides into the area that will allow integration of third party plugins (like page builders) into your private area. Read our blog post to get some more details about that. Be warned that using this class allows plugin integration, but may introduce graphical issues depending on your theme.',
+                    'cuar'),
+            ),
+            array(
+                'title' => __('Improvements and bug fixes', 'cuar'),
+                'text'  => __('Since our 7.9.0 version, there have been 21 new features and over 30 bug fixes and tweaks. For example, you can now search for attachments inside private files using the search add-on. There are some new custom fields placeholders in notifications. We fixed many issues related to PHP sessions, 404 errors, permission errors according to your feedback.',
+                    'cuar'),
+            ),
+        )
+    ),
+    '7.9' => array(
+        'blog_post' => '',
         'codename'  => 'Leonard Cohen',
         'tagline'   => __('Enhanced display control', 'cuar'),
         'blocks'    => array(
@@ -19,13 +108,13 @@ $whats_new = array(
             ),
             array(
                 'title' => __('Design enhancements and bug fixes', 'cuar'),
-                'text'  => __('Since our 7.7.0 version, there have been many improvements on the design, but also many patches: 8 new features and over 26 issues fixes and tweaks. For instance, we made security updates and improvements regarding our dependencies. We also made some minor design adjustments.',
+                'text'  => __('Since our 7.7.0 version, there have been many improvements on the design, but also many patches: 23 new features and over 49 issues fixes and tweaks. For instance, we made security updates and improvements regarding our dependencies. We also made some minor design adjustments.',
                     'cuar'),
             ),
         )
     ),
     '7.7' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-in-wp-customer-area-7-7-0', 'cuar'),
+        'blog_post' => cuar_site_url('/whats-new-in-wp-customer-area-7-7-0'),
         'codename'  => 'Janis Joplin',
         'tagline'   => __('Create powerful forms using ACF and our ACF Integration add-on', 'cuar'),
         'blocks'    => array(
@@ -47,7 +136,7 @@ $whats_new = array(
         )
     ),
     '7.5' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-in-wp-customer-area-7-5-0', 'cuar'),
+        'blog_post' => cuar_site_url('/whats-new-in-wp-customer-area-7-5-0'),
         'codename'  => 'Jacques Higelin',
         'tagline'   => __('Force your users to read and agree your terms and conditions', 'cuar'),
         'blocks'    => array(
@@ -69,7 +158,7 @@ $whats_new = array(
         )
     ),
 	'7.4' => array(
-		'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-in-wp-customer-area-7-4', 'cuar'),
+		'blog_post' => cuar_site_url('/whats-new-in-wp-customer-area-7-4'),
 		'codename'  => 'Bob Marley',
 		'tagline'   => __("Online payment of invoices with PayPal and Stripe Gateways", 'cuar'),
 		'blocks'    => array(
@@ -91,7 +180,7 @@ $whats_new = array(
 		)
 	),
 	'7.3' => array(
-		'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-since-wp-customer-area-7-0', 'cuar'),
+		'blog_post' => '',
 		'codename'  => 'Eric Clapton',
 		'tagline'   => __("Welcome to the Design Extras add-on", 'cuar'),
 		'blocks'    => array(
@@ -113,7 +202,7 @@ $whats_new = array(
 		)
 	),
 	'7.2' => array(
-		'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-since-wp-customer-area-7-0', 'cuar'),
+		'blog_post' => '',
 		'codename'  => 'Sid Vicious',
 		'tagline'   => __("Welcome to the Unread Documents add-on", 'cuar'),
 		'blocks'    => array(
@@ -135,7 +224,7 @@ $whats_new = array(
 		)
 	),
     '7.1' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-since-wp-customer-area-7-0', 'cuar'),
+        'blog_post' => '',
         'codename'  => 'Kurt Cobain',
         'tagline'   => __("A small post-summer-break update", 'cuar'),
         'blocks'    => array(
@@ -157,7 +246,7 @@ $whats_new = array(
         )
     ),
     '7.0' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-in-wp-customer-area-7-0', 'cuar'),
+        'blog_post' => '',
         'codename'  => 'Lemmy Kilmister',
         'tagline'   => __("WP Customer Area 7.0 has got a new dress.", 'cuar'),
         'blocks'    => array(
@@ -179,7 +268,7 @@ $whats_new = array(
         )
     ),
     '6.3' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-in-wp-customer-area-6-3', 'cuar'),
+        'blog_post' => '',
         'codename'  => 'Bon Scott',
         'tagline'   => __("WP Customer Area 6.3 has been aimed at improving customer relationship management and improving existing add-ons.", 'cuar'),
         'blocks'    => array(
@@ -192,7 +281,7 @@ $whats_new = array(
                 'title' => __('Invoicing', 'cuar'),
                 'text'  => __('We are introducing a new add-on to publish invoices for your customers. No more attaching files, there is a proper content type for invoices and we will soon add a lot around that (PDF generation, online payment, etc.).',
                     'cuar'),
-                'more'  => 'http://wp-customerarea.com' . __('/downloads/wpca-invoicing', 'cuar')
+                'more'  => cuar_site_url('/product/wpca-invoicing')
             ),
             array(
                 'title' => __('Improvements and bug fixes', 'cuar'),
@@ -202,7 +291,7 @@ $whats_new = array(
         )
     ),
     '6.2' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-in-wp-customer-area-6-2', 'cuar'),
+        'blog_post' => '',
         'codename'  => 'Jim Morrison',
         'tagline'   => __("WP Customer Area 6.2 has been aimed at improving the attachments to private files and everything around that.", 'cuar'),
         'blocks'    => array(
@@ -215,18 +304,18 @@ $whats_new = array(
                 'title' => __('Enhanced Files', 'cuar'),
                 'text'  => __('We are introducing a new add-on which improves the file attachments: upload multiple attachments on the same private file, change the attachment caption and automatically add file type icons in front of the download links.',
                     'cuar'),
-                'more'  => 'http://wp-customerarea.com' . __('/downloads/wpca-enhanced-files', 'cuar')
+                'more'  => cuar_site_url('/product/wpca-enhanced-files')
             ),
             array(
                 'title' => __('Smart Groups', 'cuar'),
                 'text'  => __('Smart Groups will change the way to build your user groups. No more adding or removing users by hand, you will simply make dynamic groups based on criteria such as name, domain of the email address, and any other meta information linked to your user profiles.',
                     'cuar'),
-                'more'  => 'http://wp-customerarea.com' . __('/downloads/wpca-smart-groups', 'cuar')
+                'more'  => cuar_site_url('/product/wpca-smart-groups')
             ),
         )
     ),
     '6.1' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/whats-new-in-wp-customer-area-6-1', 'cuar'),
+        'blog_post' => '',
         'codename'  => 'Jimi Hendrix',
         'tagline'   => __("WP Customer Area 6.1 focuses mainly on making administrator's life easier, introducing event logging and a better administration panel.", 'cuar'),
         'blocks'    => array(
@@ -234,13 +323,13 @@ $whats_new = array(
                 'title' => __('Protect post types', 'cuar'),
                 'text'  => __('We are introducing a new add-on which will allow protecting any kind of external post types. Posts created from third party plugins can be made private and assigned just like private pages or files.',
                     'cuar'),
-                'more'  => 'http://wp-customerarea.com' . __('/downloads/wpca-protect-post-types', 'cuar')
+                'more'  => cuar_site_url('/product/wpca-protect-post-types')
             ),
             array(
                 'title' => __('Shortcodes', 'cuar'),
                 'text'  => __('we have added shortcodes to display the navigation menu, list protected content, etc. You will now be able to easily build custom pages with a list of the content you want to pull for the connected user.',
                     'cuar'),
-                'more'  => 'http://wp-customerarea.com' . __('/documentation/shortcodes', 'cuar')
+                'more'  => cuar_site_url('/documentation/user-guides/shortcodes')
             ),
             array(
                 'title' => __('Better admin panel', 'cuar'),
@@ -261,7 +350,7 @@ $whats_new = array(
         )
     ),
     '6.0' => array(
-        'blog_post' => 'http://wp-customerarea.com' . __('/customer-area-is-dead-long-live-wp-customer-area/', 'cuar'),
+        'blog_post' => '',
         'codename'  => 'John Lennon',
         'tagline'   => __("WP Customer Area 6.0 is a major release which sees a lot of changes not only inside the plugin but also on the website.", 'cuar'),
         'blocks'    => array(

@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,15 +18,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 require_once(CUAR_INCLUDES_DIR . '/core-classes/addon.class.php');
 
-require_once(dirname(__FILE__) . '/private-file-admin-interface.class.php');
-require_once(dirname(__FILE__) . '/private-file-default-handlers.class.php');
+require_once(__DIR__ . '/private-file-admin-interface.class.php');
+require_once(__DIR__ . '/private-file-default-handlers.class.php');
 
-if ( !class_exists('CUAR_PrivateFileAddOn')) :
+if (!class_exists('CUAR_PrivateFileAddOn')) :
 
     /**
      * Add-on to put private files in the customer area
      *
-     * @author Vincent Prat @ MarvinLabs
+     * @author Vincent Prat @ Foobar Studio
      */
     class CUAR_PrivateFileAddOn extends CUAR_AddOn
     {
@@ -45,35 +45,37 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
 
         public function run_addon($plugin)
         {
-            if ($this->is_enabled()) {
-                add_action('init', array(&$this, 'register_custom_types'));
-                add_filter('cuar/core/post-types/content', array(&$this, 'register_private_post_types'));
-                add_filter('cuar/core/types/content', array(&$this, 'register_content_type'));
+            if ($this->is_enabled())
+            {
+                add_action('init', [&$this, 'register_custom_types']);
+                add_filter('cuar/core/post-types/content', [&$this, 'register_private_post_types']);
+                add_filter('cuar/core/types/content', [&$this, 'register_content_type']);
 
-                add_filter('cuar/core/ownership/base-private-storage-directory', array(&$this, 'filter_storage_path'));
+                add_filter('cuar/core/ownership/base-private-storage-directory', [&$this, 'filter_storage_path']);
 
-                add_action('template_redirect', array(&$this, 'handle_file_actions'));
-                add_action('before_delete_post', array(&$this, 'before_post_deleted'));
+                add_action('template_redirect', [&$this, 'handle_file_actions']);
+                add_action('before_delete_post', [&$this, 'before_post_deleted']);
 
-                add_filter('cuar/core/permission-groups', array(&$this, 'get_configurable_capability_groups'));
+                add_filter('cuar/core/permission-groups', [&$this, 'get_configurable_capability_groups']);
 
-                add_action('wp_ajax_cuar_remove_attached_file', array(&$this, 'ajax_remove_attached_file'));
-                add_action('wp_ajax_nopriv_cuar_remove_attached_file', array(&$this, 'ajax_remove_attached_file'));
+                add_action('wp_ajax_cuar_remove_attached_file', [&$this, 'ajax_remove_attached_file']);
+                add_action('wp_ajax_nopriv_cuar_remove_attached_file', [&$this, 'ajax_remove_attached_file']);
 
-                add_action('wp_ajax_cuar_attach_file', array(&$this, 'ajax_attach_file'));
-                add_action('wp_ajax_nopriv_cuar_attach_file', array(&$this, 'ajax_attach_file'));
+                add_action('wp_ajax_cuar_attach_file', [&$this, 'ajax_attach_file']);
+                add_action('wp_ajax_nopriv_cuar_attach_file', [&$this, 'ajax_attach_file']);
 
-                add_action('wp_ajax_cuar_update_attached_file', array(&$this, 'ajax_update_attached_file_meta'));
-                add_action('wp_ajax_nopriv_cuar_update_attached_file', array(&$this, 'ajax_update_attached_file_meta'));
+                add_action('wp_ajax_cuar_update_attached_file', [&$this, 'ajax_update_attached_file_meta']);
+                add_action('wp_ajax_nopriv_cuar_update_attached_file', [&$this, 'ajax_update_attached_file_meta']);
 
-                add_filter('cuar/core/js-messages?zone=admin', array(&$this, 'add_js_messages'));
-                add_filter('cuar/core/js-messages?zone=frontend', array(&$this, 'add_js_messages'));
+                add_filter('cuar/core/js-messages?zone=admin', [&$this, 'add_js_messages']);
+                add_filter('cuar/core/js-messages?zone=frontend', [&$this, 'add_js_messages']);
 
                 $this->default_handlers = new CUAR_PrivateFilesDefaultHandlers($plugin);
             }
 
             // Init the admin interface if needed
-            if (is_admin()) {
+            if (is_admin())
+            {
                 $this->admin_interface = new CUAR_PrivateFileAdminInterface($plugin, $this);
             }
         }
@@ -107,7 +109,8 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
         {
             $path = $this->plugin->get_option(self::$OPTION_FTP_PATH);
 
-            if ($create_dirs) {
+            if ($create_dirs)
+            {
                 @mkdir($path, 0750, true);
             }
 
@@ -135,27 +138,33 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function before_post_deleted($post_id)
         {
-            if (get_post_type($post_id) != 'cuar_private_file') return;
+            if (get_post_type($post_id) != 'cuar_private_file')
+            {
+                return;
+            }
 
             /** @var CUAR_PostOwnerAddOn $po_addon */
             $po_addon = $this->plugin->get_addon('post-owner');
 
             $files = $this->get_attached_files($post_id);
-            foreach ($files as $file_id => $file) {
+            foreach ($files as $file_id => $file)
+            {
                 $filename = $file['file'];
                 $source = $file['source'];
 
                 // New file structure
-                if ( !empty($source)) {
+                if (!empty($source))
+                {
                     apply_filters('cuar/private-content/files/on-remove-attached-file?source=' . $source,
-                        array(),
+                        [],
                         $post_id,
                         $file);
                 }
 
                 // Legacy files
                 $legacy_filepath = $po_addon->get_legacy_private_file_path($filename, $post_id);
-                if (file_exists($legacy_filepath)) {
+                if (file_exists($legacy_filepath))
+                {
                     unlink($legacy_filepath);
                 }
             }
@@ -187,19 +196,24 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function get_file_path($post_id, $file)
         {
-            if ( !$file || empty($file)) return '';
+            if (!$file || empty($file))
+            {
+                return '';
+            }
 
             /** @var CUAR_PostOwnerAddOn $po_addon */
             $po_addon = $this->plugin->get_addon('post-owner');
             $file_path = $po_addon->get_private_file_path($file['file'], $post_id, false);
 
             // If the file does not exist, try with the old path format (without post ID)
-            if ( !file_exists($file_path)) {
+            if (!file_exists($file_path))
+            {
                 $file_path = $po_addon->get_legacy_private_file_path($file['file'], $post_id, false);
             }
 
             // Does not exist at all? -> return false
-            if ( !file_exists($file_path)) {
+            if (!file_exists($file_path))
+            {
                 $file_path = false;
             }
 
@@ -216,7 +230,10 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function get_file_source($post_id, $file)
         {
-            if ( !$file || empty($file)) return '';
+            if (!$file || empty($file))
+            {
+                return '';
+            }
 
             $source = empty($file['source']) ? 'local' : $file['source'];
 
@@ -233,7 +250,10 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function get_file_caption($post_id, $file)
         {
-            if ( !$file || empty($file)) return '';
+            if (!$file || empty($file))
+            {
+                return '';
+            }
 
             $caption = empty($file['caption']) ? $file['file'] : $file['caption'];
 
@@ -250,7 +270,10 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function get_file_name($post_id, $file)
         {
-            if ( !$file || empty($file)) return '';
+            if (!$file || empty($file))
+            {
+                return '';
+            }
 
             return apply_filters('cuar/private-content/files/file-name', $file['file'], $post_id, $file);
         }
@@ -265,7 +288,10 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function get_file_type($post_id, $file)
         {
-            if ( !$file || empty($file)) return '';
+            if (!$file || empty($file))
+            {
+                return '';
+            }
 
             return apply_filters('cuar/private-content/files/file-type', pathinfo($file['file'], PATHINFO_EXTENSION), $post_id, $file);
         }
@@ -298,13 +324,19 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
         public function get_file_download_count($post_id, $file_id = null, $user_id = null)
         {
             $user = is_null($user_id) ? get_current_user_id() : $user_id;
-            if ($file_id == null) {
+            if ($file_id == null)
+            {
                 $count = get_post_meta($post_id, 'cuar/private-content/files/download_count?user=' . $user, true);
-            } else {
+            }
+            else
+            {
                 $count = get_post_meta($post_id, 'cuar/private-content/files/download_count?user=' . $user . '&file=' . $file_id, true);
             }
 
-            if ( !$count || empty($count)) return 0;
+            if (!$count || empty($count))
+            {
+                return 0;
+            }
 
             return intval($count);
         }
@@ -322,11 +354,14 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
         {
             $user = is_null($user_id) ? get_current_user_id() : $user_id;
             $current_count = $this->get_file_download_count($post_id, $file_id, $user_id);
-            if ($file_id == null) {
+            if ($file_id == null)
+            {
                 update_post_meta($post_id,
                     'cuar/private-content/files/download_count?user=' . $user,
                     $current_count + 1);
-            } else {
+            }
+            else
+            {
                 update_post_meta($post_id,
                     'cuar/private-content/files/download_count?user=' . $user . '&file=' . $file_id,
                     $current_count + 1);
@@ -366,22 +401,24 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function add_attached_file($post_id, $filename, $caption, $source, $extra)
         {
-            $meta = array(
-                'id'      => '',
-                'source'  => $source,
+            $meta = [
+                'id' => '',
+                'source' => $source,
                 'post_id' => $post_id,
-                'file'    => $filename,
+                'file' => $filename,
                 'caption' => $caption,
-                'extra'   => $extra
-            );
+                'extra' => $extra,
+            ];
 
             $meta['id'] = $this->compute_file_id($meta);
 
             // Update an existing file if any
             $files = $this->get_attached_files($post_id);
             $found = false;
-            foreach ($files as $fid => $file) {
-                if ($fid == $meta['id'] || $file['file'] == $filename) {
+            foreach ($files as $fid => $file)
+            {
+                if ($fid == $meta['id'] || $file['file'] == $filename)
+                {
                     unset($files[$fid]);
                     $files[$meta['id']] = $meta;
                     $found = true;
@@ -390,7 +427,8 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             }
 
             // File not updated, just add it
-            if ( !$found) {
+            if (!$found)
+            {
                 $files[$meta['id']] = $meta;
             }
 
@@ -424,15 +462,17 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             $file_meta = get_post_meta($post_id, 'cuar_private_file_file', true);
 
             // No files at all
-            if ( !$file_meta) {
-                return array();
+            if (!$file_meta)
+            {
+                return [];
             }
 
             // We have a single file attached to the content type, this is the legacy meta format
-            if (isset($file_meta['file'])) {
+            if (isset($file_meta['file']))
+            {
                 // Use this opportunity to update that meta field to the new format
                 $file_meta = $this->update_legacy_file_meta($file_meta);
-                $file_meta = array($file_meta['id'] => $file_meta);
+                $file_meta = [$file_meta['id'] => $file_meta];
                 update_post_meta($post_id, 'cuar_private_file_file', $file_meta);
             }
 
@@ -450,12 +490,17 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function get_attached_file_by_name($post_id, $filename, $files = null)
         {
-            if ($files == null) {
+            if ($files === null)
+            {
                 $files = $this->get_attached_files($post_id);
             }
 
-            foreach ($files as $file) {
-                if ($file['file'] == $filename) return $file;
+            foreach ($files as $file)
+            {
+                if ($file['file'] === $filename)
+                {
+                    return $file;
+                }
             }
 
             return false;
@@ -472,12 +517,14 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function get_attached_file($post_id, $file_id, $files = null)
         {
-            if ($files == null) {
+            if ($files === null)
+            {
                 $files = $this->get_attached_files($post_id);
             }
 
             // Check if present
-            if (isset($files[$file_id])) {
+            if (isset($files[$file_id]))
+            {
                 return $files[$file_id];
             }
 
@@ -503,15 +550,16 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
         /**
          * Update the file meta data from the old single file meta format to the new meta format.
          *
-         * @since 6.2
-         *
          * @param array $file The file
          *
          * @return array
+         * @since 6.2
+         *
          */
         private function update_legacy_file_meta($file)
         {
-            if ( !isset($file['source'])) {
+            if (!isset($file['source']))
+            {
                 $file['source'] = 'legacy';
                 $file['caption'] = $file['file'];
                 $file['extra'] = '';
@@ -540,10 +588,10 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
 
             include($this->plugin->get_template_file_path(
                 CUAR_INCLUDES_DIR . '/core-addons/private-file',
-                array(
+                [
                     'private-attachments-add-methods-browser-scripts' . $template_suffix . '.template.php',
-                    'private-attachments-add-methods-browser-scripts.template.php'
-                ),
+                    'private-attachments-add-methods-browser-scripts.template.php',
+                ],
                 'templates'));
         }
 
@@ -555,16 +603,16 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
         public function print_add_attachment_method_browser($post_id)
         {
             /** @noinspection PhpUnusedLocalVariableInspection */
-            $select_methods = apply_filters('cuar/private-content/files/select-methods', array());
+            $select_methods = apply_filters('cuar/private-content/files/select-methods', []);
 
             $template_suffix = is_admin() ? '-admin' : '-frontend';
 
             include($this->plugin->get_template_file_path(
                 CUAR_INCLUDES_DIR . '/core-addons/private-file',
-                array(
+                [
                     'private-attachments-add-methods-browser' . $template_suffix . '.template.php',
-                    'private-attachments-add-methods-browser.template.php'
-                ),
+                    'private-attachments-add-methods-browser.template.php',
+                ],
                 'templates'));
         }
 
@@ -581,34 +629,38 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             $template_suffix = is_admin() ? '-admin' : '-frontend';
 
             $post = get_post($post_id);
-            if (($post != null && $post->post_author == get_current_user_id())
+            if (
+                ($post !== null && ((int)$post->post_author === (int)get_current_user_id()))
                 || current_user_can('cuar_pf_manage_attachments')
-            ) {
+            )
+            {
                 /** @noinspection PhpUnusedLocalVariableInspection */
                 $attachment_item_template = $this->plugin->get_template_file_path(
                     CUAR_INCLUDES_DIR . '/core-addons/private-file',
-                    array(
+                    [
                         'private-attachments-list-item' . $template_suffix . '.template.php',
                         'private-attachments-list-item.template.php',
-                    ),
+                    ],
                     'templates');
-            } else {
+            }
+            else
+            {
                 /** @noinspection PhpUnusedLocalVariableInspection */
                 $attachment_item_template = $this->plugin->get_template_file_path(
                     CUAR_INCLUDES_DIR . '/core-addons/private-file',
-                    array(
+                    [
                         'private-attachments-list-item-readonly' . $template_suffix . '.template.php',
                         'private-attachments-list-item-readonly.template.php',
-                    ),
+                    ],
                     'templates');
             }
 
             include($this->plugin->get_template_file_path(
                 CUAR_INCLUDES_DIR . '/core-addons/private-file',
-                array(
+                [
                     'private-attachments-list' . $template_suffix . '.template.php',
                     'private-attachments-list.template.php',
-                ),
+                ],
                 'templates'));
         }
 
@@ -621,10 +673,14 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             $tmp_filepath = untrailingslashit($path) . '/' . $tmp_filename;
             @unlink($tmp_filepath);
 
-            $tmp_file = @fopen($tmp_filepath, "w");
-            if ($tmp_file === false) return false;
+            $tmp_file = @fopen($tmp_filepath, 'wb');
+            if ($tmp_file === false)
+            {
+                return false;
+            }
 
-            if (false === @fwrite($tmp_file, '0123456789')) {
+            if (false === @fwrite($tmp_file, '0123456789'))
+            {
                 @unlink($tmp_filepath);
                 @fclose($tmp_file);
 
@@ -635,14 +691,16 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             $url_path = '';
             $home_url = trailingslashit(home_url());
             $path_tokens = explode('/', $path);
-            for ($i = count($path_tokens) - 1; $i >= 0; $i--) {
+            for ($i = count($path_tokens) - 1; $i >= 0; $i--)
+            {
                 $url_path = $path_tokens[$i] . '/' . $url_path;
                 $full_url = $home_url . $url_path . $tmp_filename;
 
-                $response = wp_remote_get($full_url, array('method' => 'GET'));
+                $response = wp_remote_get($full_url, ['method' => 'GET']);
                 $response_code = wp_remote_retrieve_response_code($response);
                 $body = wp_remote_retrieve_body($response);
-                if ($response_code < 400 && !empty($body) && $body == '0123456789') {
+                if ($response_code < 400 && !empty($body) && $body === '0123456789')
+                {
                     return sprintf(__('<a href="%s">Public URL to a test file in that folder</a>. Response code: %s. File content: %s', 'cuar'),
                         $full_url,
                         $response_code,
@@ -678,18 +736,23 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             $po_addon = $this->plugin->get_addon('post-owner');
 
             $files = $this->get_attached_files($post_id);
-            foreach ($files as $file_id => $file) {
-                if ($file['source'] == 'legacy') {
-                    foreach ($owners as $owner_type => $owner_ids) {
+            foreach ($files as $file_id => $file)
+            {
+                if ($file['source'] == 'legacy')
+                {
+                    foreach ($owners as $owner_type => $owner_ids)
+                    {
                         $old_path = $po_addon->get_legacy_owner_file_path($post_id, $file['file'], $owner_ids, $owner_type, false);
                         $new_path = $po_addon->get_private_file_path($file['file'], $post_id, true);
 
-                        if (file_exists($old_path)) {
+                        if (file_exists($old_path))
+                        {
                             @copy($old_path, $new_path);
                             @unlink($old_path);
 
                             // Maybe delete empty folder
-                            if ($this->is_dir_empty(basename($old_path))) {
+                            if ($this->is_dir_empty(basename($old_path)))
+                            {
                                 @rmdir(basename($old_path));
                             }
                         }
@@ -712,11 +775,16 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function is_dir_empty($dir)
         {
-            if ( !is_readable($dir)) return false;
+            if (!is_readable($dir))
+            {
+                return false;
+            }
 
             $handle = opendir($dir);
-            while (false !== ($entry = readdir($handle))) {
-                if ($entry != "." && $entry != "..") {
+            while (false !== ($entry = readdir($handle)))
+            {
+                if ($entry != "." && $entry != "..")
+                {
                     return false;
                 }
             }
@@ -732,9 +800,11 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
         public function remove_missing_files($post_id)
         {
             $files = $this->get_attached_files($post_id);
-            foreach ($files as $file_id => $file) {
+            foreach ($files as $file_id => $file)
+            {
                 $is_missing = apply_filters('cuar/private-content/files/is-missing?source=' . $file['source'], false, $post_id, $file);
-                if ($is_missing) {
+                if ($is_missing)
+                {
                     unset($files[$file_id]);
                 }
             }
@@ -773,37 +843,48 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function ajax_attach_file()
         {
-            $errors = array();
-            $method = isset($_POST['method']) ? $_POST['method'] : 0;
-            $post_id = isset($_POST['post_id']) ? $_POST['post_id'] : 0;
+            $errors = [];
+            $method = isset($_POST['method']) ? sanitize_text_field($_POST['method']) : 0;
+            $post_id = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
 
             // Check nonce
             $nonce_action = 'cuar-attach-' . $method . '-' . $post_id;
             $nonce_name = 'cuar_' . $method . '_' . $post_id;
-            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce($_POST[$nonce_name], $nonce_action)) {
+            if (!isset($_POST[$nonce_name]) || !wp_verify_nonce(sanitize_key($_POST[$nonce_name]), $nonce_action))
+            {
                 $errors[] = __('Trying to cheat?', 'cuar');
                 wp_send_json_error($errors);
             }
 
             // Check permissions
             $post = get_post($post_id);
-            if ( !is_user_logged_in()
+            if (!is_user_logged_in()
                 || $post === null
                 || ($post->post_author != get_current_user_id() && !current_user_can('cuar_pf_manage_attachments'))
-            ) {
+            )
+            {
                 $errors[] = __('You are not allowed to attach files to this kind of content', 'cuar');
                 wp_send_json_error($errors);
             }
+
+	        // Check ownership
+	        $po_addon = cuar_addon('post-owner');
+	        if(!$po_addon->is_user_owner_of_post($post_id, get_current_user_id())
+	                      && get_current_user_id() !== ((int) ($post->post_author))) {
+		        $errors[] = __('You are not allowed to attach files to this content', 'cuar');
+		        wp_send_json_error($errors);
+	        }
 
             $extra = isset($_POST['extra']) ? $_POST['extra'] : '';
 
             $initial_filename = isset($_POST['filename']) ? $_POST['filename'] : 0;
             $unique_filename = apply_filters('cuar/private-content/files/unique-filename?method=' . $method, $initial_filename, $post_id, $extra);
 
-            $caption = isset($_POST['caption']) ? $_POST['caption'] : $unique_filename;
+            $caption = isset($_POST['caption']) ? sanitize_text_field($_POST['caption']) : sanitize_file_name($unique_filename);
 
             // Check for missing parameters
-            if (empty($post_id) || empty($unique_filename) || empty($method)) {
+            if (empty($post_id) || empty($unique_filename) || empty($method))
+            {
                 $errors[] = __('Missing parameters', 'cuar');
                 wp_send_json_error($errors);
             }
@@ -811,7 +892,8 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             // Check allowed number of attached files
             $file_count = $this->get_attached_file_count($post_id);
             $max_file_count = $this->get_max_attachment_count();
-            if ($max_file_count >= 0 && $file_count >= $max_file_count) {
+            if ($max_file_count >= 0 && $file_count >= $max_file_count)
+            {
                 $errors[] = sprintf(
                     _n(
                         'You are not allowed to attach more than %d file',
@@ -825,7 +907,8 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             // Check file exists
             $found_file_index = null;
             $found_file = $this->get_attached_file_by_name($post_id, $unique_filename);
-            if ($found_file) {
+            if ($found_file)
+            {
                 $errors[] = __('You cannot attach files with the same name', 'cuar');
                 wp_send_json_error($errors);
             }
@@ -833,13 +916,17 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             // File does not exist, we'll add it now
             $errors = apply_filters('cuar/private-content/files/on-attach-file?method=' . $method, $errors, $this, $initial_filename, $post_id,
                 $unique_filename, $caption, $extra);
-            if ( !empty($errors)) {
+            if (!empty($errors))
+            {
                 wp_send_json_error($errors);
             }
 
             // Fine, update file meta
             $source = apply_filters('cuar/private-content/files/file-source?method=' . $method, 'local');
-            if (empty($caption)) $caption = $unique_filename;
+            if (empty($caption))
+            {
+                $caption = $unique_filename;
+            }
             $added_file = $this->add_attached_file($post_id, $unique_filename, $caption, $source, $extra);
 
             // Log an event
@@ -855,12 +942,13 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function ajax_update_attached_file_meta()
         {
-            $errors = array();
-            $post_id = isset($_POST['post_id']) ? $_POST['post_id'] : 0;
-            $filename = isset($_POST['filename']) ? $_POST['filename'] : 0;
+            $errors = [];
+            $post_id = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
+            $filename = isset($_POST['filename']) ? sanitize_text_field($_POST['filename']) : 0;
 
             // Check parameters
-            if (empty($post_id) || empty($filename)) {
+            if (empty($post_id) || empty($filename))
+            {
                 $errors[] = __('Missing parameters', 'cuar');
                 wp_send_json_error($errors);
             }
@@ -868,37 +956,51 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             // Check nonce
             $nonce_action = 'cuar-update-attachment-' . $post_id;
             $nonce_name = 'cuar_update_attachment_nonce';
-            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce($_POST[$nonce_name], $nonce_action)) {
+            if (!isset($_POST[$nonce_name]) || !wp_verify_nonce(sanitize_key($_POST[$nonce_name]), $nonce_action))
+            {
                 $errors[] = __('Trying to cheat?', 'cuar');
                 wp_send_json_error($errors);
             }
 
             // Check permissions
             $post = get_post($post_id);
-            if ( !is_user_logged_in()
+            if (!is_user_logged_in()
                 || $post === null
-                || ($post->post_author != get_current_user_id() && !current_user_can('cuar_pf_manage_attachments'))
-            ) {
+                || (((int)$post->post_author !== (int)get_current_user_id())
+                    && !current_user_can('cuar_pf_manage_attachments'))
+            )
+            {
                 $errors[] = __('You are not allowed to update attached files', 'cuar');
                 wp_send_json_error($errors);
             }
 
+	        // Check ownership
+	        $po_addon = cuar_addon('post-owner');
+	        if(!$po_addon->is_user_owner_of_post($post_id, get_current_user_id())
+	           && get_current_user_id() !== ((int) ($post->post_author))) {
+		        $errors[] = __('You are not allowed to update attached files from this content', 'cuar');
+		        wp_send_json_error($errors);
+	        }
+
             // Check file exists
             $files = $this->get_attached_files($post_id);
             $found_file = $this->get_attached_file_by_name($post_id, $filename, $files);
-            if ($found_file == false) {
+            if ($found_file == false)
+            {
                 $errors[] = __('File not found', 'cuar');
                 wp_send_json_error($errors);
             }
 
             // File exists, change the details which need to be changed
             $has_changed = false;
-            if (isset($_POST['caption']) && 0 != strcmp($_POST['caption'], $found_file['caption'])) {
+            if (isset($_POST['caption']) && 0 != strcmp($_POST['caption'], $found_file['caption']))
+            {
                 $has_changed = true;
-                $files[$found_file['id']]['caption'] = $_POST['caption'];
+                $files[$found_file['id']]['caption'] = sanitize_text_field($_POST['caption']);
             }
 
-            if ($has_changed) {
+            if ($has_changed)
+            {
                 $this->save_attached_files($post_id, $files);
 
                 // Log an event
@@ -915,12 +1017,13 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function ajax_remove_attached_file()
         {
-            $errors = array();
+            $errors = [];
             $post_id = isset($_POST['post_id']) ? $_POST['post_id'] : 0;
             $filename = isset($_POST['filename']) ? $_POST['filename'] : 0;
 
             // Check parameters
-            if (empty($post_id) || empty($filename)) {
+            if (empty($post_id) || empty($filename))
+            {
                 $errors[] = __('Missing parameters', 'cuar');
                 wp_send_json_error($errors);
             }
@@ -928,25 +1031,37 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             // Check nonce
             $nonce_action = 'cuar-remove-attachment-' . $post_id;
             $nonce_name = 'cuar_remove_attachment_nonce';
-            if ( !isset($_POST[$nonce_name]) || !wp_verify_nonce($_POST[$nonce_name], $nonce_action)) {
+            if (!isset($_POST[$nonce_name]) || !wp_verify_nonce(sanitize_key($_POST[$nonce_name]), $nonce_action))
+            {
                 $errors[] = __('Trying to cheat?', 'cuar');
                 wp_send_json_error($errors);
             }
 
             // Check permissions
             $post = get_post($post_id);
-            if ( !is_user_logged_in()
+            if (!is_user_logged_in()
                 || $post === null
-                || ($post->post_author != get_current_user_id() && !current_user_can('cuar_pf_manage_attachments'))
-            ) {
+                || (((int)$post->post_author !== (int)get_current_user_id())
+                    && !current_user_can('cuar_pf_manage_attachments'))
+            )
+            {
                 $errors[] = __('You are not allowed to remove attached files', 'cuar');
                 wp_send_json_error($errors);
             }
 
+	        // Check ownership
+	        $po_addon = cuar_addon('post-owner');
+	        if(!$po_addon->is_user_owner_of_post($post_id, get_current_user_id())
+	           && get_current_user_id() !== ((int) ($post->post_author))) {
+		        $errors[] = __('You are not allowed to remove attached files from this content', 'cuar');
+		        wp_send_json_error($errors);
+	        }
+
             // Check file exists
             $files = $this->get_attached_files($post_id);
             $found_file = $this->get_attached_file_by_name($post_id, $filename, $files);
-            if ($found_file == false) {
+            if ($found_file == false)
+            {
                 // Consider that is ok with us
                 wp_send_json_success();
             }
@@ -954,7 +1069,8 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             // File exists, we'll remove it now. First physically
             $source = $this->get_file_source($post_id, $found_file);
             $errors = apply_filters('cuar/private-content/files/on-remove-attached-file?source=' . $source, $errors, $post_id, $found_file);
-            if ( !empty($errors)) {
+            if (!empty($errors))
+            {
                 wp_send_json_error($errors);
             }
 
@@ -976,13 +1092,15 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
         public function handle_file_actions()
         {
             // If not on a matching post type, we do nothing
-            if ( !is_singular('cuar_private_file')) {
-	            return;
+            if (!is_singular('cuar_private_file'))
+            {
+                return;
             }
 
             // If not a known action, do nothing
             $action = get_query_var('cuar_action');
-            if ($action !== 'download' && $action !== 'view') {
+            if ($action !== 'download' && $action !== 'view')
+            {
                 return;
             }
 
@@ -990,7 +1108,8 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
             $file_id = get_query_var('cuar_action_param');
 
             // If not logged-in, we ask for details
-            if ( !is_user_logged_in()) {
+            if (!is_user_logged_in())
+            {
                 $this->plugin->login_then_redirect_to_url($_SERVER['REQUEST_URI']);
 
                 return;
@@ -1001,40 +1120,48 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
 
             // If not authorized to download the file, we bail
             $post = get_queried_object();
-            $current_user_id = get_current_user_id();
-            $author_id = $post->post_author;
+            $current_user_id = (int)get_current_user_id();
+            $author_id = (int)$post->post_author;
             $is_current_user_owner = $po_addon->is_user_owner_of_post($post->ID, $current_user_id);
 
-            if ( !($is_current_user_owner || $author_id === $current_user_id || current_user_can('cuar_view_any_cuar_private_file'))) {
-                wp_die(__( 'You are not authorized to access this file', 'cuar' ));
+            if (!($is_current_user_owner
+                  || $author_id === $current_user_id
+                  || current_user_can('cuar_view_any_cuar_private_file')))
+            {
+                wp_die(__('You are not authorized to access this file', 'cuar'));
                 exit();
             }
 
             // Look up that file given its ID
             $files = $this->get_attached_files($post->ID);
             $found_file = null;
-            foreach ($files as $fid => $file) {
+            foreach ($files as $fid => $file)
+            {
                 // Default case
-                if ($fid === $file_id) {
+                if ($fid === $file_id)
+                {
                     $found_file = $file;
                     break;
                 }
             }
 
             // File not found
-            if ($found_file === null) {
-                wp_die(__( 'There is no such file attached to this private content', 'cuar' ));
+            if ($found_file === null)
+            {
+                wp_die(__('There is no such file attached to this private content', 'cuar'));
                 exit();
             }
 
             // Default action to apply on file
-	        $action = 'download';
-	        if ( !isset($_GET['force-download']) || ( isset($_GET['force-download']) && $_GET['force-download'] !== 1)) {
+            $action = 'download';
+            if (!isset($_GET['force-download']) || (isset($_GET['force-download']) && $_GET['force-download'] !== 1))
+            {
                 $action = apply_filters('cuar/private-content/files/default-action', $action, $found_file);
             }
 
-	        // Seems we are all good, do some stuff before sending the file
-            if ($author_id !== $current_user_id) {
+            // Seems we are all good, do some stuff before sending the file
+            if ($author_id !== $current_user_id)
+            {
                 $this->increment_file_download_count($post->ID, $file_id);
             }
             do_action('cuar/private-content/files/on-' . $action, $post->ID, $current_user_id, $this, $file_id);
@@ -1047,37 +1174,37 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
 
         public function get_configurable_capability_groups($capability_groups)
         {
-            $capability_groups['cuar_private_file'] = array(
-                'label'  => __('Private Files', 'cuar'),
-                'groups' => array(
-                    'global'       => array(
-                        'group_name'   => __('Global', 'cuar'),
-                        'capabilities' => array(
+            $capability_groups['cuar_private_file'] = [
+                'label' => __('Private Files', 'cuar'),
+                'groups' => [
+                    'global' => [
+                        'group_name' => __('Global', 'cuar'),
+                        'capabilities' => [
                             'cuar_pf_manage_attachments' => __('Manage file attachments', 'cuar'),
-                        )
-                    ),
-                    'back-office'  => array(
-                        'group_name'   => __('Back-office', 'cuar'),
-                        'capabilities' => array(
-                            'cuar_pf_list_all'          => __('List all files', 'cuar'),
-                            'cuar_pf_edit'              => __('Create/Edit files', 'cuar'),
-                            'cuar_pf_delete'            => __('Delete files', 'cuar'),
-                            'cuar_pf_read'              => __('Access files', 'cuar'),
+                        ],
+                    ],
+                    'back-office' => [
+                        'group_name' => __('Back-office', 'cuar'),
+                        'capabilities' => [
+                            'cuar_pf_list_all' => __('List all files', 'cuar'),
+                            'cuar_pf_edit' => __('Create/Edit files', 'cuar'),
+                            'cuar_pf_delete' => __('Delete files', 'cuar'),
+                            'cuar_pf_read' => __('Access files', 'cuar'),
                             'cuar_pf_manage_categories' => __('Manage categories', 'cuar'),
-                            'cuar_pf_edit_categories'   => __('Edit categories', 'cuar'),
+                            'cuar_pf_edit_categories' => __('Edit categories', 'cuar'),
                             'cuar_pf_delete_categories' => __('Delete categories', 'cuar'),
                             'cuar_pf_assign_categories' => __('Assign categories', 'cuar'),
-                        )
-                    ),
-                    'front-office' => array(
-                        'group_name'   => __('Front-office', 'cuar'),
-                        'capabilities' => array(
-                            'cuar_view_files'                 => __('View private files', 'cuar'),
+                        ],
+                    ],
+                    'front-office' => [
+                        'group_name' => __('Front-office', 'cuar'),
+                        'capabilities' => [
+                            'cuar_view_files' => __('View private files', 'cuar'),
                             'cuar_view_any_cuar_private_file' => __('View any private file', 'cuar'),
-                        )
-                    )
-                )
-            );
+                        ],
+                    ],
+                ],
+            ];
 
             return $capability_groups;
         }
@@ -1091,12 +1218,12 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function register_content_type($types)
         {
-            $types['cuar_private_file'] = array(
-                'label-singular'     => _x('File', 'cuar_private_file', 'cuar'),
-                'label-plural'       => _x('Files', 'cuar_private_file', 'cuar'),
+            $types['cuar_private_file'] = [
+                'label-singular' => _x('File', 'cuar_private_file', 'cuar'),
+                'label-plural' => _x('Files', 'cuar_private_file', 'cuar'),
                 'content-page-addon' => 'customer-private-files',
-                'type'               => 'content'
-            );
+                'type' => 'content',
+            ];
 
             return $types;
         }
@@ -1120,88 +1247,88 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
          */
         public function register_custom_types()
         {
-            $labels = array(
-                'name'               => _x('Private Files', 'cuar_private_file', 'cuar'),
-                'singular_name'      => _x('Private File', 'cuar_private_file', 'cuar'),
-                'add_new'            => _x('Add New', 'cuar_private_file', 'cuar'),
-                'add_new_item'       => _x('Add New Private File', 'cuar_private_file', 'cuar'),
-                'edit_item'          => _x('Edit Private File', 'cuar_private_file', 'cuar'),
-                'new_item'           => _x('New Private File', 'cuar_private_file', 'cuar'),
-                'view_item'          => _x('View Private File', 'cuar_private_file', 'cuar'),
-                'search_items'       => _x('Search Private Files', 'cuar_private_file', 'cuar'),
-                'not_found'          => _x('No private files found', 'cuar_private_file', 'cuar'),
+            $labels = [
+                'name' => _x('Private Files', 'cuar_private_file', 'cuar'),
+                'singular_name' => _x('Private File', 'cuar_private_file', 'cuar'),
+                'add_new' => _x('Add New', 'cuar_private_file', 'cuar'),
+                'add_new_item' => _x('Add New Private File', 'cuar_private_file', 'cuar'),
+                'edit_item' => _x('Edit Private File', 'cuar_private_file', 'cuar'),
+                'new_item' => _x('New Private File', 'cuar_private_file', 'cuar'),
+                'view_item' => _x('View Private File', 'cuar_private_file', 'cuar'),
+                'search_items' => _x('Search Private Files', 'cuar_private_file', 'cuar'),
+                'not_found' => _x('No private files found', 'cuar_private_file', 'cuar'),
                 'not_found_in_trash' => _x('No private files found in Trash', 'cuar_private_file', 'cuar'),
-                'parent_item_colon'  => _x('Parent Private File:', 'cuar_private_file', 'cuar'),
-                'menu_name'          => _x('Private Files', 'cuar_private_file', 'cuar'),
-            );
+                'parent_item_colon' => _x('Parent Private File:', 'cuar_private_file', 'cuar'),
+                'menu_name' => _x('Private Files', 'cuar_private_file', 'cuar'),
+            ];
 
-            $args = array(
-                'labels'              => $labels,
-                'hierarchical'        => false,
-                'supports'            => array('title', 'editor', 'author', 'thumbnail', 'comments', 'excerpt'),
-                'taxonomies'          => array('cuar_private_file_category'),
-                'public'              => true,
-                'show_ui'             => true,
-                'show_in_menu'        => false,
-                'show_in_nav_menus'   => false,
-                'publicly_queryable'  => true,
+            $args = [
+                'labels' => $labels,
+                'hierarchical' => false,
+                'supports' => ['title', 'editor', 'author', 'thumbnail', 'comments', 'excerpt'],
+                'taxonomies' => ['cuar_private_file_category'],
+                'public' => true,
+                'show_ui' => true,
+                'show_in_menu' => false,
+                'show_in_nav_menus' => false,
+                'publicly_queryable' => true,
                 'exclude_from_search' => true,
-                'has_archive'         => false,
-                'query_var'           => 'cuar_private_file',
-                'can_export'          => false,
-                'rewrite'             => false,
-                'capabilities'        => array(
-                    'edit_post'          => 'cuar_pf_edit',
-                    'edit_posts'         => 'cuar_pf_edit',
-                    'edit_others_posts'  => 'cuar_pf_edit',
-                    'publish_posts'      => 'cuar_pf_edit',
-                    'read_post'          => 'cuar_pf_read',
+                'has_archive' => false,
+                'query_var' => 'cuar_private_file',
+                'can_export' => false,
+                'rewrite' => false,
+                'capabilities' => [
+                    'edit_post' => 'cuar_pf_edit',
+                    'edit_posts' => 'cuar_pf_edit',
+                    'edit_others_posts' => 'cuar_pf_edit',
+                    'publish_posts' => 'cuar_pf_edit',
+                    'read_post' => 'cuar_pf_read',
                     'read_private_posts' => 'cuar_pf_list_all',
-                    'delete_post'        => 'cuar_pf_delete',
-                    'delete_posts'       => 'cuar_pf_delete',
-                )
-            );
+                    'delete_post' => 'cuar_pf_delete',
+                    'delete_posts' => 'cuar_pf_delete',
+                ],
+            ];
 
             register_post_type('cuar_private_file', apply_filters('cuar/private-content/files/register-post-type-args', $args));
 
-            $labels = array(
-                'name'                       => _x('File Categories', 'cuar_private_file_category', 'cuar'),
-                'singular_name'              => _x('File Category', 'cuar_private_file_category', 'cuar'),
-                'search_items'               => _x('Search File Categories', 'cuar_private_file_category', 'cuar'),
-                'popular_items'              => _x('Popular File Categories', 'cuar_private_file_category', 'cuar'),
-                'all_items'                  => _x('All File Categories', 'cuar_private_file_category', 'cuar'),
-                'parent_item'                => _x('Parent File Category', 'cuar_private_file_category', 'cuar'),
-                'parent_item_colon'          => _x('Parent File Category:', 'cuar_private_file_category', 'cuar'),
-                'edit_item'                  => _x('Edit File Category', 'cuar_private_file_category', 'cuar'),
-                'update_item'                => _x('Update File Category', 'cuar_private_file_category', 'cuar'),
-                'add_new_item'               => _x('Add New File Category', 'cuar_private_file_category', 'cuar'),
-                'new_item_name'              => _x('New File Category', 'cuar_private_file_category', 'cuar'),
+            $labels = [
+                'name' => _x('File Categories', 'cuar_private_file_category', 'cuar'),
+                'singular_name' => _x('File Category', 'cuar_private_file_category', 'cuar'),
+                'search_items' => _x('Search File Categories', 'cuar_private_file_category', 'cuar'),
+                'popular_items' => _x('Popular File Categories', 'cuar_private_file_category', 'cuar'),
+                'all_items' => _x('All File Categories', 'cuar_private_file_category', 'cuar'),
+                'parent_item' => _x('Parent File Category', 'cuar_private_file_category', 'cuar'),
+                'parent_item_colon' => _x('Parent File Category:', 'cuar_private_file_category', 'cuar'),
+                'edit_item' => _x('Edit File Category', 'cuar_private_file_category', 'cuar'),
+                'update_item' => _x('Update File Category', 'cuar_private_file_category', 'cuar'),
+                'add_new_item' => _x('Add New File Category', 'cuar_private_file_category', 'cuar'),
+                'new_item_name' => _x('New File Category', 'cuar_private_file_category', 'cuar'),
                 'separate_items_with_commas' => _x('Separate file categories with commas', 'cuar_private_file_category', 'cuar'),
-                'add_or_remove_items'        => _x('Add or remove file categories', 'cuar_private_file_category', 'cuar'),
-                'choose_from_most_used'      => _x('Choose from the most used file categories', 'cuar_private_file_category', 'cuar'),
-                'menu_name'                  => _x('File Categories', 'cuar_private_file_category', 'cuar'),
-            );
+                'add_or_remove_items' => _x('Add or remove file categories', 'cuar_private_file_category', 'cuar'),
+                'choose_from_most_used' => _x('Choose from the most used file categories', 'cuar_private_file_category', 'cuar'),
+                'menu_name' => _x('File Categories', 'cuar_private_file_category', 'cuar'),
+            ];
 
-            $args = array(
-                'labels'            => $labels,
-                'public'            => true,
-                'show_in_menu'      => false,
+            $args = [
+                'labels' => $labels,
+                'public' => true,
+                'show_in_menu' => false,
                 'show_in_nav_menus' => 'customer-area',
-                'show_ui'           => true,
-                'show_tagcloud'     => false,
+                'show_ui' => true,
+                'show_tagcloud' => false,
                 'show_admin_column' => true,
-                'hierarchical'      => true,
-                'query_var'         => true,
-                'rewrite'           => false,
-                'capabilities'      => array(
+                'hierarchical' => true,
+                'query_var' => true,
+                'rewrite' => false,
+                'capabilities' => [
                     'manage_terms' => 'cuar_pf_manage_categories',
-                    'edit_terms'   => 'cuar_pf_edit_categories',
+                    'edit_terms' => 'cuar_pf_edit_categories',
                     'delete_terms' => 'cuar_pf_delete_categories',
                     'assign_terms' => 'cuar_pf_assign_categories',
-                )
-            );
+                ],
+            ];
 
-            register_taxonomy('cuar_private_file_category', array('cuar_private_file'),
+            register_taxonomy('cuar_private_file_category', ['cuar_private_file'],
                 apply_filters('cuar/private-content/files/category/register-taxonomy-args', $args));
         }
 
@@ -1217,4 +1344,4 @@ if ( !class_exists('CUAR_PrivateFileAddOn')) :
 // Make sure the addon is loaded
     new CUAR_PrivateFileAddOn();
 
-endif; // if (!class_exists('CUAR_PrivateFileAddOn')) 
+endif; // if (!class_exists('CUAR_PrivateFileAddOn'))

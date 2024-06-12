@@ -1,5 +1,5 @@
 <?php
-/*  Copyright 2013 MarvinLabs (contact@marvinlabs.com)
+/*  Copyright 2013 Foobar Studio (contact@foobar.studio)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ if (!class_exists('CUAR_CustomerLogoutAddOn')) :
 /**
  * Add-on to logout the current user
  *
- * @author Vincent Prat @ MarvinLabs
+ * @author Vincent Prat @ Foobar Studio
  */
 class CUAR_CustomerLogoutAddOn extends CUAR_AbstractPageAddOn {
 	
@@ -49,7 +49,7 @@ class CUAR_CustomerLogoutAddOn extends CUAR_AbstractPageAddOn {
 	}		
 		
 	public function get_hint() {
-		return __( 'This page logs the current user out and redirects him to the logout page', 'cuar' );
+		return __( 'This page logs the current user out and redirects him to the login page', 'cuar' );
 	}	
 
 	public function run_addon( $plugin ) {
@@ -71,7 +71,8 @@ class CUAR_CustomerLogoutAddOn extends CUAR_AbstractPageAddOn {
 		if ( is_user_logged_in() && $this->is_currently_displayed() ) {
 			wp_logout();
 			$logout_url = apply_filters( 'cuar/routing/logout-url', null, 'customer-dashboard', null );	
-			wp_redirect( $logout_url );			
+			wp_redirect( $logout_url );
+			exit;
 		}
 	}
 
