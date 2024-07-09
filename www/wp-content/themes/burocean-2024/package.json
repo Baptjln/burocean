@@ -1,0 +1,39 @@
+{
+    "name": "w_polux",
+    "version": "1.0.0",
+    "description": "",
+    "main": "gulpfile.js",
+    "devDependencies": {
+        "@babel/core": "^7.15.5",
+        "@babel/preset-env": "^7.15.6",
+        "autoprefixer": "^9.8.6",
+        "babel-eslint": "^10.1.0",
+        "cssnano": "^4.1.11",
+        "dart-sass": "^1.25.0",
+        "del": "^5.1.0",
+        "dotenv": "^10.0.0",
+        "fancy-log": "^1.3.3",
+        "gulp": "^4.0.0",
+        "gulp-babel": "^8.0.0",
+        "gulp-dart-sass": "^1.0.2",
+        "gulp-imagemin": "^7.1.0",
+        "gulp-newer": "^1.4.0",
+        "gulp-php2html": "^1.0.1",
+        "gulp-plumber": "^1.2.1",
+        "gulp-postcss": "^8.0.0",
+        "gulp-rename": "^2.0.0",
+        "gulp-sass-glob": "^1.1.0",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-uglify": "^3.0.2",
+        "sass": "^1.39.2"
+    },
+    "scripts": {
+        "watch": "gulp watch",
+        "build": "gulp build"
+    },
+    "author": "Polux",
+    "license": "ISC",
+    "dependencies": {
+        "package.json": "^2.0.1"
+    }
+}

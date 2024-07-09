@@ -1,0 +1,62 @@
+// Variables
+//
+
+$urlDossierFont: 			'../fonts' !default;
+
+// COULEURS ------------------------------------------------------------------------------------------------------------------
+$blanc:                     #fff    !default;
+$noir:                      #000    !default;
+
+$gris:                      #161412 !default;
+$gris-clair:                #727272 !default;
+$vert:                      #798972 !default;
+$rouge:                     #BA6741 !default;
+
+$jaune:                     #c4af0e !default;
+
+$valid:                     #96c85e !default;
+$invalid:                   #eb6467 !default;
+
+$couleur1: $vert;
+$couleur2: $rouge;
+
+
+// APPLICATION DES COULEURS
+$body-bg:                   $blanc !default;
+$body-color:                $gris !default;
+$couleur-texte:             $gris;
+
+
+// TYPO ------------------------------------------------------------------------------------------------------------------
+$font-family-base: 'AvantGarde', Arial, Helvetica, sans-serif !default;
+$font-family-secondaire: 'Bebas', $font-family-base;
+
+// Valeur en pixel pour s'adapter au responsive. Appliqué à l'élément <html>.
+$font-size-root: 10px !default;
+$font-size-base: 1.6rem !default;
+$line-height-base: 1.3 !default;
+
+
+// GRILLE ------------------------------------------------------------------------------------------------------------------
+$enable-flex: false;
+$enable-grid-classes: true;
+$grid-gutter-width-base: 2rem;
+$grid-gutter-widths: () !default;
+$container-max-widths: 100rem;
+
+$padding-main-mobile: 1.5rem;
+$grid-breakpoints: (
+    lg: 128rem
+) !default;
+
+
+// RUPTURES ------------------------------------------------------------------------------------------------------------------
+$min-breakpoint-mobile: 769px;
+$min-breakpoint-tablet: 1024px;
+$min-breakpoint-desktop: 1280px;
+
+$max-breakpoint-mobile: 768px;
+$max-breakpoint-tablet: 1023px;
+$max-breakpoint-desktop: 1279px;
+
+

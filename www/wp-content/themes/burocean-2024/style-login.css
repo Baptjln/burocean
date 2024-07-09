@@ -1,0 +1,12 @@
+body {
+    background: #fff !important;
+}
+
+#login h1 a { 
+	background-image: url("assets/images/logo-burocean-2024.jpg") !important;
+	background-repeat: no-repeat !important;
+	background-position: top center !important;
+	background-size: 300px 56px !important;
+	width: 320px;
+	height: 56px;
+}
