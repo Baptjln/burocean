@@ -8,13 +8,11 @@
 	<meta name="copyright" content="© Copyright 2018 Burocean" />
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
 	
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-	<meta name="msapplication-TileColor" content="#da532c">
-	<meta name="theme-color" content="#ffffff">
+	<link rel="icon" type="image/png" href="<?php bloginfo('url'); ?>/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href="<?php bloginfo('url'); ?>/favicon.svg" />
+	<link rel="shortcut icon" href="<?php bloginfo('url'); ?>/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="<?php bloginfo('url'); ?>/apple-touch-icon.png" />
+	<link rel="manifest" href="<?php bloginfo('url'); ?>/site.webmanifest" />
 	
 	<?php wp_head(); ?>
 	
