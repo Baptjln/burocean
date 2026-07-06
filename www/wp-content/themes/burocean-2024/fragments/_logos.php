@@ -1,4 +1,4 @@
-<div class="logos wrapper">
+<div class="logos container">
     <?php if( have_rows('logos', 'option') ): ?>
 
     	<ul class="row table owl-carousel">

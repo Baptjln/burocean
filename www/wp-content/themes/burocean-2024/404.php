@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<section class="wrapper">
+<section class="container">
 	
 	<div class="txt-center bloc-titre">
 	    <h1 class="font-2">Erreur 404</h1>

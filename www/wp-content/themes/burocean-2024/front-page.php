@@ -66,11 +66,11 @@
     <?php include('fragments/_logos.php'); ?>
     
     <div class="feature">
-        <div class="wrapper">
+        <div class="container">
             
             <h2 class="txt-center"><?php the_field('titre_bloc'); ?><span class="rouge"><?php the_field('sous_titre_bloc'); ?></span></h2>
             <div class="row">
-                <div class="col-md-8 col-md-offset-2">
+                <div class="col col-md-8 col-md-offset-2">
                     <p class="txt-center texte"><?php the_field('texte'); ?></p>
                 </div>
             </div>

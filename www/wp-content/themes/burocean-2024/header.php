@@ -40,16 +40,16 @@
 		<div class="top-nav">
 			<?php wp_nav_menu(array(
 				'theme_location' => 'top-menu',
-				'container_class' => 'wrapper',
+				'container_class' => 'container',
 				'container' => 'nav',
 				'items_wrap' => '<ul>%3$s</ul>',
 			));
 			?>
 		</div>
 		
-		<div class="wrapper">
+		<div class="container">
 			<div class="row table">
-			    <div class="col col-md-4 accroche hidden-sm">
+			    <div class="col col-md-4 accroche hidden-xs">
 			        <span><?php the_field('texte_gauche', 'option'); ?></span>
 			    </div>
 			    
@@ -64,17 +64,17 @@
                 
                 <div class="col col-sm-4 txt-right">
                     <a class="partenaires" onclick="return gtag_report_conversion('<?php the_field('lien_texte_droite', 'option'); ?>');" href="<?php the_field('lien_texte_droite', 'option'); ?>" title="<?php the_field('texte_droite', 'option'); ?>">
-                        <i class="icon-user"></i><span class="hidden-sm"><?php the_field('texte_droite', 'option'); ?></span>
+                        <i class="icon-user"></i><span class="hidden-xs"><?php the_field('texte_droite', 'option'); ?></span>
                     </a>
                 </div>
 			</div>
 		</div>
 		
 		<div class="content-nav">
-    		<span class="nav-mobile visible-sm"><i class="icon-nav"></i><span>Menu</span></span>
+    		<span class="nav-mobile visible-xs"><i class="icon-nav"></i><span>Menu</span></span>
             <?php wp_nav_menu(array(
 				'theme_location' => 'main',
-				'container_class' => 'wrapper',
+				'container_class' => 'container',
 				'container' => 'nav',
 				'items_wrap' => '<ul>%3$s</ul>',
 			));

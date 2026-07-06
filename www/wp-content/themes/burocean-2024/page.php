@@ -2,7 +2,7 @@
 
 <section class="page">
 	
-	<div class="txt-center bloc-titre wrapper">
+	<div class="txt-center bloc-titre container">
 	    <h1 class="font-2"><?php the_title(); ?></h1>
 	    <?php if ( function_exists('yoast_breadcrumb') ) { yoast_breadcrumb('<div <div class="breadcrumb txt-center">','</div>'); } ?>
 	</div>
@@ -14,7 +14,7 @@
         <?php endif; ?>
         
         <?php $thecontent = get_the_content(); ?>
-        <div class="wrapper">
+        <div class="container">
         	<?php if(!empty($thecontent)) { ?>
             	<div class="bloc-jaune">
             <?php } ?>
@@ -37,7 +37,7 @@
 	
 	<?php if (is_page(53)){ ?>
     	<div class="feature">
-            <div class="wrapper">
+            <div class="container">
                 <?php include('fragments/_fabricant.php'); ?>
             </div>
         </div>
@@ -50,20 +50,20 @@
 		$largeur_col_e_2 = 12 - $largeur_col_e;
 		
 		if (is_page(55)) {
-			$class = "col-lg-5 col-lg-offset-1 contact";
+			$class = "col col-lg-5 col-lg-offset-1 contact";
 		}
 	?>
 	
-	<div class="wrapper">
+	<div class="container">
     	<div class="row cols-page">
-        	<div class="col-md-<?php echo $largeur_col; ?>">
+        	<div class="col col-md-<?php echo $largeur_col; ?>">
             	<?php if( get_field('titre_col_gauche') ): ?>
             	    <h3 class="titre-row"><?php the_field('titre_col_gauche'); ?></h3>
                 <?php endif; ?>
                 <?php the_field('texte_col_gauche'); ?>
         	</div>
         	
-        	<div class="col-md-<?php echo $largeur_col_2; ?> <?php if ($class) { echo $class; } ?>">
+        	<div class="col col-md-<?php echo $largeur_col_2; ?> <?php if ($class) { echo $class; } ?>">
         	    <?php if( get_field('titre_col_droite') ): ?>
             	    <h3 class="titre-row"><?php the_field('titre_col_droite'); ?></h3>
                 <?php endif; ?>
@@ -72,18 +72,18 @@
     	</div>
         
     	<div class="row cols-page">
-        	<div class="col-md-12"><?php the_field('mentions'); ?></div>
+        	<div class="col col-md-12"><?php the_field('mentions'); ?></div>
     	</div>
 		
 		<div class="row cols-page">
-			<div class="col-md-<?php echo $largeur_col_e; ?>">
+			<div class="col col-md-<?php echo $largeur_col_e; ?>">
 				<?php if( get_field('titre_col_gauche_e') ): ?>
 					<h3 class="titre-row"><?php the_field('titre_col_gauche_e'); ?></h3>
 				<?php endif; ?>
 				<?php the_field('texte_col_gauche_e'); ?>
 			</div>
 			
-			<div class="col-md-<?php echo $largeur_col_e_2; ?>">
+			<div class="col col-md-<?php echo $largeur_col_e_2; ?>">
 				<?php if( get_field('titre_col_droite_e') ): ?>
 					<h3 class="titre-row"><?php the_field('titre_col_droite_e'); ?></h3>
 				<?php endif; ?>
@@ -92,14 +92,14 @@
 		</div>
 		
 		<div class="row cols-page">
-			<div class="col-md-<?php echo $largeur_col_e; ?>">
+			<div class="col col-md-<?php echo $largeur_col_e; ?>">
 				<?php if( get_field('titre_col_gauche_e_2') ): ?>
 					<h3 class="titre-row"><?php the_field('titre_col_gauche_e_2'); ?></h3>
 				<?php endif; ?>
 				<?php the_field('texte_col_gauche_e_2'); ?>
 			</div>
 			
-			<div class="col-md-<?php echo $largeur_col_e_2; ?>">
+			<div class="col col-md-<?php echo $largeur_col_e_2; ?>">
 				<?php if( get_field('titre_col_droite_e_2') ): ?>
 					<h3 class="titre-row"><?php the_field('titre_col_droite_e_2'); ?></h3>
 				<?php endif; ?>

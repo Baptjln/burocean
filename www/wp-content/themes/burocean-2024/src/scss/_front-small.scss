@@ -45,7 +45,7 @@ header {
         }
         
         nav {
-            background: $vert;
+            background: $couleur1;
             text-align: center;
             opacity: 0;
             visibility: hidden;
@@ -189,17 +189,8 @@ header {
 
 // Détail
 .top-single {
-    p, .finitions, .lien-catalogue {
+    p {
         margin-bottom: 4rem;
-    }
-    
-    .lien-catalogue {
-        padding: 2rem;
-        text-align: center;
-        
-        .link {
-            font-size: 2.5rem;
-        }
     }
     
     .logo-nf {

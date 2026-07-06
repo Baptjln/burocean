@@ -9,7 +9,7 @@
 	}
 ?>
 
-<section class="wrapper">
+<section class="container">
     <div class="txt-center bloc-titre">
         <h1 class="font-2"><?php echo $term->name; ?></h1>
         <?php if ( function_exists('yoast_breadcrumb') ) { yoast_breadcrumb('<div <div class="breadcrumb txt-center">','</div>'); } ?>

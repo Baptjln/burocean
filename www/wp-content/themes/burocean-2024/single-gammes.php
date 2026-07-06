@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<section class="wrapper" id="single">
+<section class="container" id="single">
     
     <?php $couleur = get_field('couleur'); ?>
 	
@@ -26,29 +26,17 @@
 	
 	<div class="top-single">
     	<div class="row">
-        	<div class="col-md-4">
+        	<div class="col col-md-4">
             	<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
             	    <?php the_content(); ?>
             	<?php endwhile; else: ?>
             	<?php endif; ?>
-            	
-                <?php if( have_rows('finitions') ): ?>
-                    <h2 class="titre-row">Finitions</h2>
-                	<ul class="finitions">
-                    	<?php while( have_rows('finitions') ): the_row(); 
-                    		$image = get_sub_field('image');
-                    		$nom = get_sub_field('nom');
-                        ?>
-                    		<li>
-                                <span class="tooltip"><?php echo $nom; ?></span>
-                                <span class="image"><img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt'] ?>" /></span>
-                    		</li>
-                    	<?php endwhile; ?>
-                	</ul>
-                <?php endif; ?>
+                
+                <?php $numero_page = get_field('numero_de_page_du_pdf'); ?>	
+                <a style="background: <?php echo $couleur ?>;" target="_blank" class="btn" onclick="return gtag_report_conversion('<?php bloginfo('url'); ?>/<?php the_field('lien_catalogue', 'option'); ?>/index.html#p=<?php echo $numero_page; ?>');" href="<?php bloginfo('url'); ?>/<?php the_field('lien_catalogue', 'option'); ?>/index.html#p=<?php echo $numero_page; ?>" title="Voir la fiche détaillée">Voir la fiche détaillée</a>
         	</div>
         	
-        	<div class="col-md-8">
+        	<div class="col col-md-8">
             	<?php if( get_field('afficher_nf_environnement') ): ?>
         	        <div class="logo-nf"><img src="<?php bloginfo('stylesheet_directory'); ?>/assets/images/nf-environnement.jpg" /></div>
         	    <?php endif; ?>
@@ -73,13 +61,6 @@
         		<?php endif; ?>
         	</div>
     	</div>
-        
-        <div class="row">
-        	<?php $numero_page = get_field('numero_de_page_du_pdf'); ?>	
-        	<div class="col-sm-12 lien-catalogue" style="background: <?php echo $couleur ?>;">
-            	<a target="_blank" class="link" onclick="return gtag_report_conversion('<?php bloginfo('url'); ?>/<?php the_field('lien_catalogue', 'option'); ?>/index.html#p=<?php echo $numero_page; ?>');" href="<?php bloginfo('url'); ?>/<?php the_field('lien_catalogue', 'option'); ?>/index.html#p=<?php echo $numero_page; ?>" title="Voir la fiche détaillée"><i class="icon-arrow"></i>Voir la fiche détaillée</a>
-        	</div>
-        </div>
 	</div>
 	
 	<?php if( have_rows('liste_caracteristiques') ): ?>
@@ -90,12 +71,12 @@
     	    $largeur_col_2 = 12 - $largeur_col;
 	    ?>
 	    <div class="row row-line">
-    	    <div class="col-texte col-md-<?php echo $largeur_col; ?>">
+    	    <div class="col col-texte col-md-<?php echo $largeur_col; ?>">
         	    <h2 class="titre-row"><?php the_sub_field('intitule'); ?></h2>
         	    <?php the_sub_field('texte'); ?>
     	    </div>
     	    
-            <div class="col-images col-md-<?php echo $largeur_col_2; ?>">
+            <div class="col col-images col-md-<?php echo $largeur_col_2; ?>">
         	    <div class="flex<?php if( get_sub_field('photo_ronde') == 'Oui' ): ?> rond<?php endif; ?>">
             	    <?php if( have_rows('images') ): ?>
             	        <?php while( have_rows('images') ): the_row();
@@ -115,7 +96,7 @@
 </section>
 
 <section class="contact-bottom">
-	<div class="wrapper">
+	<div class="container">
     	<p>vous avez besoin de plus d’informations ?</p>
     	<a class="btn" style="background: <?php echo $couleur ?>;" onclick="return gtag_report_conversion('<?php bloginfo('url'); ?>/nous-contacter/');" href="<?php bloginfo('url'); ?>/nous-contacter/" title="Contactez-nous !">Contactez-nous !</a>
 	</div>

@@ -1,8 +1,8 @@
 <?php get_header(); ?>
 
-<section class="wrapper">
+<section class="container">
 	
-	<div class="txt-center bloc-titre wrapper">
+	<div class="txt-center bloc-titre container">
 	    <h1 class="font-2"><?php the_title(); ?></h1>
 	    <?php if ( function_exists('yoast_breadcrumb') ) { yoast_breadcrumb('<div <div class="breadcrumb txt-center">','</div>'); } ?>
 	</div>
