@@ -1,73 +1,46 @@
+@use "variables";
+@use "mixins";
+
 @at-root {
-  @-ms-viewport {
-    width: device-width;
-  }
-}
-
-// For desktops
-@include responsive-invisibility('.visible-sm');
-@include responsive-invisibility('.visible-md');
-@include responsive-invisibility('.visible-lg');
-@include responsive-invisibility('.visible-x-lg');
-
-.visible-xs-inline-block,
-.visible-sm-inline-block,
-.visible-md-inline-block,
-.visible-lg-inline-block {
-    display: none !important;
-}
-
-
-@media (max-width: $max-breakpoint-mobile) {
-    @include responsive-visibility('.visible-sm');
-}
-
-.visible-sm-inline-block {
-    @media (max-width: $max-breakpoint-mobile) {
-        display: inline-block !important;
+    @-ms-viewport {
+        width: device-width;
     }
 }
 
-@media (min-width: $min-breakpoint-mobile) and (max-width: $max-breakpoint-tablet) {
-    @include responsive-visibility('.visible-md');
-}
-.visible-md-inline-block {
-    @media (min-width: $min-breakpoint-mobile) and (max-width: $max-breakpoint-tablet) {
-        display: inline-block !important;
-    }
+// DESKTOP
+@include mixins.responsive-invisibility(".visible-xs");
+@include mixins.responsive-invisibility(".visible-sm");
+@include mixins.responsive-invisibility(".visible-md");
+@include mixins.responsive-invisibility(".visible-lg");
+
+@media (max-width: variables.$max-breakpoint-mobile) {
+    @include mixins.responsive-visibility(".visible-xs");
 }
 
-@media (min-width: $min-breakpoint-tablet) and (max-width: $max-breakpoint-desktop) {
-    @include responsive-visibility('.visible-lg');
-}
-.visible-lg-inline-block {
-    @media (min-width: $min-breakpoint-tablet) and (max-width: $max-breakpoint-desktop) {
-        display: inline-block !important;
-    }
+@media (min-width: variables.$min-breakpoint-tablet) {
+    @include mixins.responsive-visibility(".visible-sm");
 }
 
-@media (min-width: $min-breakpoint-desktop) {
-    @include responsive-visibility('.visible-x-lg');
-}
-.visible-x-lg-inline-block {
-    @media (min-width: $min-breakpoint-desktop) {
-        display: inline-block !important;
-    }
+@media (min-width: variables.$min-breakpoint-mobile) {
+    @include mixins.responsive-visibility(".visible-md");
 }
 
-
-@media (max-width: $max-breakpoint-mobile) {
-    @include responsive-invisibility('.hidden-sm');
+@media (min-width: variables.$min-breakpoint-desktop) {
+    @include mixins.responsive-visibility(".visible-lg");
 }
 
-@media (min-width: $min-breakpoint-mobile) and (max-width: $max-breakpoint-tablet) {
-    @include responsive-invisibility('.hidden-md');
+@media (max-width: variables.$max-breakpoint-mobile) {
+    @include mixins.responsive-invisibility(".hidden-xs");
 }
 
-@media (min-width: $min-breakpoint-tablet) and (max-width: $max-breakpoint-desktop) {
-    @include responsive-invisibility('.hidden-lg');
+@media (min-width: variables.$min-breakpoint-tablet) {
+    @include mixins.responsive-invisibility(".hidden-sm");
 }
 
-@media (min-width: $min-breakpoint-desktop) {
-    @include responsive-invisibility('.hidden-x-lg');
+@media (min-width: variables.$min-breakpoint-mobile) {
+    @include mixins.responsive-invisibility(".hidden-md");
+}
+
+@media (min-width: variables.$min-breakpoint-desktop) {
+    @include mixins.responsive-invisibility(".hidden-lg");
 }
