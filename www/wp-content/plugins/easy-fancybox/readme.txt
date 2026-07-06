@@ -1,26 +1,36 @@
-=== Easy FancyBox - WordPress Lightbox Plugin ===
+=== Firelight Lightbox ===
 Contributors: firelightwp
 Tags: lightbox, gallery, image, photo, modal
 Requires at least: 5.0
 Requires PHP: 7.0
-Tested up to: 6.5.3
-Stable tag: 2.1.9
+Tested up to: 6.9.1
+Stable tag: 2.3.20
 License: GPLv3
 
-The most popular lightbox plugin for WordPress. Adds a simple, fast lightbox for viewing images, videos, and other media.
+Formerly Easy Fancybox. The most popular WordPress lightbox plugin. Simple, fast, and responsive. Opens images, videos, PDFs, and custom popups.
 
 == Description ==
 
-Easy FancyBox is the **most popular lighbox plugin for WordPress**, active on over 200,000 WordPress installations. It adds a lightweight and flexible lightbox for viewing images and other media on your website.
+**NEWS: Easy Fancybox is now Firelight Lightbox**. [Read about it here.](https://firelightwp.com/big-news-easy-fancybox-is-now-firelight-lightbox/)
 
-After activation, links to images, galleries, and other media will be automatically opened in a new lightbox that floats over the web page.
+Firelight Lightbox is the **most popular lighbox plugin for WordPress**, active on over 200,000 WordPress installations. It adds a lightweight and flexible lightbox for viewing images, video, and other media on your website.
 
-**LIGHTBOX FEATURES**
+After activation, links to images, galleries, videos, pdfs, maps, modals, etc, will open in a lightbox. Settings will be under 'Lightbox' on your main admin menu.
+
+**QUICK LIGHTBOX DEMOS**
+
+Demos for images, videos, PDFs, maps, and modals/popups:
+
+**[Free Lightbox Demo](https://firelightwp.com/free-lightbox/)**  
+**[Pro Lightbox Demo - Light Theme](https://firelightwp.com/pro-lightbox/)**  
+**[Pro Lightbox Demo - Dark Theme](https://firelightwp.com/pro-lightbox-dark/)**  
+
+**FREE LIGHTBOX FEATURES**
 - Automatic detection of images
 - Automatic detection of galleries
 - Customize options for Lightbox appearance, style, and behavior
 - Opens all common image formats including webp and svg
-- Opens WordPress core galleries ("Link to" must be set to "Media File")
+- Opens WordPress core galleries
 - Opens videos from Youtube, Vimeo, and Dailmotion
 - Opens PDF files (embed with object tag, iframe, external Google Docs Viewer)
 - Opens NextGEN galleries ([instructions](https://firelightwp.com/wordpress-lightbox-docs/nextgen-gallery-and-easy-fancybox/))
@@ -31,116 +41,191 @@ After activation, links to images, galleries, and other media will be automatica
 - Support for Jetpack Infinite Scroll
 - Support for WordPress Multsite (see Installation instructions)
 
-See [FAQ's](https://firelightwp.com/wordpress-lightbox-docs/) for instructions to manage YouTube, Dailymotion and Vimeo movies (and similar services) and tips to make inline content display in a FancyBox overlay.
+Links:  
+-> **[Demos](https://firelightwp.com/free-lightbox/)**  
+-> **[Docs](https://firelightwp.com/wordpress-lightbox-docs)**  
+-> **[Free Support](https://wordpress.org/support/plugin/easy-fancybox)**  
 
-Get support on the [Easy FancyBox web page](https://firelightwp.com/) or [WordPress forum](https://wordpress.org/support/plugin/easy-fancybox).
+**PRO LIGHTBOX FEATURES**
 
-**PRO LIGHTBOX FEATURES**
+Firelight Lightbox Pro is an extension for this lightbox plugin that offers:
+- Dozens of Pro features for free lightboxes (Fancybox Legacy, Classic, V2)
+- *Priority support direct from developers*
+- *New and Powerful Pro Lighbox based on Fancybox 5, including:*
+- Beautiful, modern full-browser and full-screen ligthbox
+- 100+ customizations options
+- Thumbnails within the lightbox
+- Social sharing for images
+- Link direct to images in the lightbox
+- "Download image" button
+- Toolbar with controls for thumbnails, social sharing, zoom, slideshow, etc
+- Open videos
+- Open PDFs
+- Open popups
+- Open inline content and iframes
+- Open Google maps
+- NextGEN Gallery integration
+- Elementor integration
+- Perfect on mobile devices
+- Optimized lightbox speed
 
-For **advanced options** and **priority support**, there is a **[pro lighbox plugin extension](https://firelightwp.com/easy-fancybox-pro/)** available. See Pro lightbox features below.
-
-- Priority support
-- Slideshow effect for galleries (autorotation)
-- Spotlight effect for the light box overlay
-- FacetWP, Gravity Forms and TablePress compatibility
-- More lightbox styling options: rounded corners, inline content background and text colors
-- More automatic popup options: triggered by URL hash, first link by media type, hide popup after first visit
-- Pass dedicated light box setting per media link via link class (see [Metadata instructions](https://firelightwp.com/wordpress-lightbox-docs/pro-meta-data-how-to-use-different-parameters-per-link/))
-- More elastic (easing) popup effects on open and close
-- Show/hide image title on mouse hover
-- Fine-tune media link and gallery autodetection to match your theme source markup to allow galleries per post for example
-
-For these additional features, you need to install the **[Pro lightbox plugin](https://firelightwp.com/easy-fancybox-pro/)** alongside the free lightbox plugin.
+-> **[VIEW PRO LIGHTBOX DEMOS](https://firelightwp.com/pro-lightbox)**  
+-> **[GET PRO SUPPORT](https://firelightwp.com/contact)**  
 
 **GDPR / EU Privacy**
 
-This plugin does not collect any data and does not set any browser cookies. However, the PRO version offers an option to disable the automatic popup after the first visit, which needs a browser cookie. This cookie stores the visitors first website visit timestamp and path on the client side. It is not shared nor is any data stored server side or elsewhere.
+This plugin does not collect any data or set any browser cookies. The PRO version offers an option to disable the automatic popup after the first visit, which needs a browser cookie. This cookie stores the visitors first website visit timestamp and path on the client side. It is not shared nor is any data stored server side or elsewhere.
 
 = Contribute =
 
-If you're happy with this plugin as it is, please consider writing a quick [rating](https://wordpress.org/support/plugin/easy-fancybox/reviews/#new-post) or helping other users out on the [support forum](https://wordpress.org/support/plugin/easy-fancybox).
-
-If you wish to help build this plugin, you're very welcome to [translate Easy FancyBox into your language](https://translate.wordpress.org/projects/wp-plugins/easy-fancybox/) or contribute bug reports, feature suggestions and/or code on [Github](https://github.com/edanzer/easy-fancybox/).
+If you're happy with this plugin, please consider writing a quick [rating](https://wordpress.org/support/plugin/easy-fancybox/reviews/#new-post), helping others in the [forum](https://wordpress.org/support/plugin/easy-fancybox), or [translating](https://translate.wordpress.org/projects/wp-plugins/easy-fancybox/).
 
 = Known conflicts & issues =
 
-See [Easy FancyBox Troubleshooting](https://firelightwp.com/wordpress-lightbox-docs/troubleshooting-easy-fancybox/).
-
+See [Firelight Lightbox Troubleshooting](https://firelightwp.com/wordpress-lightbox-docs/troubleshooting-easy-fancybox/).
 
 == Installation ==
 
-= Wordpress =
+Install like any other plugin. Search for 'lightbox' or 'firelight' or 'easy fancybox' from your WordPress admin plugin page. Or download the zip from this page, and upload the zip via your admin plugins page.
 
-Quick installation: [Install now](https://coveredwebservices.com/wp-plugin-install/?plugin=easy-fancybox) !
+= Wordpress Multiste =
 
- &hellip; OR &hellip;
+The plugin is compatible with multisite. You can enable the plugin network wide, or allow individual sites to activate it.
 
-Search for "easy fancybox" and install with that slick **Plugins > Add New** back-end page.
-
- &hellip; OR &hellip;
-
-Follow these steps:
-
- 1. Download archive.
-
- 2. Upload the zip file via the Plugins > Add New > Upload page &hellip; OR &hellip; unpack and upload with your favorite FTP client to the /plugins/ folder.
-
- 3. Activate the plugin on the Plug-ins page.
-
-Done! By default, any images that are linked to directly (not to a WordPress page) from within your posts and pages, should now be opening in a FancyBox overlay :)
-
-Not happy with the default settings? Check out the new options under **Settings > Media**.
-
-= Wordpress MU / WordPress 3+ in Multi Site mode =
-
-Install as above. You can activate the plugin per site, or network wide.
-
-When activating the plugin per site, each site will have the Images media type activated and Easy FancyBox will immediately try opening image links in the light box.
+When activating the plugin per site, each site will have the Images media type activated and Firelight Lightbox will immediately try opening image links in the light box.
 
 When activated network wide with **Network Activate**, each sub-site will _not_ have any media type activated. The options will be there for individual site admins, ready to either activate or leave deactivated.
 
-
-== Frequently Asked Questions ==
-
-= What's FancyBox? =
-
-Basically, it is a fancy way of presenting images, movies, portable documents and inline content on your website. For example, if you have scaled-down images in your posts which are linked to the original large version, instead of opening them on a blank page, FancyBox opens those in a smooth overlay. Visit [FancyBox](http://fancybox.net/) for more information and examples.
-
-
-= Which version of FancyBox does this plugin use? =
-
-This plugin uses an **updated version** of the original [FancyBox 1.3.4](http://fancybox.net), better adapted to the mobile era.
-
-
-= I installed the plugin. What now? =
-
-First, make sure that image  thumbnails in your posts and pages are linked to their full size counterpart directly. Open any post with thumbnail images in it for editing and select the first thumbnail. Click the **Edit Image** button that appears and choose **Link To: Media File**. From now on, clicking that thumbnail should open the full size version in FancyBox.
-
-The same thing goes for WordPress Galleries. Choose **Link To: Media File** when inserting a gallery tag.
-
-
-= Where is the settings page? =
-
-There is no new settings page but there are many options you can change. You will find a new **FancyBox** section on **Settings > Media**. To see the default, check out the example under [Screenshots](https://wordpress.org/plugins/easy-fancybox/screenshots/) ...
-
-
-= Help! It does not work... =
-
-Please follow the [trouble shooting steps](https://firelightwp.com/wordpress-lightbox-docs/troubleshooting-easy-fancybox/) to determine the cause. If that fails, ask for support on the [Easy FancyBox WordPress forum](https://wordpress.org/support/plugin/easy-fancybox) or go to the [development site](https://firelightwp.com/)
-
-
-= I have another question... =
-
-See the advanced [Easy FancyBox FAQ's](https://firelightwp.com/wordpress-lightbox-docs/).
-
-
 == Screenshots ==
 
-1. Example image with **Overlay** caption. This is the default way Easy FancyBox displays images. Other options are **Inside** and the old **Outside**.
+1. Open an image in the default lightbox.
 
-2. Example of a YouTube movie in overlay.
+2. Vimeo video in lightbox.
+
+3. Youtube video in lightbox.
+
+4. Open a modal in lightbox (modal created in block editor).
+
+5. The Firelight Lightbox options panel (with Fancybox Classic selected).
 
 == Changelog ==
+
+= 2.3.20 =
+* PDFs: Impove PDF embed handlers in Legacy, Classic, and V2 lightboxes
+
+= 2.3.19 =
+* Fix: Remove unused Fancybox `.old` JS files
+
+= 2.3.18 =
+* Update: Supported WordPress version
+
+= 2.3.17 =
+* Fix: Improve image attribute handling
+* Fix: Update dom purify version
+
+= 2.3.16 =
+* Fix: Improve image attribute handling
+* Fix: Make nav button tooltips translatable
+
+= 2.3.15 =
+* Fix: Autopopup setting not saving
+* Fix: jQuery metadata issue
+
+= 2.3.12 =
+* Update: Update dom purify script to 3.2.5
+
+= 2.3.11 =
+* Update: Update Pro landing/pricing
+
+= 2.3.10 =
+* Update: Update Pro landing/pricing
+
+= 2.3.9 =
+* Fix: PHP notice on widget editor screen
+* Add: Black Friday sale notice
+
+= 2.3.8 =
+* Fix: Remove translated strings from contructor
+
+= 2.3.7 =
+* Fix: Version error
+
+= 2.3.6 =
+* New: Github actions for deployment
+* Updated: Pro landing and markup
+
+= 2.3.5 =
+* Update: Remove load_plugin_textdomain (WP 6.7 compatibility)
+
+= 2.3.4 =
+* Update: Improve sanitization of alt tags
+* Update: Update minified JS files
+
+= 2.3.3 =
+* Update: Pro trial implementation
+
+= 2.3.2 =
+* Fix: Compatibility with older Pro versions
+
+= 2.3.1 =
+* Revert: Background scrolling fix on mobile IOS devices
+
+= 2.3.0 =
+* New: Change plugin name to Firelight Lightbox
+* New: Added free trials for pro version
+* Updated: Change style & behavior of options page
+* Fix: 'nofancybox' not working fully for image blocks
+* Fix: Background scrolling on mobile IOS devices
+
+= 2.2.10 =
+* Update: Pro landing page
+* Update: Small code cleanup
+
+= 2.2.8 =
+* Update: Settings screen title
+* Update: Refactor/fix how gallery grouping works
+* Update: Email opt in for all users
+* Fix: Save message on settings screen
+* Fix: Vimeo player links for Fancybox2
+
+= 2.2.7 =
+* Skipped
+
+= 2.2.6 =
+* New: Modal for email opt ins
+* Update: Apply code standards to some files
+* Fix: "Automattically group images" setting issue
+
+= 2.2.5 =
+* New: Options to hide/close lightbox panel in block editor
+* Update: Apply coding standards to fancybox-options.php
+* Fix: wp_enqueue_script syntax error
+
+= 2.2.4 =
+* Fix: Adopt older wp_enqueue_script syntax
+
+= 2.2.3 =
+* Updated: Apply code standards to admin class
+* Udpated: Raise compatible version of pro to 2.0.0
+
+= 2.2.2 =
+* Added: JavaScript build set up with wp-scripts
+* Added: Lightbox panel in block editor
+* Updated: Coding standard for main plugin file
+* Updated: Coding standards for easyFancyBox class
+
+= 2.2.1 =
+* Updated: PHP coding standards to all view files
+* Updated: Refine admin JS enqueuing
+* Updated: Minor markup changes to admin pages
+
+= 2.2.0 =
+* Added: Pro landing page for re-launch of Pro
+* Added: Optoin to disable core lightbox
+* Updated: Refined styling / JS for options screen
+* Updated: Default video width and height values
+* Fixed: JS console error on admin dashboard
+* Fixed: Lightbox buttons not working on mobile
 
 = 2.1.9 =
 * Added: Fancybox V2 option for retina displays

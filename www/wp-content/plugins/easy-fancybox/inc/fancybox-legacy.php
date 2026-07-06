@@ -80,9 +80,9 @@ jQuery('.$value['options']['autoAttribute']['selector'].').not(\'.nofancybox,li.
 			} else {
 				// First wrap unlinked image blocks depending on settings
 				$autoAttributeLimit = \get_option( $value['options']['autoAttributeLimit']['id'], $value['options']['autoAttributeLimit']['default'] );
-				if ( 'IMG' === $key && '' === $autoAttributeLimit ) {
+				if ( 'IMG' === $key && ( 'all' === $autoAttributeLimit || '' === $autoAttributeLimit ) ) {
 					$script .= '
-						var unlinkedImageBlocks=jQuery(".wp-block-image > img:not(.nofancybox)");
+						var unlinkedImageBlocks=jQuery(".wp-block-image > img:not(.nofancybox,figure.nofancybox>img)");
 						unlinkedImageBlocks.wrap(function() {
 							var href = jQuery( this ).attr( "src" );
 							return "<a href=\'" + href + "\'></a>";
@@ -98,52 +98,78 @@ var fb_'.$key.'_select=jQuery(\'';
 						$type = '.'.$type;
 					if ($more>0)
 						$script .= ',';
-					$script .= 'a['.$value['options']['autoAttribute']['selector'].'"'.$type.'" i]:not(.nofancybox,li.nofancybox>a),area['.$value['options']['autoAttribute']['selector'].'"'.$type.'" i]:not(.nofancybox)';
+					$script .= 'a['.$value['options']['autoAttribute']['selector'].'"'.$type.'" i]:not(.nofancybox,li.nofancybox>a,figure.nofancybox>a),area['.$value['options']['autoAttribute']['selector'].'"'.$type.'" i]:not(.nofancybox)';
 					$more++;
 				}
 				$script .= '\');';
 
-				$autoselector = class_exists('easyFancyBox_Advanced') ? \get_option($value['options']['autoSelector']['id'],$value['options']['autoSelector']['default']) : $value['options']['autoSelector']['default'];
+				// Gallery Groups/Sections/Selectors
+				$nextgen_selectors = '.ngg-galleryoverview,.ngg-imagebrowser,.nextgen_pro_blog_gallery,.nextgen_pro_film,.nextgen_pro_horizontal_filmstrip,.ngg-pro-masonry-wrapper,.ngg-pro-mosaic-container,.nextgen_pro_sidescroll,.nextgen_pro_slideshow,.nextgen_pro_thumbnail_grid,.tiled-gallery';
+
+				$default_autoselector = $value['options']['autoSelector']['default'] . ',' . $nextgen_selectors;
+				$custom_autoselector = \get_option( $value['options']['autoSelector']['id'], $value['options']['autoSelector']['default'] );
 
 				// Class and rel depending on settings.
-				if( '1' == $autoAttributeLimit ) {
+				if( '1' === $autoAttributeLimit || 'sections' === $autoAttributeLimit ) {
+					// Only apply fancybox class to images within specific containers.
+					$autoselector_for_applying_classes = '' === $custom_autoselector
+						? $default_autoselector
+						: $custom_autoselector;
+
 					// Add class.
 					$script .= '
-var fb_'.$key.'_sections=jQuery(\''.$autoselector.'\');
+var fb_'.$key.'_sections=jQuery(\''.$autoselector_for_applying_classes.'\');
 fb_'.$key.'_sections.each(function(){jQuery(this).find(fb_'.$key.'_select).addClass(\''.$value['options']['class']['default'].'\')';
 					// Set rel.
 					switch( \get_option($value['options']['autoGallery']['id'],$value['options']['autoGallery']['default']) ) {
 						case '':
-						default :
+						case 'disabled':
 							$script .= ';});';
 							break;
 
 						case '1':
+						case 'galleries':
+						case 'custom':
+						default:
 							$script .= '.attr(\'rel\',\'gallery-\'+fb_'.$key.'_sections.index(this));});';
 							break;
 
 						case '2':
+						case 'all':
 							$script .= '.attr(\'rel\',\'gallery\');});';
 							break;
 					}
 				} else {
-					// Add class.
+					// Apply fancybox class to all images.
 					$script .= '
 fb_'.$key.'_select.addClass(\''.$value['options']['class']['default'].'\')';
 					// Set rel.
 					switch( \get_option($value['options']['autoGallery']['id'],$value['options']['autoGallery']['default']) ) {
 						case '':
-						default :
+						case 'disabled':
 							$script .= ';';
 							break;
 
 						case '1':
+						case 'galleries':
+						default:
 							$script .= ';
-var fb_'.$key.'_sections=jQuery(\''.$autoselector.'\');
+var fb_'.$key.'_sections=jQuery(\''.$default_autoselector.'\');
+fb_'.$key.'_sections.each(function(){jQuery(this).find(fb_'.$key.'_select).attr(\'rel\',\'gallery-\'+fb_'.$key.'_sections.index(this));});';
+							break;
+
+						case 'custom':
+							// Group galleries based on custom containers.
+							$autoselectors_to_group_galleries = '' === $custom_autoselector
+								? $default_autoselector
+								: $custom_autoselector;
+							$script .= ';
+var fb_'.$key.'_sections=jQuery(\''.$autoselectors_to_group_galleries.'\');
 fb_'.$key.'_sections.each(function(){jQuery(this).find(fb_'.$key.'_select).attr(\'rel\',\'gallery-\'+fb_'.$key.'_sections.index(this));});';
 							break;
 
 						case '2':
+						case 'all':
 							$script .= '.attr(\'rel\',\'gallery\');';
 							break;
 					}
@@ -199,20 +225,20 @@ jQuery(\'' . $value['options']['tag']['default'] . '\')';
 	if ( empty( $delayClick ) ) $delayClick = '0';
 
 	switch ( $autoClick ) {
-		case '':
+		case 'none':
 			break;
 
-		case '1':
+		case 'link':
 			$script .= PHP_EOL . 'var easy_fancybox_auto=function(){setTimeout(function(){jQuery(\'a#fancybox-auto,#fancybox-auto>a\').first().trigger(\'click\')},'.$delayClick.');};';
 			\easyFancyBox::$onready_auto = true;
 			break;
 
-		case '2':
+		case 'hash':
 			$script .= PHP_EOL . 'var easy_fancybox_auto=function(){setTimeout(function(){if(location.hash){jQuery(location.hash).trigger(\'click\');}},'.$delayClick.');};';
 			\easyFancyBox::$onready_auto = true;
 			break;
 
-		case '99':
+		case 'first':
 			$script .= PHP_EOL . 'var easy_fancybox_auto=function(){setTimeout(function(){jQuery(\'a[class|="fancybox"]\').filter(\':first\').trigger(\'click\')},'.$delayClick.');};';
 			\easyFancyBox::$onready_auto = true;
 			break;
@@ -230,7 +256,7 @@ jQuery(\'' . $value['options']['tag']['default'] . '\')';
 	if ( ! empty( get_option('fancybox_enablePDF') ) && ! empty( get_option('fancybox_PDFonStart', '{{object}}') ) ) {
 		$replaces = array(
 			'{{object}}'       => 'function(a,i,o){o.type=\'pdf\';}',
-			'{{embed}}'        => 'function(a,i,o){o.type=\'html\';o.content=\'<embed src="\'+a[i].href+\'" type="application/pdf" height="100%" width="100%" />\'}',
+			'{{embed}}'        => 'function(a,i,o){o.type=\'html\';var href=(a[i]&&a[i].href)||"";var e=jQuery("<embed/>",{type:"application/pdf",height:"100%",width:"100%"});e.attr("src",href);o.content=jQuery("<div/>").append(e).html();}',
 			'{{googleviewer}}' => 'function(a,i,o){o.href=\'https://docs.google.com/viewer?embedded=true&url=\'+a[i].href;}'
 		);
 		foreach ($replaces as $needle => $replace) {
