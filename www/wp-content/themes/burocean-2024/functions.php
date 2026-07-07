@@ -29,6 +29,7 @@ add_theme_support('post-thumbnails');
 add_image_size('slider', 1920, 750, true);
 add_image_size('single', 800);
 add_image_size('liste-cats', 415);
+add_image_size('wide-sm', 720, 468, true);
 
 // Options
 if( function_exists('acf_add_options_page') ) {

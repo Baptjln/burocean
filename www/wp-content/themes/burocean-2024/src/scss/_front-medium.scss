@@ -2,17 +2,6 @@
 @import '_variables';
 @import '_mixins';
 
-.table {
-	display: table;
-	width: calc(100% + 40px);
-
-	[class*="col"] {
-		display: table-cell;
-		vertical-align: middle;
-		float: none;
-	}
-}
-
 .alignleft {
 	float: left !important;
 	margin-right: 2rem !important;
@@ -223,16 +212,13 @@ header {
 }
 
 .logos {
-	padding: 5rem 0;
+	padding-top: 5rem;
+	padding-bottom: 5rem;
 	overflow: hidden;
-
-	.col {
-		width: 14%;
-	}
   
     .table {
-      display: flex;
-      align-items: center;
+		display: flex;
+		align-items: center;
     }
 }
 
@@ -244,60 +230,10 @@ header {
 		font-size: 4.5rem;
 		line-height: 4rem;
 		margin-bottom: 2rem;
-
-		.rouge {
-			font-size: 3.5rem;
-		}
 	}
 
 	.texte {
 		margin-bottom: 7rem;
-	}
-
-	[class*="col"] {
-		&.col-1 {
-			margin-top: 4rem;
-		}
-
-		&.col-2 {
-			.elem:nth-child(1) {
-				img {
-					float: right;
-				}
-
-				.titre-rubrique {
-					position: absolute;
-					left: 105%;
-					top: 4rem;
-					width: 60%;
-				}
-			}
-
-			.elem:nth-child(2) {
-				.titre-rubrique {
-					margin: 2rem 3rem 0 0;
-				}
-			}
-
-			&:after {
-				bottom: 1rem;
-				width: 220%;
-				right: -215%;
-			}
-		}
-
-		&.col-3 {
-			padding-top: 15rem;
-
-			.titre-rubrique {
-				margin-left: 4.5rem;
-			}
-
-			svg {
-				bottom: 4rem;
-				left: -3rem;
-			}
-		}
 	}
 }
 

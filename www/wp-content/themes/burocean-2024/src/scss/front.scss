@@ -201,73 +201,25 @@ header {
     h2 {
         text-transform: uppercase;
         font-weight: 400;
-        
-        .rouge {
-            font-family: $font-family-secondaire;
-            display: block;
-            margin: 0 auto;
-            color: $couleur2;
-        }
     }
     
-    [class*="col"] {
-        .titre-rubrique {
-            font-size: 3rem;
-            line-height: 3rem;
-            display: block;
-        }
-        
-        img {
-            @include box-shadow(0px 0px 20px rgba(0,0,0,0.1));
-        }
-        
-        &.col-1 {
-            .titre-rubrique {
-               margin-bottom: 2rem; 
-            }
-            
-            &:after {
-                content: '';
-                position: absolute;
-                height: 1rem;
-                background: $couleur2;
-                display: block;
-                @include transform(skewX(-20deg));
-                top: 15rem;
-                width: 300%;
-                left: -240%;
-            }   
-        }
-        
-        &.col-2 {
-            .elem:nth-child(2) {
-                margin-top: 4rem;
-                
-                .titre-rubrique {
-                    margin: 2rem 3rem 0 0;
-                }
-            }
-            
-            &:after {
-                content: '';
-                position: absolute;
-                height: 1rem;
-                background: $couleur2;
-                display: block;
-                @include transform(skewX(20deg));
-            }
-        }
-        
-        &.col-3 {
-            .titre-rubrique {
-                margin-top: 2rem;
-            }
-            
-            svg {
-                width: 8.5rem;
-                position: absolute;
-            }
-        }
+    .col {
+        margin-bottom: 40px;
+    }
+    
+    .titre-rubrique {
+        font-size: 2.5rem;
+        display: inline-block;
+        background: $blanc;
+        padding: 8px 12px;
+        margin: -12px 0 0 12px;
+        position: relative;
+        z-index: 1;
+        text-transform: uppercase;
+    }
+    
+    p {
+        margin-left: 20px;
     }
 }
 

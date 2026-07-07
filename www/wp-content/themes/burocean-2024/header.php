@@ -48,7 +48,7 @@
 		</div>
 		
 		<div class="container">
-			<div class="row table">
+			<div class="row align-center">
 			    <div class="col col-md-4 accroche hidden-xs">
 			        <span><?php the_field('texte_gauche', 'option'); ?></span>
 			    </div>
