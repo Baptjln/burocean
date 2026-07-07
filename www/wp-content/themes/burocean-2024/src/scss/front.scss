@@ -560,17 +560,6 @@ form {
     }
 }
 
-body:not(.customer-area) {
-    .page {
-        .contenu {
-            .bloc-jaune {
-                background: rgba($gris-clair, 0.9);
-                color: $blanc;
-            }
-        }
-    }
-}
-
 .page {
     .contenu{
         position: relative;

@@ -1,0 +1,1 @@
+positionForPages[151]={"page":151,"positions":[{"word":"Caissons et consoles mobiles","left":0.524315,"top":0.042763,"width":0.356278,"height":0.014042},{"word":"151","left":0.954193,"top":0.983571,"width":0.021635,"height":0.007247}]};

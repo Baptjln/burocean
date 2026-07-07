@@ -200,9 +200,9 @@
     "location": [
         [
             {
-                "param": "page_template",
+                "param": "post_type",
                 "operator": "==",
-                "value": "default"
+                "value": "page"
             },
             {
                 "param": "page_type",
@@ -223,5 +223,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1783348811
+    "modified": 1783435079
 }

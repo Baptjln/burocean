@@ -2,7 +2,7 @@
 
 <section class="main">
     <div class="slider">
-        <div class="catalogue hidden-sm">
+        <div class="catalogue hidden-xs">
             <div class="left">
                 <img src="<?php bloginfo('stylesheet_directory'); ?>/assets/images/img-catalogue.png" />
                 <a onclick="return gtag_report_conversion('<?php bloginfo('url'); ?>/<?php the_field('lien_catalogue', 'option'); ?>/');" href="<?php bloginfo('url'); ?>/<?php the_field('lien_catalogue', 'option'); ?>/" title="<?php the_field('titre_catalogue', 'option'); ?>" target="_blank"><?php the_field('titre_catalogue', 'option'); ?></a>

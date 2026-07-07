@@ -10,19 +10,13 @@
 	<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
 	<div class="contenu">
     	<?php if ( has_post_thumbnail() ) : ?>
-            <figure class="photo"><?php the_post_thumbnail(); ?></figure>
+            <figure class="photo photo-fit"><?php the_post_thumbnail(); ?></figure>
         <?php endif; ?>
         
         <?php $thecontent = get_the_content(); ?>
         <div class="container">
         	<?php if(!empty($thecontent)) { ?>
-            	<div class="bloc-jaune">
-            <?php } ?>
-            
             <?php the_content(); ?>
-            
-        	<?php if(!empty($thecontent)) { ?>
-        	    </div>
             <?php } ?>
     	</div>
     </div>

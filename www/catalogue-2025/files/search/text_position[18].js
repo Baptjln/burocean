@@ -1,0 +1,1 @@
+positionForPages[18]={"page":18,"positions":[{"word":"I","left":0.120299,"top":0.043216,"width":0.001972,"height":0.013456},{"word":"lo","left":0.127712,"top":0.042763,"width":0.017847,"height":0.014023},{"word":"18","left":0.033710,"top":0.983481,"width":0.014175,"height":0.007338}]};

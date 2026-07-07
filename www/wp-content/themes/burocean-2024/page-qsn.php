@@ -10,18 +10,18 @@
 	</div>
 	
 	<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>
-	<div class="contenu">
+	<div class="contenu content-qsn">
 		<?php if ( has_post_thumbnail() ) : ?>
-			<figure class="photo"><?php the_post_thumbnail(); ?></figure>
+			<figure class="photo photo-fit"><?php the_post_thumbnail(); ?></figure>
 		<?php endif; ?>
 		
 		<?php $thecontent = get_the_content(); ?>
 		<div class="container">
 			<?php if(!empty($thecontent)) { ?>
-				<div class="bloc-jaune">
+				<div class="bloc-qsn">
 			<?php } ?>
 			
-			<?php the_content(); ?>
+				<?php the_content(); ?>
 			
 			<?php if(!empty($thecontent)) { ?>
 				</div>
@@ -40,6 +40,67 @@
 	<div class="feature">
 		<div class="container">
 			<?php include('fragments/_fabricant.php'); ?>
+		</div>
+	</div>
+	
+	<?php 
+		$largeur_col = get_field('largeur_colonne');
+		$largeur_col_e = get_field('largeur_colonne_e');
+		$largeur_col_2 = 12 - $largeur_col;
+		$largeur_col_e_2 = 12 - $largeur_col_e;
+	?>
+	
+	<div class="container">
+		<div class="row cols-page">
+			<div class="col col-md-<?php echo $largeur_col; ?>">
+				<?php if( get_field('titre_col_gauche') ): ?>
+					<h3 class="titre-row"><?php the_field('titre_col_gauche'); ?></h3>
+				<?php endif; ?>
+				<?php the_field('texte_col_gauche'); ?>
+			</div>
+			
+			<div class="col col-md-<?php echo $largeur_col_2; ?> <?php if ($class) { echo $class; } ?>">
+				<?php if( get_field('titre_col_droite') ): ?>
+					<h3 class="titre-row"><?php the_field('titre_col_droite'); ?></h3>
+				<?php endif; ?>
+				<?php the_field('texte_col_droite'); ?>
+			</div>
+		</div>
+		
+		<div class="row cols-page">
+			<div class="col col-md-12"><?php the_field('mentions'); ?></div>
+		</div>
+		
+		<div class="row cols-page">
+			<div class="col col-md-<?php echo $largeur_col_e; ?>">
+				<?php if( get_field('titre_col_gauche_e') ): ?>
+					<h3 class="titre-row"><?php the_field('titre_col_gauche_e'); ?></h3>
+				<?php endif; ?>
+				<?php the_field('texte_col_gauche_e'); ?>
+			</div>
+			
+			<div class="col col-md-<?php echo $largeur_col_e_2; ?>">
+				<?php if( get_field('titre_col_droite_e') ): ?>
+					<h3 class="titre-row"><?php the_field('titre_col_droite_e'); ?></h3>
+				<?php endif; ?>
+				<?php the_field('texte_col_droite_e'); ?>
+			</div>
+		</div>
+		
+		<div class="row cols-page">
+			<div class="col col-md-<?php echo $largeur_col_e; ?>">
+				<?php if( get_field('titre_col_gauche_e_2') ): ?>
+					<h3 class="titre-row"><?php the_field('titre_col_gauche_e_2'); ?></h3>
+				<?php endif; ?>
+				<?php the_field('texte_col_gauche_e_2'); ?>
+			</div>
+			
+			<div class="col col-md-<?php echo $largeur_col_e_2; ?>">
+				<?php if( get_field('titre_col_droite_e_2') ): ?>
+					<h3 class="titre-row"><?php the_field('titre_col_droite_e_2'); ?></h3>
+				<?php endif; ?>
+				<?php the_field('texte_col_droite_e_2'); ?>
+			</div>
 		</div>
 	</div>
 </section>

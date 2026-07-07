@@ -390,14 +390,37 @@ body:not(.customer-area) {
 			.container {
 				position: relative;
 			}
-
-			.bloc-jaune {
+		}
+		
+		.content-qsn {
+			.photo {
+				padding-left: 30%;
+			}
+			
+			.bloc-qsn {
 				position: absolute;
 				bottom: 0;
+				left: 0;
 				padding: 4rem;
-
-				[class*="wp-image-"] {
-					margin-top: -13rem;
+				
+				h2 {
+					font-size: 3rem;
+					display: inline-block;
+					background: $blanc;
+					padding: 8px 12px;
+					position: relative;
+					z-index: 1;
+					text-transform: uppercase;
+					
+					& + p {
+						padding-left: 12px;
+						width: 55%;
+					} 
+				}
+				
+				img {
+					margin-left: 10%;
+					margin-top: 24px;
 				}
 			}
 		}

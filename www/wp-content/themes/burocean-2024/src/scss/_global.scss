@@ -223,15 +223,20 @@ th {
 }
 
 .btn {
-    padding: 1.5rem 4.5rem;
-    display: inline-block;
-    text-decoration: none;
-    color: $blanc;
-    
-    &:hover {
-        background: $couleur2 !important;
-        color: $blanc !important;
-    }
+   padding: 1.5rem 4.5rem;
+   display: inline-block;
+   text-decoration: none;
+   color: $blanc;
+   
+   &-secondaire {
+      background: $noir;
+      color: $blanc !important;
+   }
+   
+   &:hover {
+      background: $couleur2 !important;
+      color: $blanc !important;
+   }
 }
 
 .alignleft, .alignright {

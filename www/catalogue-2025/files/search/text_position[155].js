@@ -1,0 +1,1 @@
+positionForPages[155]={"page":155,"positions":[{"word":"Rangement pro","left":0.694748,"top":0.043216,"width":0.185920,"height":0.017651},{"word":"155","left":0.954193,"top":0.983571,"width":0.022026,"height":0.007247}]};

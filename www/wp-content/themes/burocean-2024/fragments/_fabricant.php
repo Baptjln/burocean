@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col col-md-6">
+    <div class="col col-md-6 col-xs-12">
         <?php 
         $image_1 = get_field('image_col_1', 'option');
         
@@ -14,7 +14,7 @@
         <p><?php if (!is_front_page()) { the_field('description_1', 'option'); } ?></p>
     </div>
     
-    <div class="col col-md-6">
+    <div class="col col-md-6 col-xs-12">
         <?php 
         $image_2 = get_field('image_1_col_2', 'option');
         
@@ -30,7 +30,7 @@
         <p><?php if (!is_front_page()) { the_field('description_2', 'option'); } ?></p>
     </div>
     
-    <div class="col col-md-6">
+    <div class="col col-md-6 col-xs-12">
         <?php 
         $image_3 = get_field('image_2_col_2', 'option');
         
@@ -45,7 +45,7 @@
         <p><?php if (!is_front_page()) { the_field('description_3', 'option'); } ?></p>
     </div>
     
-    <div class="col col-md-6">
+    <div class="col col-md-6 col-xs-12">
         <?php 
         $image_4 = get_field('image_col_3', 'option');
         

@@ -124,9 +124,7 @@ header {
     }
 }
 
-.feature {
-    padding: 5rem 0;
-      
+.feature {  
     h2 {
         font-size: 3.5rem;
         line-height: 3rem;
@@ -180,6 +178,14 @@ header {
 
 .contact-bottom {
     padding: 8rem 0; 
+}
+
+.bloc-qsn {
+    margin-top: 24px;
+    
+    img {
+        margin: 0 auto;
+    }
 }
 
 // Liste logo

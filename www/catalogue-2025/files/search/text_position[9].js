@@ -1,0 +1,1 @@
+positionForPages[9]={"page":9,"positions":[{"word":"9","left":0.953283,"top":0.983481,"width":0.006838,"height":0.007348},{"word":"Tiers Lieux","left":0.748506,"top":0.043141,"width":0.133035,"height":0.013645}]};

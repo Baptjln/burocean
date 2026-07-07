@@ -1,0 +1,1 @@
+positionForPages[31]={"page":31,"positions":[{"word":"In\u2019Team","left":0.788753,"top":0.043216,"width":0.091228,"height":0.013569},{"word":"31","left":0.953270,"top":0.983481,"width":0.014457,"height":0.007338}]};
