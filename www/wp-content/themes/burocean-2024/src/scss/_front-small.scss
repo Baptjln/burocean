@@ -21,10 +21,10 @@ header {
     .content-nav {
         .nav-mobile {
             margin-top: 2rem;
-            background: $vert;
+            background: $couleur1;
             height: 5rem;
             line-height: 5rem;
-            color: $blanc;
+            color: $noir;
             text-align: center;
             
             [class^="icon-"] {
@@ -191,11 +191,6 @@ header {
 .top-single {
     p {
         margin-bottom: 4rem;
-    }
-    
-    .logo-nf {
-        width: 7rem;
-        height: 7rem;
     }
 }
 

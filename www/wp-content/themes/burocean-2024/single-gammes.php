@@ -5,8 +5,13 @@
     <?php $couleur = get_field('couleur'); ?>
 	
 	<div class="txt-center bloc-titre">
-	    <h1 class="font-2">Gamme <strong style="color: <?php echo $couleur ?>;"><?php the_title(); ?></strong></h1>
-	    
+	    <div class="bloc-titre-content">
+            <h1 class="font-2">Gamme <strong style="color: <?php echo $couleur ?>;"><?php the_title(); ?></strong></h1>
+            <?php if( get_field('afficher_nf_environnement') ): ?>
+                <div class="logo-nf"><img src="<?php bloginfo('stylesheet_directory'); ?>/assets/images/nf-environnement.jpg" /></div>
+            <?php endif; ?>
+	    </div>
+        
 		<?php 
 			$terms = get_the_terms( $post->ID, 'gammes-cats' );
 			if ($terms) {
@@ -37,10 +42,6 @@
         	</div>
         	
         	<div class="col col-md-8">
-            	<?php if( get_field('afficher_nf_environnement') ): ?>
-        	        <div class="logo-nf"><img src="<?php bloginfo('stylesheet_directory'); ?>/assets/images/nf-environnement.jpg" /></div>
-        	    <?php endif; ?>
-            	
             	<figure class="photo">
             	    <?php $liste_photos = get_field('liste_photos'); ?>
             	    <?php if( $liste_photos ): ?>
