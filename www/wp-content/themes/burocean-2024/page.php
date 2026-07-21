@@ -44,20 +44,20 @@
 		$largeur_col_e_2 = 12 - $largeur_col_e;
 		
 		if (is_page(55)) {
-			$class = "col col-lg-5 col-lg-offset-1 contact";
+			$class = "col col-lg-5 col-lg-offset-1 col-xs-12 contact";
 		}
 	?>
 	
 	<div class="container">
     	<div class="row cols-page">
-        	<div class="col col-md-<?php echo $largeur_col; ?>">
+        	<div class="col col-md-<?php echo $largeur_col; ?> col-xs-12">
             	<?php if( get_field('titre_col_gauche') ): ?>
             	    <h3 class="titre-row"><?php the_field('titre_col_gauche'); ?></h3>
                 <?php endif; ?>
                 <?php the_field('texte_col_gauche'); ?>
         	</div>
         	
-        	<div class="col col-md-<?php echo $largeur_col_2; ?> <?php if ($class) { echo $class; } ?>">
+        	<div class="col col-md-<?php echo $largeur_col_2; ?> col-xs-12 <?php if ($class) { echo $class; } ?>">
         	    <?php if( get_field('titre_col_droite') ): ?>
             	    <h3 class="titre-row"><?php the_field('titre_col_droite'); ?></h3>
                 <?php endif; ?>
@@ -70,14 +70,14 @@
     	</div>
 		
 		<div class="row cols-page">
-			<div class="col col-md-<?php echo $largeur_col_e; ?>">
+			<div class="col col-md-<?php echo $largeur_col_e; ?> col-xs-12">
 				<?php if( get_field('titre_col_gauche_e') ): ?>
 					<h3 class="titre-row"><?php the_field('titre_col_gauche_e'); ?></h3>
 				<?php endif; ?>
 				<?php the_field('texte_col_gauche_e'); ?>
 			</div>
 			
-			<div class="col col-md-<?php echo $largeur_col_e_2; ?>">
+			<div class="col col-md-<?php echo $largeur_col_e_2; ?> col-xs-12">
 				<?php if( get_field('titre_col_droite_e') ): ?>
 					<h3 class="titre-row"><?php the_field('titre_col_droite_e'); ?></h3>
 				<?php endif; ?>
@@ -86,14 +86,14 @@
 		</div>
 		
 		<div class="row cols-page">
-			<div class="col col-md-<?php echo $largeur_col_e; ?>">
+			<div class="col col-md-<?php echo $largeur_col_e; ?> col-xs-12">
 				<?php if( get_field('titre_col_gauche_e_2') ): ?>
 					<h3 class="titre-row"><?php the_field('titre_col_gauche_e_2'); ?></h3>
 				<?php endif; ?>
 				<?php the_field('texte_col_gauche_e_2'); ?>
 			</div>
 			
-			<div class="col col-md-<?php echo $largeur_col_e_2; ?>">
+			<div class="col col-md-<?php echo $largeur_col_e_2; ?> col-xs-12">
 				<?php if( get_field('titre_col_droite_e_2') ): ?>
 					<h3 class="titre-row"><?php the_field('titre_col_droite_e_2'); ?></h3>
 				<?php endif; ?>

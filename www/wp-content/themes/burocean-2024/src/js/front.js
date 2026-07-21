@@ -2,14 +2,6 @@ jQuery(document).ready(function($){
 	$('html').removeClass('no-js').addClass('js');
 	var $window = $(window);
 	
-	if($('.liste-cats').length) {
-		$('.liste-cats').masonry({
-		  itemSelector: '.col',
-		  columnWidth: '.grid-sizer',
-		  percentPosition: true
-		});
-	}
-	
 	if($('body').hasClass('home')) {
 		$('.slider .owl-carousel').owlCarousel({
 			thumbs: true,
@@ -23,7 +15,7 @@ jQuery(document).ready(function($){
 			loop: true,
 			lazyLoad: true,
 			autoplay:true,
-			autoplayHoverPause: true,
+			autoplayHoverPause: false,
 			autoplayTimeout: 6000,
 			smartSpeed: 5000,
 			animateOut: 'fadeOut'

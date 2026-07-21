@@ -53,7 +53,7 @@
 			        <span><?php the_field('texte_gauche', 'option'); ?></span>
 			    </div>
 			    
-                <div class="col col-sm-8 col-md-4 txt-center">
+                <div class="col col-xs-9 txt-center">
                     <?php if (is_front_page()){ ?>
 					    <h1 class="textReplace"><?php the_field('titre_h1_de_la_homepage', 'option'); ?></h1>
 					<?php } ?>
@@ -64,7 +64,7 @@
                     </a>
                 </div>
                 
-                <div class="col col-sm-4 txt-right">
+                <div class="col col-xs-3 txt-right">
                     <a class="partenaires" onclick="return gtag_report_conversion('<?php the_field('lien_texte_droite', 'option'); ?>');" href="<?php the_field('lien_texte_droite', 'option'); ?>" title="<?php the_field('texte_droite', 'option'); ?>">
                         <i class="icon-user"></i><span class="hidden-xs"><?php the_field('texte_droite', 'option'); ?></span>
                     </a>

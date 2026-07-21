@@ -9,58 +9,52 @@
             </div>
         </div>
         
-        
         <?php 
             $post_objects = get_field('gammes_a_afficher');
             $count = count( $post_objects );
 
         if( $post_objects ): ?>
-        
-        
-        <div class="owl-carousel" data-slider-id="1">
-            <?php foreach( $post_objects as $post_object): ?>  
-                <?php 
-                    $title = get_the_title($post_object->ID);
-                    
+            <div class="owl-carousel" data-slider-id="1">
+                <?php foreach( $post_objects as $post_object): ?>  
+                    <?php 
+                        $title = get_the_title($post_object->ID);
+                        
+                        $post_type = get_post_type(get_the_ID());   
+                        $taxonomies = get_object_taxonomies($post_object);   
+                        $tax = wp_get_post_terms($post_object->ID, $taxonomies,  array("fields" => "id=>slug"));
+                    ?>
+                            
+                    <div class="item">
+                        <a href="<?php bloginfo('url'); ?>/gammes/<?php echo implode( " ", $tax ); ?>">
+                            <?php 
+                                $image = get_field('image_home', $post_object->ID);
+                                $size = 'slider';
+                                $thumb = $image['sizes'][ $size ];
+                            ?>
+                            <img src="<?php echo esc_url($thumb); ?>" />
+                        </a>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            
+            <div class="owl-thumbs count-<?php echo $count; ?>" data-slider-id="1">
+                <?php foreach( $post_objects as $post_object): ?> 
+                
+                <?php  
                     $post_type = get_post_type(get_the_ID());   
                     $taxonomies = get_object_taxonomies($post_object);   
-                    $tax = wp_get_post_terms($post_object->ID, $taxonomies,  array("fields" => "id=>slug"));
+                    $tax = wp_get_post_terms($post_object->ID, $taxonomies,  array("fields" => "names"));
                 ?>
-                          
-                <div class="item">
-                    <a href="<?php bloginfo('url'); ?>/gammes/<?php echo implode( " ", $tax ); ?>">
-						<?php 
-							$image = get_field('image_home', $post_object->ID);
-                            $size = 'slider';
-                            $thumb = $image['sizes'][ $size ];
-						?>
-						<img src="<?php echo esc_url($thumb); ?>" />
-                    </a>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        
-        
-        <div class="owl-thumbs count-<?php echo $count; ?>" data-slider-id="1">
-            <?php foreach( $post_objects as $post_object): ?> 
-            
-            <?php  
-                $post_type = get_post_type(get_the_ID());   
-                $taxonomies = get_object_taxonomies($post_object);   
-                $tax = wp_get_post_terms($post_object->ID, $taxonomies,  array("fields" => "names"));
-            ?>
-                
-                <div class="owl-thumb-item" style="background-color: <?php the_field('couleur', $post_object->ID); ?>">
-                    <div class="owl-wrap">
-                        <i class="icon-arrow"></i>
-                        <h2><?php echo $tax[0]; ?></h2>
+                    
+                    <div class="owl-thumb-item" style="background-color: <?php the_field('couleur', $post_object->ID); ?>">
+                        <div class="owl-wrap">
+                            <i class="icon-arrow"></i>
+                            <h2><?php echo $tax[0]; ?></h2>
+                        </div>
                     </div>
-                </div>
-        	<?php endforeach; ?>
-        </div>
-        
+                <?php endforeach; ?>
+            </div>
         <?php endif; ?>
-        
     </div>
     
     <?php include('fragments/_logos.php'); ?>
@@ -70,7 +64,7 @@
             
             <h2 class="txt-center"><?php the_field('titre_bloc'); ?><span class="rouge"><?php the_field('sous_titre_bloc'); ?></span></h2>
             <div class="row">
-                <div class="col col-md-8 col-md-offset-2">
+                <div class="col col-md-8 col-md-offset-2 col-xs-12">
                     <p class="txt-center texte"><?php the_field('texte'); ?></p>
                 </div>
             </div>

@@ -16,8 +16,9 @@
     </div>
 	
 	<div class="liste-cats">
-		<div class="grid-sizer"></div>
-    	<?php
+		<!--<div class="grid-sizer"></div>-->
+    	<div class="row">
+        <?php
     		$args = array(
     		  'post_type'   => 'gammes',
     		  'posts_per_page' => -1,
@@ -33,7 +34,7 @@
     	?>
     	<?php while ( have_posts() ) : the_post(); ?>
     	
-    		<div class="col">
+    		<div class="col col-md-4 col-xs-12">
                 <figure class="photo">
                     <a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_post_thumbnail('liste-cats'); ?></a>
                 </figure>
@@ -45,6 +46,7 @@
         
         <?php endwhile; ?>
         <?php wp_reset_query(); ?>
+        </div>
     </div>
 </section>
 

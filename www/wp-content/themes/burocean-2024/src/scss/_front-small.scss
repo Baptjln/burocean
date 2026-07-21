@@ -129,6 +129,12 @@ header {
         font-size: 3.5rem;
         line-height: 3rem;
         margin-bottom: 3rem;
+        margin-top: 3rem;
+        
+        .rouge {
+            font-size: 2.5rem;
+        }
+
     }
 }
 
@@ -143,7 +149,7 @@ header {
 
 .liste-cats {
     .col {
-        margin-bottom: 5rem;
+        margin-bottom: 40px;
     }
 }
 
